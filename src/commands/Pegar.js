@@ -1,16 +1,8 @@
-const moment = require('moment');
-
 const Session = require('../models/Session');
 const User = require('../models/User');
 
-module.exports = async (iface, channel, userName, _message) => {
-  const sessions = await Session.query()
-    .where('startsAt', '<=', moment())
-    .where('endsAt', '>=', moment())
-    .whereNull('processedAt')
-    .orderBy('startsAt');
-
-  const [ session ] = sessions;
+module.exports = async (iface, { channel, user: userName }) => {
+  const session = await Session.current();
 
   if (!session) {
     return iface.reply(channel, user, 'não existem clacks disponíveis ainda, aguarde!');

@@ -8,6 +8,8 @@ module.exports = async (twitch) => {
   bot.registerInterface(new TwitchInterface(bot, twitch));
   bot.registerCommands({
     pegar: require('./commands/Pegar'),
+    clacks: require('./commands/Clacks'),
+    rodada: require('./commands/Rodada'),
   });
 
   return bot.start().then(ifaces => {

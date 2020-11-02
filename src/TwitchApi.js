@@ -27,6 +27,7 @@ class TwitchApi {
       client_id: process.env.TWITCH_CLIENT_ID,
       client_secret: process.env.TWITCH_SECRET,
       grant_type: 'client_credentials',
+      scope: 'moderation:read',
     });
     const json = await res.json();
     this.accessToken = json.access_token;
@@ -44,6 +45,11 @@ class TwitchApi {
     if (!data.length) return false;
 
     return data.find(d => d.user_name.toLowerCase() === channel.toLowerCase());
+  }
+
+  async getModerators(userId) {
+    const res = await this.get('moderation/moderators', { broadcaster_id: userId });
+    console.log('res', res);
   }
 }
 

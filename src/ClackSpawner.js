@@ -21,18 +21,6 @@ class ClackSpawner {
     this.client = client;
   }
 
-  async createSession() {
-    const duration = randomInt(INTERVAL_MIN, INTERVAL_MAX);
-    const bonus = randomInt(BONUS_MIN, BONUS_MAX);
-    const startDelay = randomInt(SPAWN_MIN, SPAWN_MAX);
-    const startsAt = moment().add(startDelay, 'm');
-    const endsAt = moment(startsAt).add(duration, 'm');
-
-    const data = { startsAt, endsAt, duration, bonus };
-    console.log('Creating session', data);
-    return await Session.query().insertAndFetch(data);
-  }
-
   async check() {
     const channel = await twitch.getCurrentStream(channelName);
 
@@ -50,7 +38,7 @@ class ClackSpawner {
     console.log('Pending sessions', pendingSessions.length);
 
     if (!pendingSessions.length) {
-      await this.createSession();
+      await Session.create();
       return;
     }
 
