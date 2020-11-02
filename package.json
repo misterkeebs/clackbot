@@ -23,7 +23,8 @@
     "node-fetch": "^2.6.1",
     "objection": "^2.2.3",
     "pg": "^8.4.2",
-    "tmi.js": "^1.5.0"
+    "tmi.js": "^1.5.0",
+    "twitch-js": "^2.0.0-beta.33"
   },
   "devDependencies": {
     "chai": "^4.2.0",

@@ -8,8 +8,8 @@ class Bot {
     this.handlers[command] = handler;
   }
 
-  registerInterface(interfaceClass) {
-    this.interfaces.push(new interfaceClass(this));
+  registerInterface(iface) {
+    this.interfaces.push(iface);
   }
 
   handleMessage(iface, channel, user, message) {
@@ -18,7 +18,7 @@ class Bot {
   }
 
   async start() {
-    return Promise.all(this.interfaces.map(i => i.startConnection()));
+    return Promise.resolve(this.interfaces);
   }
 }
 
