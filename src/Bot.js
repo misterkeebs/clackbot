@@ -4,8 +4,8 @@ class Bot {
     this.interfaces = [];
   }
 
-  registerCommand(command, handler) {
-    this.handlers[command] = handler;
+  registerCommands(handlers) {
+    this.handlers = handlers;
   }
 
   registerInterface(iface) {

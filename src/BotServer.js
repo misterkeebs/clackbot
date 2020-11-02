@@ -6,9 +6,8 @@ module.exports = async (twitch) => {
   const bot = new Bot();
 
   bot.registerInterface(new TwitchInterface(bot, twitch));
-
-  bot.registerCommand('pegar', (iface, channel, user, _message) => {
-    iface.reply(channel, user, `você pegou 10 clacks!`);
+  bot.registerCommands({
+    pegar: require('./commands/Pegar'),
   });
 
   return bot.start().then(ifaces => {

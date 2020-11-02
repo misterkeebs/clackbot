@@ -10,10 +10,6 @@ class TwitchInterface {
     });
   }
 
-  send(channel, message) {
-    this.client.action(channel, message);
-  }
-
   reply(channel, user, message) {
     this.client.action(channel, `${user} ${message}`);
   }
