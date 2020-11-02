@@ -1,0 +1,13 @@
+{
+  "name": "digitoid",
+  "version": "0.0.1",
+  "description": "Twitch Bot",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ."
+  },
+  "dependencies": {
+    "tmi.js": "^1.5.0"
+  }
+}
