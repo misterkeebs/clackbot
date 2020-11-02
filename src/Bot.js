@@ -12,9 +12,12 @@ class Bot {
     this.interfaces.push(iface);
   }
 
-  handleMessage(iface, channel, user, message) {
+  async handleMessage(iface, channel, user, message) {
     const command = message.trim().replace(/^!/, '');
-    this.handlers[command](iface, channel, user, message);
+    const handler = this.handlers[command];
+    if (!handler) return;
+
+    await handler(iface, channel, user, message);
   }
 
   async start() {

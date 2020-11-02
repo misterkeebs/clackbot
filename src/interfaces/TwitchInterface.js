@@ -3,10 +3,10 @@ class TwitchInterface {
     this.bot = bot;
     this.client = client;
 
-    this.client.on('chat', (channel, userData, message, _self) => {
-      // console.log('userData', userData);
+    this.client.on('chat', async (channel, userData, message, _self) => {
+      console.log('userData', userData);
       const user = userData['display-name'];
-      this.bot.handleMessage(this, channel, user, message);
+      await this.bot.handleMessage(this, channel, user, message);
     });
   }
 
