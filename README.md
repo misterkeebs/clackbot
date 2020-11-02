@@ -10,7 +10,7 @@ No canal mostraremos um leaderboard de pontos. Além disso, nos giveaways todo u
 
 Todo usuário poderá controlar seus pontos através de um comando específico `!tokens`. Usuários também poderão doar pontos para outros através do comando `!doar <usuario> <pontos>`.
 
-TODO: Achar um nome para os tokens. Talvez switches ou teclas ou algo de teclado?
+TODO: Achar um nome para os tokens. Talvez clacks, thocks, switches ou teclas ou algo de teclado?
 
 ## Leaderboard
 
