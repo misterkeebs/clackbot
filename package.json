@@ -1,13 +1,33 @@
 {
-  "name": "digitoid",
+  "name": "clackbot",
   "version": "0.0.1",
   "description": "Twitch Bot",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node ."
+    "start": "node .",
+    "test": "NODE_ENV=test DB_ENV=test mocha './test/**/*.spec.js'",
+    "test:watch": "NODE_ENV=test DB_ENV=test mocha -w './test/**/*.spec.js'"
   },
   "dependencies": {
+    "bluebird": "^3.7.2",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-async-errors": "^3.1.1",
+    "express-jwt": "^6.0.0",
+    "jwks-rsa": "^1.11.0",
+    "knex": "^0.21.12",
+    "moment": "^2.29.1",
+    "morgan": "^1.10.0",
+    "node-fetch": "^2.6.1",
+    "objection": "^2.2.3",
+    "pg": "^8.4.2",
     "tmi.js": "^1.5.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^8.2.0",
+    "nodemon": "^2.0.6"
   }
 }
