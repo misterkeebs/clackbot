@@ -1,5 +1,4 @@
 .DS_store
-*.png
 src/zip
 src/router/*.zip
 src/features/*.zip
