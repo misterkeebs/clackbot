@@ -38,6 +38,15 @@ class Session extends Model {
     return session;
   }
 
+  static async last() {
+    const [ session ] = await Session.query()
+      .whereNotNull('processedAt')
+      .where('startsAt', '<=', moment())
+      .where('endsAt', '>=', moment())
+      .orderBy('startsAt');
+    return session;
+  }
+
   static async create(immediate=false) {
     const duration = randomInt(INTERVAL_MIN, INTERVAL_MAX);
     const bonus = randomInt(BONUS_MIN, BONUS_MAX);
