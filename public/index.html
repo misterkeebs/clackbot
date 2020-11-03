@@ -4,15 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bebas+Neue">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bebas+Neue|Roboto">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
   <style>
-    body {
+    #main {
       font-family: 'Bebas Neue', serif;
       font-size: 200px;
       text-shadow: 4px 4px 4px #aaa;
-      color: #fff;
+      /* color: #fff; */
+      color: yellow;
     }
 
     .main {
@@ -31,6 +32,29 @@
 
     .hidden {
       display: none
+    }
+
+    .info {
+      width: 500px;
+      height: 20px;
+      margin: 0 auto;
+      color: black;
+      font-size: 20px;
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+      /* border: 2px solid #444; */
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 20px 40px;
+      box-shadow: 4px 4px 4px #444;
+    }
+
+    .info code {
+      display: inline;
+      font-family: 'Roboto', sans-serif;
+      padding: 2px 5px;
+      color: white;
+      background: #444;
     }
   </style>
   <script>
@@ -95,6 +119,16 @@
       }
     }
 
+    function fadeOut() {
+      const main = document.getElementById('main');
+      const info = document.getElementById('info');
+
+      main.className = 'animate__animated animate__fadeOutUp main';
+      info.className = 'animate__animated animate__fadeOutDown animate__delay info';
+
+      setTimeout(hide, 2000);
+    }
+
     function hide() {
       const exists = document.getElementById('gimmick');
       if (exists) {
@@ -103,21 +137,27 @@
 
       const main = document.getElementById('main');
       main.className = 'hidden';
+
+      const info = document.getElementById('info');
+      info.className = 'hidden';
     }
 
     const socket = io.connect();
 
     socket.on('start-session', data => {
+      console.log('data', data);
       const main = document.getElementById('main');
       main.className = 'animate__animated animate__wobble main';
+
+      const info = document.getElementById('info');
+      info.innerHTML = `Use o comando <code>!pegar</code> agora e acumule ${data.bonus} clacks!`;
+      info.className = 'animate__animated animate__bounceInUp animate__delay info';
       gimmick('body');
-      setTimeout(hide, 30000);
+      setTimeout(fadeOut, 15000);
     });
 
     socket.on('end-session', data => {
-      const main = document.getElementById('main');
-      main.className = 'hidden';
-      gimmick('body');
+      fadeOut();
     });
   </script>
 </head>
@@ -126,6 +166,7 @@
   <div class="hidden" id="main">
     RODADA DE CLACKS!
   </div>
+  <div id="info" class="info hidden"></div>
 </body>
 
 </html>
