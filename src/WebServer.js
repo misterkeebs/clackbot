@@ -12,12 +12,13 @@ server.use(express.json());
 server.use(express.static('public'));
 
 server.get('/start-session', (req, res) => {
-  server.io.emit('start-session');
+  console.log('sending', req.body);
+  server.io.emit('start-session', req.body);
   res.json({ ok: true });
 });
 
 server.get('/end-session', (req, res) => {
-  server.io.emit('end-session');
+  server.io.emit('end-session', req.body);
   res.json({ ok: true });
 });
 

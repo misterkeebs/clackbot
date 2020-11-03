@@ -50,7 +50,12 @@ class ClackSpawner {
 
     console.log('Current session', session);
     await Session.query().findById(session.id).patch({ processedAt: moment() });
-    await fetch(`${process.env.API_SERVER}/start-session`);
+    await fetch(`${process.env.API_SERVER}/start-session`, {
+      body: JSON.stringify(session),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     this.client.action(channelName, `Atenção, vocês têm ${session.duration} minuto(s) para pegar ${session.bonus} clack(s) com o comando !pegar`);
   }
 }
