@@ -1,4 +1,5 @@
 const express = require('express');
+
 require('express-async-errors');
 const server = express();
 
@@ -10,9 +11,17 @@ server.use(morgan('dev'));
 server.use(express.json());
 server.use(express.static('public'));
 
-server.get('/', (req, res) => {
+server.get('/start-session', (req, res) => {
+  server.io.emit('start-session');
   res.json({ ok: true });
 });
+
+server.get('/end-session', (req, res) => {
+  server.io.emit('end-session');
+  res.json({ ok: true });
+});
+
+server.use(express.static('public'));
 
 server.use((error, req, res, next) => {
   if (error) {

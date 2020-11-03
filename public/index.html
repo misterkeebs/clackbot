@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bebas+Neue">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <style>
+    body {
+      font-family: 'Bebas Neue', serif;
+      font-size: 200px;
+      text-shadow: 4px 4px 4px #aaa;
+      color: #fff;
+    }
+
+    .main {
+      text-align: center;
+      color: yellow;
+      margin-top: 200px;
+    }
+
+    #gimmick {
+      display: block;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .hidden {
+      display: none
+    }
+  </style>
+  <script>
+    function gimmick(el) {
+      var exists = document.getElementById('gimmick')
+      if (exists) {
+        exists.parentNode.removeChild(exists);
+        return false;
+      }
+
+      var element = document.querySelector(el);
+      var canvas = document.createElement('canvas'),
+        ctx = canvas.getContext('2d'),
+        focused = false;
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      canvas.id = 'gimmick'
+
+      var coin = new Image();
+      coin.src = 'http://i.imgur.com/5ZW2MT3.png'
+      // 440 wide, 40 high, 10 states
+      coin.onload = function () {
+        element.appendChild(canvas)
+        focused = true;
+        drawloop();
+      }
+      var coins = []
+
+      function drawloop() {
+        if (focused) {
+          requestAnimationFrame(drawloop);
+        }
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        if (Math.random() < .3) {
+          coins.push({
+            x: Math.random() * canvas.width | 0,
+            y: -50,
+            dy: 3,
+            s: 0.5 + Math.random(),
+            state: Math.random() * 10 | 0
+          })
+        }
+        var i = coins.length
+        while (i--) {
+          var x = coins[i].x
+          var y = coins[i].y
+          var s = coins[i].s
+          var state = coins[i].state
+          coins[i].state = (state > 9) ? 0 : state + 0.1
+          coins[i].dy += 0.3
+          coins[i].y += coins[i].dy
+
+          ctx.drawImage(coin, 44 * Math.floor(state), 0, 44, 40, x, y, 44 * s, 40 * s)
+
+          if (y > canvas.height) {
+            coins.splice(i, 1);
+          }
+        }
+      }
+    }
+
+    const socket = io.connect();
+
+    socket.on('start-session', data => {
+      const main = document.getElementById('main');
+      main.className = 'animate__animated animate__wobble main';
+      gimmick('body');
+    });
+
+    socket.on('end-session', data => {
+      const main = document.getElementById('main');
+      main.className = 'hidden';
+      gimmick('body');
+    });
+  </script>
+</head>
+
+<body>
+  <div class="hidden" id="main">
+    NOVA RODADA!
+  </div>
+</body>
+
+</html>

@@ -1,15 +1,8 @@
 /* eslint-disable no-console */
 const moment = require('moment');
-
-const SPAWN_MIN = parseInt(process.env.CLACK_SPAWN_MIN, 10);
-const SPAWN_MAX = parseInt(process.env.CLACK_SPAWN_MAX, 10);
-const INTERVAL_MIN = parseInt(process.env.CLACK_INTERVAL_MIN, 10);
-const INTERVAL_MAX = parseInt(process.env.CLACK_INTERVAL_MAX, 10);
-const BONUS_MIN = parseInt(process.env.CLACK_BONUS_MIN, 10);
-const BONUS_MAX = parseInt(process.env.CLACK_BONUS_MAX, 10);
+const fetch = require('node-fetch');
 
 const TwitchApi = require('./TwitchApi');
-const { randomInt } = require('./Utils');
 
 const channelName = process.env.TWITCH_CHANNEL;
 const twitch = new TwitchApi();
@@ -57,6 +50,7 @@ class ClackSpawner {
 
     console.log('Current session', session);
     await Session.query().findById(session.id).patch({ processedAt: moment() });
+    await fetch(`${process.env.API_SERVER}/start-session`);
     this.client.action(channelName, `Atenção, vocês têm ${session.duration} minutos para pegar ${session.bonus} clacks com o comando !pegar`);
   }
 }
