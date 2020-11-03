@@ -5,7 +5,7 @@ module.exports = async (iface, { channel, user: userName }) => {
   const session = await Session.current();
 
   if (!session) {
-    return iface.reply(channel, user, 'não existem clacks disponíveis ainda, aguarde!');
+    return iface.reply(channel, userName, 'não existem clacks disponíveis ainda, aguarde!');
   }
 
   let [ user ] = await User.query().where('displayName', userName);

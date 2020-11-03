@@ -34,7 +34,6 @@ class Session extends Model {
     const [ session ] = await Session.query()
       .where('startsAt', '<=', moment())
       .where('endsAt', '>=', moment())
-      .whereNull('processedAt')
       .orderBy('startsAt');
     return session;
   }
