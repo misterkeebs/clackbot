@@ -58,6 +58,8 @@
     }
   </style>
   <script>
+    const audio = new Audio('/sounds/Raid-Neon-Series.mp3');
+
     function gimmick(el) {
       var exists = document.getElementById('gimmick')
       if (exists) {
@@ -145,6 +147,7 @@
     const socket = io.connect();
 
     socket.on('start-session', data => {
+      audio.play();
       console.log('data', data);
       const main = document.getElementById('main');
       main.className = 'animate__animated animate__wobble main';
@@ -153,6 +156,7 @@
       info.innerHTML = `Use o comando <code>!pegar</code> agora e acumule ${data.bonus} clacks!`;
       info.className = 'animate__animated animate__bounceInUp animate__delay info';
       gimmick('body');
+
       setTimeout(fadeOut, 15000);
     });
 
