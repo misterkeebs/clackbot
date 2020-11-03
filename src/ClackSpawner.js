@@ -51,6 +51,7 @@ class ClackSpawner {
     console.log('Current session', session);
     await Session.query().findById(session.id).patch({ processedAt: moment() });
     await fetch(`${process.env.API_SERVER}/start-session`, {
+      method: 'POST',
       body: JSON.stringify(session),
       headers: {
         'Content-Type': 'application/json',

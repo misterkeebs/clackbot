@@ -11,7 +11,7 @@ server.use(morgan('dev'));
 server.use(express.json());
 server.use(express.static('public'));
 
-server.get('/start-session', (req, res) => {
+server.post('/start-session', (req, res) => {
   console.log('sending', req.body);
   server.io.emit('start-session', req.body);
   res.json({ ok: true });
