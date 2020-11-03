@@ -95,12 +95,23 @@
       }
     }
 
+    function hide() {
+      const exists = document.getElementById('gimmick');
+      if (exists) {
+        exists.parentNode.removeChild(exists);
+      }
+
+      const main = document.getElementById('main');
+      main.className = 'hidden';
+    }
+
     const socket = io.connect();
 
     socket.on('start-session', data => {
       const main = document.getElementById('main');
       main.className = 'animate__animated animate__wobble main';
       gimmick('body');
+      setTimeout(hide, 30000);
     });
 
     socket.on('end-session', data => {
@@ -113,7 +124,7 @@
 
 <body>
   <div class="hidden" id="main">
-    NOVA RODADA!
+    RODADA DE CLACKS!
   </div>
 </body>
 
