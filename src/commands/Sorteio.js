@@ -1,3 +1,4 @@
+const AlreadyRaffledError = require('../models/AlreadyRaffledError');
 const NotEnoughBonusError = require('../models/NotEnoughBonusError');
 const NoUserError = require('../models/NoUserError');
 const Raffle = require('../models/Raffle');
@@ -50,5 +51,22 @@ module.exports = async (iface, { channel, user, message, userData }) => {
     const duration = parseInt(parts.shift(), 10);
     const raffle = await Raffle.create(name, duration);
     return iface.reply(channel, user, `sorteio ${raffle.name} criado e aberto por ${duration} minutos!`);
+  }
+
+  if (cmd.toLowerCase() === 'rodar') {
+    if (!raffle) return iface.reply(channel, user, 'não existe sorteio aberto no momento.');
+
+    try {
+      const winner = await raffle.run();
+      return iface.reply(channel, user, `o sorteado foi ${winner.name}! Parabéns!`);
+    } catch (err) {
+      if (err instanceof AlreadyRaffledError) {
+        return iface.reply(channel, user, `esse sorteio já foi rodado!`);
+      }
+
+      // eslint-disable-next-line no-console
+      console.error('Error raffling', raffle, err);
+      return iface.reply(channel, user, `ocorreu um erro rodar o sorteio: ${err}`);
+    }
   }
 };

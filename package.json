@@ -18,6 +18,7 @@
     "express-jwt": "^6.0.0",
     "jwks-rsa": "^1.11.0",
     "knex": "^0.21.12",
+    "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.1",

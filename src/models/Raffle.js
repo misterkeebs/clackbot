@@ -1,9 +1,13 @@
 const moment = require('moment');
+const _ = require('lodash');
+
+const { randomInt } = require('../Utils');
 
 const Model = require('./Model');
 const NotEnoughBonusError = require('./NotEnoughBonusError');
 const NoUserError = require('./NoUserError');
 const User = require('./User');
+const AlreadyRaffledError = require('./AlreadyRaffledError');
 
 class Raffle extends Model {
   static get tableName() {
@@ -42,6 +46,7 @@ class Raffle extends Model {
 
   static async current() {
     const [ session ] = await Raffle.query()
+      .whereNull('raffledAt')
       .where('startsAt', '<=', moment())
       .where('endsAt', '>=', moment())
       .orderBy('startsAt');
@@ -70,9 +75,25 @@ class Raffle extends Model {
     const newUser = await user.useBonus(tickets);
     await this.$relatedQuery('players').insert({ name, tickets });
 
-    console.log('newUser', newUser);
-
     return newUser;
+  }
+
+  async run() {
+    if (this.winnerId) throw new AlreadyRaffledError();
+
+    const players = await this.$relatedQuery('players');
+    const list = _.flatten(players.map(p => [...Array(p.tickets)].map(_ => p.name)));
+
+    console.log('list', list);
+
+    const winnerName = list[randomInt(0, list.length)];
+    const winner = players.find(p => p.name === winnerName);
+
+    console.log('The winner is', winner);
+
+    await this.$query().patchAndFetch({ raffledAt: moment(), winnerId: winner.id });
+
+    return winner;
   }
 }
 
