@@ -47,12 +47,30 @@ class Session extends Model {
     return session;
   }
 
+  static async pending() {
+    return await Session.query().whereNotNull('processedAt');
+  }
+
   static async create(immediate=false) {
+    const currentSession = await Session.current();
+    if (currentSession) return false;
+
+    const pendingSessions = await Session.pending();
+    if (pendingSessions) {
+      await Promise.all(pendingSessions.map(s => s.$query().delete()));
+    }
+
     const duration = randomInt(INTERVAL_MIN, INTERVAL_MAX);
     const bonus = randomInt(BONUS_MIN, BONUS_MAX);
     const startDelay = immediate ? 0 : randomInt(SPAWN_MIN, SPAWN_MAX);
     const startsAt = moment().add(startDelay, 'm');
     const endsAt = moment(startsAt).add(duration, 'm');
+
+    console.log('duration', duration);
+    console.log('bonus', bonus);
+    console.log('startDelay', startDelay);
+    console.log('startsAt', startsAt);
+    console.log('endsAt', endsAt);
 
     const data = { startsAt, endsAt, duration, bonus };
     // eslint-disable-next-line no-console

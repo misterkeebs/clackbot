@@ -23,16 +23,23 @@ class ClackSpawner {
     // }
 
     // finds current sessions
-    const now = moment();
+    const now = moment().toISOString();
     const pendingSessions = await Session.query()
       .whereNull('processedAt')
+      .where('startsAt', '>=', now)
+      .where('endsAt', '>=', now)
       .orderBy('startsAt');
 
     console.log('Pending sessions', pendingSessions.length);
 
     if (!pendingSessions.length) {
-      await Session.create();
-      return;
+      console.log('No pending session, attempting to create...');
+      const session = await Session.create();
+      console.log('Session', session);
+      if (session) {
+        console.log('New session created', session);
+        return;
+      }
     }
 
     const currentSessions = await Session.query()
@@ -40,6 +47,8 @@ class ClackSpawner {
       .where('endsAt', '>=', now)
       .whereNull('processedAt')
       .orderBy('startsAt');
+
+    console.log('Current sessions', currentSessions.length);
 
     const [ session ] = currentSessions;
 

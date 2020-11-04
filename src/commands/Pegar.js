@@ -11,7 +11,7 @@ module.exports = async (iface, { channel, user: userName }) => {
   let [ user ] = await User.query().where('displayName', userName);
 
   if (user) {
-    if (user.lastSessionId >= session.id) {
+    if (user.lastSessionId === session.id) {
       return iface.reply(channel, userName, `você já participou dessa rodada, aguarde a próxima!`);
     }
     user = await user.$query().patchAndFetch({ bonus: user.bonus + session.bonus, lastSessionId: session.id });

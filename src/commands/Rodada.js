@@ -14,8 +14,13 @@ module.exports = async (iface, { channel, user, message, userData }) => {
 
   const parts = message.split(' ');
   if (isMod && parts[1] === 'criar') {
-    iface.reply(channel, user, 'não há rodada atual, criando uma nova...');
-    return await Session.create(true);
+    const res = await Session.create(true);
+    if (!res) {
+      iface.reply(channel, user, 'já existe uma rodada ativa.');
+    } else {
+      iface.reply(channel, user, 'não há rodada atual, criando uma nova...');
+    }
+    return;
   }
 
   iface.reply(channel, user, 'nenhuma rodada em andamento');
