@@ -48,7 +48,7 @@ class Session extends Model {
   }
 
   static async pending() {
-    return await Session.query().whereNotNull('processedAt');
+    return await Session.query().whereNull('processedAt');
   }
 
   static async create(immediate=false) {
@@ -57,6 +57,7 @@ class Session extends Model {
 
     const pendingSessions = await Session.pending();
     if (pendingSessions) {
+      console.log('Deleting pending sessions', pendingSessions);
       await Promise.all(pendingSessions.map(s => s.$query().delete()));
     }
 
