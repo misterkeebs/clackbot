@@ -10,6 +10,7 @@ module.exports = async (twitch) => {
     pegar: require('./commands/Pegar'),
     clacks: require('./commands/Clacks'),
     rodada: require('./commands/Rodada'),
+    sorteio: require('./commands/Sorteio'),
   });
 
   return bot.start().then(ifaces => {

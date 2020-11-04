@@ -17,6 +17,10 @@ class User extends Model {
       },
     };
   }
+
+  async useBonus(amount) {
+    return this.$query().patchAndFetch({ bonus: this.bonus - amount });
+  }
 }
 
 module.exports = User;

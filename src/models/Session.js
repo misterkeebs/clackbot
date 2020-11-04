@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const moment = require('moment');
 
 const Model = require('./Model');
