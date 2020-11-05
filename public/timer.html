@@ -52,7 +52,7 @@
       const socket = io.connect();
       let target, container;
 
-      socket.on('timer', ({ icon, title, endsAt }) => {
+      socket.on('timer', ({ title, endsAt }) => {
         container = document.getElementById('container');
 
         const titleEl = document.getElementById('title');
@@ -71,7 +71,8 @@
         const timer = document.getElementById('timer');
 
         if (duration.asSeconds() <= 0) {
-          audio.stop();
+          audio.pause();
+          audio.curretTime = 0;
           title.innerHTML = '';
           timer.innerHTML = '';
           title.className = '';
