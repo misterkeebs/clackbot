@@ -84,11 +84,13 @@ class Raffle extends Model {
     const players = await this.$relatedQuery('players');
     const list = _.flatten(players.map(p => [...Array(p.tickets)].map(_ => p.name)));
 
+    // eslint-disable-next-line no-console
     console.log('list', list);
 
     const winnerName = list[randomInt(0, list.length)];
     const winner = players.find(p => p.name === winnerName);
 
+    // eslint-disable-next-line no-console
     console.log('The winner is', winner);
 
     await this.$query().patchAndFetch({ raffledAt: moment(), winnerId: winner.id });

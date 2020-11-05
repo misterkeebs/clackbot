@@ -39,7 +39,7 @@ module.exports = async (iface, { channel, user, message, userData }) => {
     }
 
     const { name, timeLeft } = raffle;
-    return iface.reply(channel, user, `estamos sorteando ${name}. O sorteio se encerra daqui ${timeLeft} minutes. Envie !sorteio <numero de clacks> para participar.`);
+    return iface.reply(channel, user, `estamos sorteando ${name}. O sorteio se encerra daqui ${timeLeft} minutos. Envie !sorteio <numero de clacks> para participar.`);
   }
 
   const cmd = parts.shift();

@@ -15,7 +15,7 @@ class ClackSpawner {
   }
 
   async check() {
-    const channel = await twitch.getCurrentStream(channelName);
+    const _channel = await twitch.getCurrentStream(channelName);
 
     // if (!channel) {
     //   console.log(channelName, 'is not streaming, skipping.');
