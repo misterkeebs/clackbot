@@ -1,0 +1,47 @@
+.hidden {
+  display: none;
+}
+
+.container {
+  width: 500px;
+  margin: 0 auto;
+}
+
+.needle {
+  width: 500px;
+  border-bottom: 4px solid #fff;
+  position: absolute;
+  top: 200px;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.raffle {
+  width: 500px;
+  height: 400px;
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: black;
+}
+
+.player {
+  display: block;
+  padding: 5px;
+  font-family: Roboto;
+  font-size: 20px;
+  color: rgb(255, 255, 0);
+  text-align: center;
+  text-shadow:
+    -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000 !important;
+}
+
+.player:nth-child(even) {
+  background-color: #151824;
+}
+
+.player:nth-child(odd) {
+  background-color: #333642;
+}

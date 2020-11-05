@@ -21,6 +21,11 @@ server.post('/timer', (req, res) => {
   res.json({ ok: true });
 });
 
+server.post('/startRaffle', (req, res) => {
+  server.io.emit('startRaffle', req.body);
+  res.json({ ok: true });
+});
+
 server.use(express.static('public'));
 
 server.use((error, req, res, next) => {

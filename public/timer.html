@@ -48,6 +48,7 @@
   </style>
   <script>
     (function(window) {
+      const audio = new Audio('/sounds/timer.mp3');
       const socket = io.connect();
       let target, container;
 
@@ -70,6 +71,7 @@
         const timer = document.getElementById('timer');
 
         if (duration.asSeconds() < 0) {
+          audio.stop();
           title.innerHTML = '';
           timer.innerHTML = '';
           title.className = '';
@@ -77,9 +79,12 @@
           return;
         }
 
+        if (duration.asSeconds() === 10) {
+          audio.pause();
+          audio.curretTime = 0;
+        }
+
         if (duration.asSeconds() <= 10) {
-          const audio = new Audio('/sounds/timer.mp3');
-          audio.play();
           timer.className = 'warning';
         }
 
