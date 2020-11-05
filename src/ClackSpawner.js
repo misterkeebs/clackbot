@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 const moment = require('moment');
-const fetch = require('node-fetch');
 
 const TwitchApi = require('./TwitchApi');
+const { send } = require('./Utils');
 
 const channelName = process.env.TWITCH_CHANNEL;
 const twitch = new TwitchApi();
@@ -15,24 +15,12 @@ class ClackSpawner {
     this.client = client;
   }
 
-  send(path, body) {
-    const url = `${process.env.API_SERVER}/${path}`;
-    console.log('Sending', url, body);
-    return fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(body),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  }
-
   notify(animation, title, text) {
-    return this.send('overlay', { animation, title, text });
+    return send('overlay', { animation, title, text });
   }
 
   timer(title, endsAt) {
-    return this.send('timer', { title, endsAt });
+    return send('timer', { title, endsAt });
   }
 
   async check() {

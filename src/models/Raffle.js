@@ -54,6 +54,13 @@ class Raffle extends Model {
     return raffle;
   }
 
+  static async open() {
+    const [ raffle ] = await Raffle.query()
+      .whereNull('raffledAt')
+      .orderBy('startsAt');
+    return raffle;
+  }
+
   static async create(name, duration) {
     const startsAt = moment();
     const endsAt = moment(startsAt).add(duration, 'm');
@@ -79,6 +86,15 @@ class Raffle extends Model {
     return newUser;
   }
 
+  async setWinner(winnerName) {
+    // eslint-disable-next-line no-console
+    const [ winner ] = await this.$relatedQuery('players').where('name', winnerName);
+    console.log('The winner is', winner);
+
+    await winner.$query().patch({ winner: true });
+    await this.$query().patchAndFetch({ raffledAt: moment(), winnerId: winner.id });
+  }
+
   async run() {
     if (this.winnerId) throw new AlreadyRaffledError();
 
@@ -90,11 +106,7 @@ class Raffle extends Model {
 
     const winnerName = list[randomInt(0, list.length)];
     const winner = players.find(p => p.name === winnerName);
-
-    // eslint-disable-next-line no-console
-    console.log('The winner is', winner);
-
-    await this.$query().patchAndFetch({ raffledAt: moment(), winnerId: winner.id });
+    await this.setWinner(winner);
 
     return winner;
   }

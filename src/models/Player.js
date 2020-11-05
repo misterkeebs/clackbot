@@ -12,7 +12,7 @@ class Player extends Model {
       properties: {
         id: { type: 'integer' },
         raffleId: { type: 'integer' },
-        nick: { type: 'string' },
+        name: { type: 'string' },
         joinedAt: { type: 'timestamp' },
         tickets: { type: 'integer' },
         winner: { type: 'boolean' },

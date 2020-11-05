@@ -45,3 +45,31 @@
 .player:nth-child(odd) {
   background-color: #333642;
 }
+
+#winner {
+  padding: 100px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#winner .phrase {
+  font-family: Roboto;
+  font-size: 40px;
+  color: rgb(255, 255, 0);
+  text-shadow:
+    -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000 !important;
+}
+
+#winner .main {
+  font-family: 'Bebas Neue', serif;
+  font-size: 120px;
+  color: white;
+  text-shadow:
+    -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+      1px 1px 0 #000 !important;
+}

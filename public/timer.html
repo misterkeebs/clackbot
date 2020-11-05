@@ -70,7 +70,7 @@
         const seconds = (Math.floor(duration.asSeconds()) - ((hours * 3600) + (minutes * 60))).toString();
         const timer = document.getElementById('timer');
 
-        if (duration.asSeconds() < 0) {
+        if (duration.asSeconds() <= 0) {
           audio.stop();
           title.innerHTML = '';
           timer.innerHTML = '';

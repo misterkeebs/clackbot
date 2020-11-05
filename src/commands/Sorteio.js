@@ -1,7 +1,9 @@
+const Raffle = require('../models/Raffle');
+const { send } = require('../Utils');
+
 const AlreadyRaffledError = require('../models/AlreadyRaffledError');
 const NotEnoughBonusError = require('../models/NotEnoughBonusError');
 const NoUserError = require('../models/NoUserError');
-const Raffle = require('../models/Raffle');
 
 module.exports = async (iface, { channel, user, message, userData }) => {
   const isMod = userData.mod || userData.badges.broadcaster === '1';
@@ -54,6 +56,16 @@ module.exports = async (iface, { channel, user, message, userData }) => {
   }
 
   if (cmd.toLowerCase() === 'rodar') {
+    const openRaffle = await Raffle.open();
+    if (!openRaffle) return iface.reply(channel, user, 'não existe sorteio aberto no momento.');
+    const rows = await openRaffle.$relatedQuery('players');
+    console.log('rows', rows);
+    const players = rows.map(p => p.name);
+    await send('startRaffle', { players });
+    return;
+  }
+
+  if (cmd.toLowerCase() === 'manual') {
     if (!raffle) return iface.reply(channel, user, 'não existe sorteio aberto no momento.');
 
     try {

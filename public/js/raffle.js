@@ -47,10 +47,25 @@ function pickWinner() {
     const startY = player.offsetTop - containerEl.scrollTop;
     const endY = startY + player.clientHeight;
     if (startY < y && endY > y) {
+      reset();
       console.log('Winner is', player.innerHTML);
+      sendWinner(player.innerHTML);
     }
     // console.log(player.innerHTML, player.clientHeight, '[', startY, endY, '] -', y);
   });
+}
+
+function reset() {
+  audio.pause();
+  audio.curretTime = 0;
+
+  document.querySelectorAll('.player').forEach(e => e.remove());
+
+  const containerEl = document.getElementById('winner');
+  containerEl.className = 'hidden';
+
+  const winnerEl = document.getElementById('winner');
+  winnerEl.className = 'hidden';
 }
 
 function start() {
@@ -59,15 +74,13 @@ function start() {
 
   velocity = 10;
   increase = 1;
+  audio.loop = true;
   audio.play();
   shuffle();
 }
 
 function stop() {
-  audio.pause();
-  audio.curretTime = 0;
   stopping = true;
-  document.querySelectorAll('.player').forEach(e => e.remove());
 }
 
 function startRaffle(players) {
@@ -80,13 +93,41 @@ function startRaffle(players) {
   });
 
   start();
-  // const min = 12;
-  // const max = 30;
-  // const runTime = Math.floor(Math.random() * (max - min + 1)) + min;
-  setTimeout(stop, 12000);
+  const min = 12;
+  const max = 20;
+  const runTime = Math.floor(Math.random() * (max - min + 1)) + min;
+  setTimeout(stop, runTime * 1000);
 }
+
+function sendWinner(name) {
+  console.log('sent:', socket.emit('winner', name));
+  const el = document.getElementById('container');
+  el.className = 'animate__animated animate__fadeOut animate__delay';
+
+  setTimeout(() => {
+    el.className = 'hidden';
+
+    const mainEl = document.getElementById('main');
+    mainEl.innerHTML = name;
+
+    const winnerEl = document.getElementById('winner');
+    winnerEl.className = 'animate__animated animate__tada animate__infinite';
+
+    audio.pause();
+    audio.curretTime = 0;
+
+    setTimeout(() => {
+      winnerEl.className = '';
+      setTimeout(() => {
+        winnerEl.className = 'animate__animated animate__fadeOut animate__delay';
+      }, 4000);
+    }, 4000);
+  }, 1000);
+}
+
 
 const socket = io.connect();
 socket.on('startRaffle', ({ players }) => {
+  console.log('players', players);
   startRaffle(players);
 });
