@@ -49,17 +49,18 @@ module.exports = async (iface, { channel, user, message, userData }) => {
     if (parts.length < 2) {
       return iface.reply(channel, user, 'use !sorteio criar <nome> <duração em minutos>.');
     }
+    const openRaffle = await Raffle.open();
+    if (openRaffle) return iface.reply(channel, user, `já existe sorteio aberto - ${openRaffle.name}`);
     const duration = parseInt(parts.shift(), 10);
     const name = parts.join(' ');
     const raffle = await Raffle.create(name, duration);
-    return iface.reply(channel, user, `sorteio ${raffle.name} criado e aberto por ${duration} minutos!`);
+    return iface.reply(channel, user, `sorteio ${raffle.name} criado e aberto por ${duration} minutos! Mande !sorteio <clacks> para participar!`);
   }
 
   if (cmd.toLowerCase() === 'rodar') {
     const openRaffle = await Raffle.open();
     if (!openRaffle) return iface.reply(channel, user, 'não existe sorteio aberto no momento.');
     const rows = await openRaffle.$relatedQuery('players');
-    console.log('rows', rows);
     const players = rows.map(p => p.name);
     await send('startRaffle', { players });
     return;

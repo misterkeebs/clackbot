@@ -54,7 +54,7 @@
 
 #winner .phrase {
   font-family: Roboto;
-  font-size: 40px;
+  font-size: 30px;
   color: rgb(255, 255, 0);
   text-shadow:
     -1px -1px 0 #000,
@@ -65,7 +65,7 @@
 
 #winner .main {
   font-family: 'Bebas Neue', serif;
-  font-size: 120px;
+  font-size: 80px;
   color: white;
   text-shadow:
     -1px -1px 0 #000,
