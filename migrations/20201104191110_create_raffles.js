@@ -11,8 +11,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return Promise.all([
-    knex.schema.dropTable('raffles'),
-    knex.schema.dropTable('raffle_players'),
-  ]);
+  return knex.schema.dropTable('raffles');
 };

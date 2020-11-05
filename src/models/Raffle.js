@@ -45,12 +45,12 @@ class Raffle extends Model {
   }
 
   static async current() {
-    const [ session ] = await Raffle.query()
+    const [ raffle ] = await Raffle.query()
       .whereNull('raffledAt')
       .where('startsAt', '<=', moment())
       .where('endsAt', '>=', moment())
       .orderBy('startsAt');
-    return session;
+    return raffle;
   }
 
   static async create(name, duration) {
