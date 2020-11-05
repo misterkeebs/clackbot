@@ -47,8 +47,8 @@ module.exports = async (iface, { channel, user, message, userData }) => {
     if (parts.length < 2) {
       return iface.reply(channel, user, 'use !sorteio criar <nome> <duração em minutos>.');
     }
-    const name = parts.shift();
     const duration = parseInt(parts.shift(), 10);
+    const name = parts.join(' ');
     const raffle = await Raffle.create(name, duration);
     return iface.reply(channel, user, `sorteio ${raffle.name} criado e aberto por ${duration} minutos!`);
   }

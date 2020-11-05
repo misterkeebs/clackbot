@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bebas+Neue|Roboto">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <link rel="stylesheet" href="css/coins.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script src="js/coins.js"></script>
+  <script src="js/snow.js"></script>
+  <script src="js/fireworks.js"></script>
+  <style>
+    body {
+        background-color: #000000;
+        margin: 0px;
+        overflow: hidden;
+    }
+
+    .overlay {
+      position:absolute;
+      top:0px;
+      left:0px;
+      background-color: rgba(0, 0, 0, 0.6);
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    #main {
+      font-family: 'Bebas Neue', serif;
+      font-size: 200px;
+      text-shadow: 4px 4px 4px #aaa;
+      color: yellow;
+    }
+
+    .main {
+      text-align: center;
+      color: yellow;
+      margin-top: 200px;
+    }
+
+    #coins {
+      display: block;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .hidden {
+      display: none
+    }
+
+    .info {
+      width: 800px;
+      height: 20px;
+      margin: 0 auto;
+      color: black;
+      font-size: 20px;
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+      /* border: 2px solid #444; */
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 20px 40px;
+      box-shadow: 4px 4px 4px #444;
+    }
+
+    .info code {
+      display: inline;
+      font-family: 'Roboto', sans-serif;
+      padding: 2px 5px;
+      color: white;
+      background: #444;
+    }
+  </style>
+  <script>
+    const audio = new Audio('/sounds/Raid-Neon-Series.mp3');
+
+    function fadeOut(animation) {
+      const main = document.getElementById('main');
+      const info = document.getElementById('info');
+      const overlay = document.getElementById('overlay');
+
+      overlay.className = 'animate__animated animate__fadeOut info';
+      main.className = 'animate__animated animate__fadeOutUp animate__delay main';
+      info.className = 'animate__animated animate__fadeOutDown animate__delay info';
+
+      const fnName = `hide${animation.replace(animation[0], animation[0].toUpperCase())}`;
+      console.log('fnName', fnName);
+      window[fnName]('body');
+
+      setTimeout(hide, 2000);
+    }
+
+    function hide() {
+      const overlay = document.getElementById('overlay');
+      const main = document.getElementById('main');
+      const info = document.getElementById('info');
+
+      overlay.className = 'hidden';
+      main.className = 'hidden';
+      info.className = 'hidden';
+    }
+
+    const socket = io.connect();
+
+    socket.on('overlay', ({ show=true, title, text, animation='coins' }) => {
+      audio.play();
+      const overlay = document.getElementById('overlay');
+      overlay.className = 'animate__animated animate__fadeIn overlay';
+
+      const main = document.getElementById('main');
+      main.className = 'animate__animated animate__wobble main';
+      main.innerHTML = title;
+
+      const info = document.getElementById('info');
+      info.innerHTML = text;
+      info.className = 'animate__animated animate__bounceInUp animate__delay info';
+
+      const fnName = `${show ? 'show' : 'hide'}${animation.replace(animation[0], animation[0].toUpperCase())}`;
+      console.log('fnName', fnName);
+      window[fnName]('body');
+
+      if (show) {
+        setTimeout(() => fadeOut(animation), 15000);
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <div class="overlay hidden" id="overlay"></div>
+  <div class="hidden" id="main"></div>
+  <div id="info" class="info hidden"></div>
+</body>
+
+</html>

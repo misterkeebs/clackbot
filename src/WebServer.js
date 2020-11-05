@@ -11,9 +11,8 @@ server.use(morgan('dev'));
 server.use(express.json());
 server.use(express.static('public'));
 
-server.post('/start-session', (req, res) => {
-  console.log('sending', req.body);
-  server.io.emit('start-session', req.body);
+server.post('/overlay', (req, res) => {
+  server.io.emit('overlay', req.body);
   res.json({ ok: true });
 });
 

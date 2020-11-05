@@ -5,6 +5,7 @@ exports.up = function(knex) {
     table.string('name');
     table.timestamp('starts_at');
     table.timestamp('ends_at');
+    table.timestamp('notified_at');
     table.timestamp('raffled_at');
     table.integer('winner_id');
   });

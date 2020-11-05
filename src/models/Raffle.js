@@ -8,6 +8,7 @@ const NotEnoughBonusError = require('./NotEnoughBonusError');
 const NoUserError = require('./NoUserError');
 const User = require('./User');
 const AlreadyRaffledError = require('./AlreadyRaffledError');
+const { now } = require('lodash');
 
 class Raffle extends Model {
   static get tableName() {
@@ -24,6 +25,7 @@ class Raffle extends Model {
         startsAt: { type: 'timestamp' },
         endsAt: { type: 'timestamp' },
         raffledAt: { type: 'timestamp' },
+        notifiedAt: { type: 'timestamp' },
         winnerId: { type: 'integer' },
       },
     };
@@ -96,6 +98,10 @@ class Raffle extends Model {
     await this.$query().patchAndFetch({ raffledAt: moment(), winnerId: winner.id });
 
     return winner;
+  }
+
+  async markAsNotified() {
+    return await this.$query().patch({ notifiedAt: moment() });
   }
 }
 
