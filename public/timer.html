@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bebas+Neue|Roboto">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <style>
+    .hidden {
+      display: none;
+    }
+    .container {
+      width: 400px;
+      padding: 20px;
+      margin: 0 auto;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.5);
+    }
+    #title {
+      font-family: 'Bebas Neue', serif;
+      font-size: 35px;
+      color: white;
+      text-shadow: 4px 4px 4px #444;
+    }
+    #timer {
+      font-family: Roboto, sans-serif;
+      font-size: 60px;
+      text-shadow: 4px 4px 4px #444;
+      color: yellow;
+    }
+    .warning {
+      color: #bc544b !important;
+      animation: blinker 1s linear infinite !important;
+      text-shadow:
+      -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000 !important;
+    }
+
+    @keyframes blinker {
+      50% {
+        opacity: 0;
+      }
+    }
+  </style>
+  <script>
+    (function(window) {
+      const socket = io.connect();
+      let target, container;
+
+      socket.on('timer', ({ icon, title, endsAt }) => {
+        container = document.getElementById('container');
+
+        const titleEl = document.getElementById('title');
+        titleEl.innerHTML = title;
+
+        target = moment(endsAt);
+        container.className = 'container';
+        updateTimer();
+      });
+
+      function updateTimer() {
+        const duration = moment.duration(target.diff(moment()));
+        const hours = Math.floor(duration.asHours()).toString();
+        const minutes = (Math.floor(duration.asMinutes()) - (hours * 60)).toString();
+        const seconds = (Math.floor(duration.asSeconds()) - ((hours * 3600) + (minutes * 60))).toString();
+        const timer = document.getElementById('timer');
+
+        if (duration.asSeconds() < 0) {
+          title.innerHTML = '';
+          timer.innerHTML = '';
+          title.className = '';
+          container.className = 'hidden';
+          return;
+        }
+
+        if (duration.asSeconds() <= 10) {
+          const audio = new Audio('/sounds/timer.mp3');
+          audio.play();
+          timer.className = 'warning';
+        }
+
+        timer.innerHTML = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:${seconds.padStart(2, '0')}`;
+
+        setTimeout(updateTimer, 1000);
+      }
+    })(window);
+  </script>
+</head>
+
+<body>
+  <div id="container" class="container hidden">
+    <div id="title">SORTEIO DE ADESIVO</div>
+    <div id="timer" class="">00:00:00</div>
+  </div>
+</body>
+</html>

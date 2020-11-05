@@ -8,7 +8,6 @@ const NotEnoughBonusError = require('./NotEnoughBonusError');
 const NoUserError = require('./NoUserError');
 const User = require('./User');
 const AlreadyRaffledError = require('./AlreadyRaffledError');
-const { now } = require('lodash');
 
 class Raffle extends Model {
   static get tableName() {

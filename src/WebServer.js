@@ -16,8 +16,8 @@ server.post('/overlay', (req, res) => {
   res.json({ ok: true });
 });
 
-server.get('/end-session', (req, res) => {
-  server.io.emit('end-session', req.body);
+server.post('/timer', (req, res) => {
+  server.io.emit('timer', req.body);
   res.json({ ok: true });
 });
 

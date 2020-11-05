@@ -15,14 +15,24 @@ class ClackSpawner {
     this.client = client;
   }
 
-  notify(animation, title, text) {
-    return fetch(`${process.env.API_SERVER}/overlay`, {
+  send(path, body) {
+    const url = `${process.env.API_SERVER}/${path}`;
+    console.log('Sending', url, body);
+    return fetch(url, {
       method: 'POST',
-      body: JSON.stringify({ animation, title, text }),
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
       },
     });
+  }
+
+  notify(animation, title, text) {
+    return this.send('overlay', { animation, title, text });
+  }
+
+  timer(title, endsAt) {
+    return this.send('timer', { title, endsAt });
   }
 
   async check() {
@@ -39,6 +49,7 @@ class ClackSpawner {
       console.log(`There's a raffle ongoing, skipping session...`, raffle);
       if (!raffle.notifiedAt) {
         console.log('Notifying about raffle...');
+        await this.timer(`SORTEIO ${raffle.name.toUpperCase()}`, raffle.endsAt.toISOString());
         await this.notify('fireworks', 'SORTEIO ATIVO!',
           `Envie <code>!sorteio &lt;clacks&gt;</code> agora para concorrer a <b>${raffle.name}</b>!`);
         await raffle.markAsNotified();
@@ -85,6 +96,7 @@ class ClackSpawner {
     await Session.query().findById(session.id).patch({ processedAt: moment() });
     await this.notify('coins', 'RODADA DE CLACKS',
       `Envie <code>!pegar</code> agora para acumular ${session.bonus} clacks!`);
+    await this.timer(`PEGAR ${session.bonus} CLACKS`, session.endsAt.toISOString());
     this.client.action(channelName, `Atenção, vocês têm ${session.duration} minuto(s) para pegar ${session.bonus} clack(s) com o comando !pegar`);
   }
 }
