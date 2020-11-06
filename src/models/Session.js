@@ -4,6 +4,7 @@ const moment = require('moment');
 const Model = require('./Model');
 const { randomInt } = require('../Utils');
 
+const SUB_FACTOR = parseInt(process.env.SUB_BONUS_FACTOR || '2', 10);
 const SPAWN_MIN = parseInt(process.env.CLACK_SPAWN_MIN, 10);
 const SPAWN_MAX = parseInt(process.env.CLACK_SPAWN_MAX, 10);
 const INTERVAL_MIN = parseInt(process.env.CLACK_INTERVAL_MIN, 10);
@@ -82,6 +83,10 @@ class Session extends Model {
 
   get timeLeft() {
     return moment(this.endsAt).diff(moment(), 'minutes');
+  }
+
+  bonusAmount(subscriber=false) {
+    return this.bonus * (subscriber ? SUB_FACTOR : 1);
   }
 }
 

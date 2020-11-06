@@ -1,7 +1,7 @@
 const Session = require('../models/Session');
 const User = require('../models/User');
 
-module.exports = async (iface, { channel, user: userName }) => {
+module.exports = async (iface, { channel, user: userName, userData }) => {
   const session = await Session.last();
 
   if (!session) {
@@ -14,10 +14,15 @@ module.exports = async (iface, { channel, user: userName }) => {
     if (user.lastSessionId === session.id) {
       return iface.reply(channel, userName, `você já participou dessa rodada, aguarde a próxima!`);
     }
-    user = await user.$query().patchAndFetch({ bonus: user.bonus + session.bonus, lastSessionId: session.id });
+    user = await user.addFromSession(session, userData.subscriber);
   } else {
-    user = await User.query().insertAndFetch({ displayName: userName, bonus: session.bonus, lastSessionId: session.id });
+    user = await User.createFromSession(userName, session, userData.subscriber);
   }
 
-  return iface.reply(channel, userName, `você pegou ${session.bonus} clack(s)! Você agora tem um total de ${user.bonus}.`);
+  const bonus = session.bonusAmount(userData.subscriber);
+  const msg = [`você pegou ${bonus} clack(s)! Você agora tem um total de ${user.bonus}.`];
+  if (userData.subscriber) {
+    msg.unshift('obrigado por ser um inscrito! Por conta disso,');
+  }
+  return iface.reply(channel, userName, msg.join(' '));
 };
