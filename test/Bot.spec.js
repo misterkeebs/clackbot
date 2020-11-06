@@ -1,5 +1,6 @@
-const Bot = require('../src/Bot');
 const { expect } = require('chai');
+
+const Bot = require('../src/Bot');
 
 describe('Bot', () => {
   it('handles commands', () => {

@@ -4,7 +4,10 @@ const User = require('../models/User');
 module.exports = async (iface, { channel, user: userName, userData }) => {
   const session = await Session.last();
 
+  console.log(' *** session', session);
+
   if (!session) {
+    console.log('NO SESSION');
     return iface.reply(channel, userName, 'não existem clacks disponíveis ainda, aguarde!');
   }
 
