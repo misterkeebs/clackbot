@@ -29,7 +29,7 @@ class User extends Model {
 
   static async createFromSession(displayName, session, subscriber=false) {
     const bonus = session.bonusAmount(subscriber);
-    return User.query.insertAndFetch({ displayName, bonus, lastSessionId: session.id });
+    return User.query().insertAndFetch({ displayName, bonus, lastSessionId: session.id });
   }
 }
 
