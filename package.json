@@ -6,8 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node .",
-    "test": "NODE_ENV=test DB_ENV=test mocha './test/**/*.spec.js'",
-    "test:watch": "NODE_ENV=test DB_ENV=test mocha -w './test/**/*.spec.js'"
+    "test": "NODE_ENV=test DB_ENV=test mocha --file ./test/Init.js './test/**/*.spec.js'",
+    "test:watch": "NODE_ENV=test DB_ENV=test mocha -w --file ./test/Init.js './test/**/*.spec.js'"
   },
   "dependencies": {
     "bluebird": "^3.7.2",

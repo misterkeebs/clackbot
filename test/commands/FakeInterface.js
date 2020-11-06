@@ -14,7 +14,7 @@ class FakeInterface {
   }
 
   get lastMessage() {
-    return _.get(this.calls, 0, {}).message;
+    return _.get(_.last(this.calls), 'message');
   }
 }
 
