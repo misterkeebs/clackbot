@@ -1,7 +1,9 @@
+const _ = require('lodash');
+
 const Session = require('../models/Session');
 
 module.exports = async (iface, { channel, user, message, userData }) => {
-  const isMod = userData.mod || userData.badges.broadcaster === '1';
+  const isMod = userData.mod || _.get(userData, 'badges.broadcaster') === '1';
 
   const session = await Session.current();
   if (session) {
@@ -18,7 +20,7 @@ module.exports = async (iface, { channel, user, message, userData }) => {
     if (!res) {
       iface.reply(channel, user, 'já existe uma rodada ativa.');
     } else {
-      iface.reply(channel, user, 'não há rodada atual, criando uma nova...');
+      iface.reply(channel, user, 'criando nova rodada...');
     }
     return;
   }

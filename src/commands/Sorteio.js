@@ -1,12 +1,14 @@
+const _ = require('lodash');
+
 const Raffle = require('../models/Raffle');
-const { send } = require('../Utils');
+const { send, isModOnTwitch } = require('../Utils');
 
 const AlreadyRaffledError = require('../models/AlreadyRaffledError');
 const NotEnoughBonusError = require('../models/NotEnoughBonusError');
 const NoUserError = require('../models/NoUserError');
 
 module.exports = async (iface, { channel, user, message, userData }) => {
-  const isMod = userData.mod || userData.badges.broadcaster === '1';
+  const isMod = isModOnTwitch(userData);
 
   const raffle = await Raffle.current();
   const parts = message.split(' ');
@@ -46,12 +48,12 @@ module.exports = async (iface, { channel, user, message, userData }) => {
 
   const cmd = parts.shift();
   if (cmd.toLowerCase() === 'criar') {
-    if (parts.length < 2) {
-      return iface.reply(channel, user, 'use !sorteio criar <nome> <duração em minutos>.');
+    const duration = parseInt(parts.shift(), 10);
+    if (parts.length < 1 || isNaN(duration)) {
+      return iface.reply(channel, user, 'use !sorteio criar <duração em minutos> <nome>.');
     }
     const openRaffle = await Raffle.open();
     if (openRaffle) return iface.reply(channel, user, `já existe sorteio aberto - ${openRaffle.name}`);
-    const duration = parseInt(parts.shift(), 10);
     const name = parts.join(' ');
     const raffle = await Raffle.create(name, duration);
     return iface.reply(channel, user, `sorteio ${raffle.name} criado e aberto por ${duration} minutos! Mande !sorteio <clacks> para participar!`);
@@ -61,12 +63,14 @@ module.exports = async (iface, { channel, user, message, userData }) => {
     const openRaffle = await Raffle.open();
     if (!openRaffle) return iface.reply(channel, user, 'não existe sorteio aberto no momento.');
     const rows = await openRaffle.$relatedQuery('players');
-    const players = rows.map(p => p.name);
+    const players = _(rows.map(p => [...Array(p.tickets)].map(_ => p.name)))
+      .flatten().shuffle().value();
     await send('startRaffle', { players });
+    iface.reply(channel, user, 'iniciando abertura do sorteio.');
     return;
   }
 
-  if (cmd.toLowerCase() === 'manual') {
+  if (cmd.toLowerCase() === 'escolher') {
     if (!raffle) return iface.reply(channel, user, 'não existe sorteio aberto no momento.');
 
     try {

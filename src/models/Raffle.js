@@ -81,7 +81,7 @@ class Raffle extends Model {
     if (user.bonus < tickets) throw new NotEnoughBonusError();
 
     const newUser = await user.useBonus(tickets);
-    await this.$relatedQuery('players').insert({ name, tickets });
+    await $playersQuery.insert({ name, tickets });
 
     return newUser;
   }
