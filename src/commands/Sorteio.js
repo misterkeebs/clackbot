@@ -74,8 +74,8 @@ module.exports = async (iface, { channel, user, message, userData }) => {
     if (!raffle) return iface.reply(channel, user, 'não existe sorteio aberto no momento.');
 
     try {
-      const winner = await raffle.run();
-      return iface.reply(channel, user, `o sorteado foi ${winner.name}! Parabéns!`);
+      const winnerName = await raffle.run();
+      return iface.reply(channel, user, `o sorteado foi ${winnerName}! Parabéns!`);
     } catch (err) {
       if (err instanceof AlreadyRaffledError) {
         return iface.reply(channel, user, `esse sorteio já foi rodado!`);

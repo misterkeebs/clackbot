@@ -211,6 +211,40 @@ describe.only('Sorteio', () => {
   });
 
   describe('with choose subcommand', () => {
+    describe('with no ongoing raffle', () => {
+      beforeEach(async () => {
+        await sorteio(iface, { channel: 'channel', user: 'user', message: '!sorteio escolher', userData: { mod: true } });
+      });
 
+      it('sends an error message', async () => {
+        expect(iface.lastMessage).to.eql('não existe sorteio aberto no momento.');
+      });
+    });
+
+    describe('with an ongoing raffle', () => {
+      let raffle, player;
+
+      beforeEach(async () => {
+        player = await User.query().insert({ displayName: 'player1', bonus: 22 });
+
+        const theRaffle = await Raffle.create('Meu Sorteio', 2);
+        await theRaffle.addPlayer('player1', 1);
+
+        await sorteio(iface, { channel: 'channel', user: 'user', message: '!sorteio escolher', userData: { mod: true } });
+        raffle = await theRaffle.$query();
+      });
+
+      it('selects a winner', async () => {
+        expect(iface.lastMessage).to.eql('o sorteado foi player1! Parabéns!');
+      });
+
+      it('sets the raffle winner', async () => {
+        expect(raffle.winnerId).to.eql(player.id);
+      });
+
+      it('sets the raffled at time', () => {
+        expect(raffle.raffledAt).to.not.be.null;
+      });
+    });
   });
 });

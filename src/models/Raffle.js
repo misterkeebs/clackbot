@@ -104,11 +104,11 @@ class Raffle extends Model {
     // eslint-disable-next-line no-console
     console.log('list', list);
 
-    const winnerName = list[randomInt(0, list.length)];
-    const winner = players.find(p => p.name === winnerName);
-    await this.setWinner(winner);
+    const winnerPos = randomInt(0, list.length-1);
+    const winnerName = list[winnerPos];
+    await this.setWinner(winnerName);
 
-    return winner;
+    return winnerName;
   }
 
   async markAsNotified() {
