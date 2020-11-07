@@ -9,7 +9,7 @@ const User = require('../../src/models/User');
 const Raffle = require('../../src/models/Raffle');
 const sorteio = require('../../src/commands/Sorteio');
 
-describe.only('Sorteio', () => {
+describe('Sorteio', () => {
   beforeEach(() => iface.reset());
 
   describe('with no clacks or subcommand', () => {
