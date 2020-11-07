@@ -16,7 +16,7 @@ describe('Rodada', () => {
     });
 
     it('notifies the user', () => {
-      expect(iface.lastMessage).to.eql('nenhuma rodada em andamento');
+      expect(iface.lastMessage).to.eql('nenhuma rodada em andamento.');
     });
   });
 
@@ -44,7 +44,7 @@ describe('Rodada', () => {
       });
 
       it('sends the regular message', () => {
-        expect(iface.lastMessage).to.eql('nenhuma rodada em andamento');
+        expect(iface.lastMessage).to.eql('nenhuma rodada em andamento.');
       });
     });
 

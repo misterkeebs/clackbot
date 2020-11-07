@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const Model = require('./Model');
 
 class User extends Model {
@@ -11,9 +12,13 @@ class User extends Model {
 
       properties: {
         id: { type: 'integer' },
+        discordId: { type: 'string' },
         displayName: { type: 'string' },
         bonus: { type: 'integer' },
         lastSessionId: { type: 'integer'},
+        discordWannabe: { type: 'string' },
+        twitchWannabe: { type: 'string' },
+        linkedAt: { type: 'datetime' },
       },
     };
   }
@@ -30,6 +35,14 @@ class User extends Model {
   static async createFromSession(displayName, session, subscriber=false) {
     const bonus = session.bonusAmount(subscriber);
     return User.query().insertAndFetch({ displayName, bonus, lastSessionId: session.id });
+  }
+
+  static async updateOrCreate(displayName, attrs) {
+    const [ user ] = await User.query().where('displayName', displayName);
+    if (_.isEmpty(attrs)) return user;
+    if (user) return user.$query().patchAndFetch(attrs);
+
+    return User.query().insertAndFetch({ displayName, ...attrs });
   }
 }
 

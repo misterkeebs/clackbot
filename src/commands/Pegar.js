@@ -5,14 +5,14 @@ module.exports = async (iface, { channel, user: userName, userData }) => {
   const session = await Session.last();
 
   if (!session) {
-    return iface.reply(channel, userName, 'não existem clacks disponíveis ainda, aguarde!');
+    return await iface.reply(channel, userName, 'não existem clacks disponíveis ainda, aguarde!');
   }
 
   let [ user ] = await User.query().where('displayName', userName);
 
   if (user) {
     if (user.lastSessionId === session.id) {
-      return iface.reply(channel, userName, `você já participou dessa rodada, aguarde a próxima!`);
+      return await iface.reply(channel, userName, `você já participou dessa rodada, aguarde a próxima!`);
     }
     user = await user.addFromSession(session, userData.subscriber);
   } else {
@@ -24,5 +24,5 @@ module.exports = async (iface, { channel, user: userName, userData }) => {
   if (userData.subscriber) {
     msg.unshift('obrigado por ser um inscrito! Por conta disso,');
   }
-  return iface.reply(channel, userName, msg.join(' '));
+  return await iface.reply(channel, userName, msg.join(' '));
 };

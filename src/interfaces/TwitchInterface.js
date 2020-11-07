@@ -2,7 +2,7 @@ class TwitchInterface {
   constructor(bot, client) {
     this.bot = bot;
     this.client = client;
-    this.mods = [];
+    this.name = 'twitch';
 
     this.client.on('chat', async (channel, userData, message, _self) => {
       console.log('userData', userData);
@@ -11,7 +11,7 @@ class TwitchInterface {
     });
   }
 
-  reply(channel, user, message) {
+  async reply(channel, user, message) {
     this.client.action(channel, `${user} ${message}`);
   }
 }

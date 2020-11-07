@@ -12,6 +12,10 @@ class Bot {
     this.interfaces.push(iface);
   }
 
+  getCommand(command) {
+    return this.handlers[command];
+  }
+
   async handleMessage(iface, options) {
     const { message } = options;
     const [ cmdPart ] = message.split(' ');

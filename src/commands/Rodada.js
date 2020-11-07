@@ -1,9 +1,10 @@
 const _ = require('lodash');
 
 const Session = require('../models/Session');
+const { isModOnTwitch } = require('../Utils');
 
 module.exports = async (iface, { channel, user, message, userData }) => {
-  const isMod = userData.mod || _.get(userData, 'badges.broadcaster') === '1';
+  const isMod = isModOnTwitch(userData);
 
   const session = await Session.current();
   if (session) {
@@ -11,19 +12,19 @@ module.exports = async (iface, { channel, user, message, userData }) => {
     const msg = timeLeft < 1
       ? `menos de um minuto`
       : (timeLeft > 1 ? `mais ${timeLeft} minutos` : `mais 1 minuto`);
-    return iface.reply(channel, user, `rodada em andamento por ${msg}.`);
+    return await iface.reply(channel, user, `rodada em andamento por ${msg}.`);
   }
 
   const parts = message.split(' ');
   if (isMod && parts[1] === 'criar') {
     const res = await Session.create(true);
     if (!res) {
-      iface.reply(channel, user, 'já existe uma rodada ativa.');
+      await iface.reply(channel, user, 'já existe uma rodada ativa.');
     } else {
-      iface.reply(channel, user, 'criando nova rodada...');
+      await iface.reply(channel, user, 'criando nova rodada...');
     }
     return;
   }
 
-  iface.reply(channel, user, 'nenhuma rodada em andamento');
+  await iface.reply(channel, user, 'nenhuma rodada em andamento.');
 };
