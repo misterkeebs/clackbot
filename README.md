@@ -32,3 +32,7 @@ Assinantes do Twitch terão um multiplicador de 2x quando uma ação ocorrer. Po
 ## Leaderboard
 
 Será um widget que será exibido durante as lives.
+
+## Misc
+
+URL para obter tokens: https://id.twitch.tv/oauth2/authorize?client_id=&redirect_uri=http://localhost=&response_type=token&scope=channel:moderate+chat:edit+chat:read
