@@ -1,6 +1,7 @@
 const _ = require('lodash');
 
 const Raffle = require('../models/Raffle');
+const Message = require('../models/Message');
 const { send, isModOnTwitch } = require('../Utils');
 
 const AlreadyRaffledError = require('../models/AlreadyRaffledError');
@@ -18,7 +19,11 @@ module.exports = async (iface, { channel, user, message, userData }) => {
   const hasClacks = !isNaN(tickets);
   if (parts.length === 0 || hasClacks || !isMod) {
     if (!raffle) {
-      return iface.reply(channel, user, `nenhum sorteio ativo no momento.`);
+      const [ nextRaffle ] = await Message.query().where('key', 'sorteio');
+      if (!nextRaffle) {
+        return iface.reply(channel, user, `nenhum sorteio ativo no momento.`);
+      }
+      return iface.reply(channel, user, nextRaffle.value);
     }
 
     if (hasClacks) {
