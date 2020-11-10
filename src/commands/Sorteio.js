@@ -2,6 +2,7 @@ const _ = require('lodash');
 
 const Raffle = require('../models/Raffle');
 const Message = require('../models/Message');
+const User = require('../models/User');
 const { send, isModOnTwitch } = require('../Utils');
 
 const AlreadyRaffledError = require('../models/AlreadyRaffledError');
@@ -27,6 +28,16 @@ module.exports = async (iface, { channel, user, message, userData }) => {
     }
 
     if (hasClacks) {
+      if (tickets < 0) {
+        const [ dbUser ] = await User.query().where('displayName', user);
+        await dbUser.$query().patch({ bonus: 0 });
+        return iface.reply(channel, user, 'você é muito engraçadinho, acabou de perder todas suas clacks.');
+      }
+
+      if (tickets === 0) {
+        return iface.reply(channel, user, 'você precisa dizer quantas clacks quer investir nesse sorteio com !sorteio <numero-de-clacks>.');
+      }
+
       try {
         const theUser = await raffle.addPlayer(user, tickets);
         if (!theUser) {
