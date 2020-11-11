@@ -3,14 +3,14 @@ const _ = require('lodash');
 const Raffle = require('../models/Raffle');
 const Message = require('../models/Message');
 const User = require('../models/User');
-const { send, isModOnTwitch } = require('../Utils');
+const { send, isTwitchMod } = require('../Utils');
 
 const AlreadyRaffledError = require('../models/AlreadyRaffledError');
 const NotEnoughBonusError = require('../models/NotEnoughBonusError');
 const NoUserError = require('../models/NoUserError');
 
 module.exports = async (iface, { channel, user, message, userData }) => {
-  const isMod = isModOnTwitch(userData);
+  const isMod = isTwitchMod(userData);
 
   const raffle = await Raffle.current();
   const parts = message.split(' ');
