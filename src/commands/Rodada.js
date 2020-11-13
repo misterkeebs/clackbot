@@ -1,10 +1,10 @@
 const _ = require('lodash');
 
 const Session = require('../models/Session');
-const { isModOnTwitch } = require('../Utils');
+const { isTwitchMod } = require('../Utils');
 
 module.exports = async (iface, { channel, user, message, userData }) => {
-  const isMod = isModOnTwitch(userData);
+  const isMod = isTwitchMod(userData);
 
   const session = await Session.current();
   if (session) {
