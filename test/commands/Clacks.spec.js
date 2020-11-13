@@ -17,14 +17,15 @@ describe('Clacks', () => {
   });
 
   describe('when user exists', () => {
-    describe('when user has no clacks', async () => {
-      it('sends number of clacks', async () => {
-        await User.query().insert({ displayName: 'felipe' });
+    describe('and has no clacks', async () => {
+      it('sends a friendly message', async () => {
+        await User.query().insert({ displayName: 'felipe', bonus: 0 });
         await clacks(iface, { channel: 'channel', user: 'felipe' });
         expect(iface.lastMessage).to.eql('você ainda não tem clacks, fique esperto na próxima rodada!');
       });
     });
-    describe('when user has clacks', async () => {
+
+    describe('and has clacks', async () => {
       it('sends number of clacks', async () => {
         await User.query().insert({ displayName: 'felipe', bonus: 10 });
         await clacks(iface, { channel: 'channel', user: 'felipe' });

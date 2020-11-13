@@ -18,12 +18,17 @@ function send(path, body) {
   });
 }
 
-function isModOnTwitch(twitchUserData) {
+function isTwitchMod(twitchUserData) {
   return _.get(twitchUserData, 'mod') || _.get(twitchUserData, 'badges.broadcaster') === '1';
+}
+
+function isTwitchSub(twitchUserData) {
+  return _.get(twitchUserData, 'subscriber') || !!_.get(twitchUserData, 'badges.founder');
 }
 
 module.exports = {
   randomInt,
   send,
-  isModOnTwitch,
+  isTwitchMod,
+  isTwitchSub,
 };

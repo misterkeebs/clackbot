@@ -1,4 +1,5 @@
 const moment = require('moment');
+const fs = require('fs');
 const { expect } = require('chai');
 
 const FakeInterface = require('./FakeInterface');
@@ -84,6 +85,26 @@ describe('Pegar', () => {
           user: 'user',
           message: '!pegar',
           userData: { subscriber: true },
+        });
+      });
+
+      it('sends a message with double total clacks', async () => {
+        expect(iface.lastMessage).to.eql('obrigado por ser um inscrito! Por conta disso, você pegou 20 clack(s)! Você agora tem um total de 20.');
+      });
+
+      it('adds 2x bonus to user', async () => {
+        const [ user ] = await User.query().where('displayName', 'user');
+        expect(user.bonus).to.eql(20);
+      });
+    });
+
+    describe('when user is a founder', async () => {
+      beforeEach(async () => {
+        await pegar(iface, {
+          channel: 'channel',
+          user: 'user',
+          message: '!pegar',
+          userData: JSON.parse(fs.readFileSync('./test/fixtures/founder-message.json')),
         });
       });
 

@@ -60,6 +60,33 @@ describe('Sorteio', () => {
         });
       });
 
+      describe('when user is a DEMON', async () => {
+        let user;
+        beforeEach(async () => {
+          user = await User.query().insert({ displayName: 'demonahz', bonus: 9 });
+          await sorteio(iface, { channel: 'channel', user: 'demonahz', message: '!sorteio -4' });
+        });
+
+        it('replies with an appropriate message', async () => {
+          expect(iface.lastMessage).to.eql('você é muito engraçadinho, acabou de perder todas suas clacks.');
+        });
+
+        it('remove all clacks from user', async () => {
+          expect((await user.$query()).bonus).to.eql(0);
+        });
+      });
+
+      describe('with invalid number of clacks', async () => {
+        beforeEach(async () => {
+          await User.query().insert({ displayName: 'demonahz', bonus: 9 });
+          await sorteio(iface, { channel: 'channel', user: 'demonahz', message: '!sorteio 0' });
+        });
+
+        it('replies with an appropriate message', async () => {
+          expect(iface.lastMessage).to.eql('você precisa dizer quantas clacks quer investir nesse sorteio com !sorteio <numero-de-clacks>.');
+        });
+      });
+
       describe('with no clacks at all', () => {
         beforeEach(async () => {
           await sorteio(iface, { channel: 'channel', user: 'user', message: '!sorteio 10' });

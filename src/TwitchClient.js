@@ -10,7 +10,7 @@ const options = {
   },
   identity: {
     username: 'ClackBot',
-    password: 'oauth:u7zitw49zuish6pl8g1nkndumojqcv',
+    password: `oauth:${process.env.TWITCH_TOKEN}`,
   },
   channels: [process.env.TWITCH_CHANNEL],
 };

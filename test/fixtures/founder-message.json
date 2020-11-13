@@ -1,0 +1,27 @@
+{
+  "badge-info": {
+    "founder": "1"
+  },
+  "badges": {
+    "founder": "0",
+    "premium": "1"
+  },
+  "client-nonce": "ac0be17b12d779c938ddf0ca226e71b2",
+  "color": "#9ACD32",
+  "display-name": "sample",
+  "emotes": null,
+  "flags": null,
+  "id": "f91cb153-0054-42ca-9f85-eb5a9d12ba1a",
+  "mod": false,
+  "room-id": "596576044",
+  "subscriber": false,
+  "tmi-sent-ts": "1605048926571",
+  "turbo": false,
+  "user-id": "160050936",
+  "user-type": null,
+  "emotes-raw": null,
+  "badge-info-raw": "founder/1",
+  "badges-raw": "founder/0,premium/1",
+  "username": "sample",
+  "message-type": "chat"
+}

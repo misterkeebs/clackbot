@@ -1,14 +1,16 @@
 const _ = require('lodash');
 
 const Raffle = require('../models/Raffle');
-const { send, isModOnTwitch } = require('../Utils');
+const Message = require('../models/Message');
+const User = require('../models/User');
+const { send, isTwitchMod } = require('../Utils');
 
 const AlreadyRaffledError = require('../models/AlreadyRaffledError');
 const NotEnoughBonusError = require('../models/NotEnoughBonusError');
 const NoUserError = require('../models/NoUserError');
 
 module.exports = async (iface, { channel, user, message, userData }) => {
-  const isMod = isModOnTwitch(userData);
+  const isMod = isTwitchMod(userData);
 
   const raffle = await Raffle.current();
   const parts = message.split(' ');
@@ -18,10 +20,24 @@ module.exports = async (iface, { channel, user, message, userData }) => {
   const hasClacks = !isNaN(tickets);
   if (parts.length === 0 || hasClacks || !isMod) {
     if (!raffle) {
-      return await iface.reply(channel, user, `nenhum sorteio ativo no momento.`);
+      const [ nextRaffle ] = await Message.query().where('key', 'sorteio');
+      if (!nextRaffle) {
+        return iface.reply(channel, user, `nenhum sorteio ativo no momento.`);
+      }
+      return iface.reply(channel, user, nextRaffle.value);
     }
 
     if (hasClacks) {
+      if (tickets < 0) {
+        const [ dbUser ] = await User.query().where('displayName', user);
+        await dbUser.$query().patch({ bonus: 0 });
+        return iface.reply(channel, user, 'você é muito engraçadinho, acabou de perder todas suas clacks.');
+      }
+
+      if (tickets === 0) {
+        return iface.reply(channel, user, 'você precisa dizer quantas clacks quer investir nesse sorteio com !sorteio <numero-de-clacks>.');
+      }
+
       try {
         const theUser = await raffle.addPlayer(user, tickets);
         if (!theUser) {
