@@ -14,6 +14,8 @@ module.exports = async (twitch, discord) => {
     rodada: require('./commands/Rodada'),
     sorteio: require('./commands/Sorteio'),
     eusou: require('./commands/EuSou'),
+
+    doar: require('./commands/discord/Doar'),
   });
 
   return bot.start().then(ifaces => {

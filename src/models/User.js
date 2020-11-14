@@ -1,6 +1,10 @@
 const _ = require('lodash');
 const Model = require('./Model');
 
+const DONATION_RATE = process.env.DONATION_RATE || 0.5;
+
+const NotEnoughBonusError = require('./NotEnoughBonusError');
+
 class User extends Model {
   static get tableName() {
     return 'users';
@@ -15,6 +19,7 @@ class User extends Model {
         discordId: { type: 'string' },
         displayName: { type: 'string' },
         bonus: { type: 'integer' },
+        sols: { type: 'integer' },
         lastSessionId: { type: 'integer'},
         discordWannabe: { type: 'string' },
         twitchWannabe: { type: 'string' },
@@ -30,6 +35,15 @@ class User extends Model {
   async addFromSession(session, subscriber=false) {
     const bonus = this.bonus + session.bonusAmount(subscriber);
     return this.$query().patchAndFetch({ bonus, lastSessionId: session.id });
+  }
+
+  async donate(amount, receiver) {
+    if (this.sols < amount) throw new NotEnoughBonusError();
+
+    const bonus = Math.ceil(amount * DONATION_RATE);
+    await this.$query().patch({ sols: this.sols - amount });
+    await receiver.$query().patch({ bonus: receiver.bonus + bonus });
+    return bonus;
   }
 
   static async createFromSession(displayName, session, subscriber=false) {

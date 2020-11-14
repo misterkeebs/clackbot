@@ -15,7 +15,7 @@ class DiscordInterface {
       console.log('msg', msg.content);
 
       const { author } = msg;
-      const [ rawCommand, params ] = msg.content.split(' ');
+      const [ rawCommand, _params ] = msg.content.split(' ');
       const command = rawCommand.slice(1);
       const userName = `${author.username}#${author.discriminator}`;
 
