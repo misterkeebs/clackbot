@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 class Bot {
   constructor() {
     this.handlers = {};
@@ -22,6 +24,7 @@ class Bot {
     const command = cmdPart.trim().replace(/^!/, '');
     const handler = this.handlers[command];
     if (!handler) return;
+    if (_.isArray(handler.interfaces) && !handler.interfaces.includes(iface.name)) return;
 
     await handler(iface, options);
   }
