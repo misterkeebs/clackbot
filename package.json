@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint-plugin-mocha-no-only": "^1.1.1",
     "mocha": "^8.2.0",
     "nock": "^13.0.4",
     "nodemon": "^2.0.6",

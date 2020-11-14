@@ -30,6 +30,7 @@ module.exports = {
     'prefer-destructuring': ['error', {object: true, array: true}],
     'semi': [2, 'always'],
     'eol-last': 1,
+    'mocha-no-only/mocha-no-only': ['error'],
   },
   'globals': {
     '__DEVSERVER__': true,
@@ -55,4 +56,7 @@ module.exports = {
     'loadFixture' : true,
     'tracer': true,
   },
+  'plugins': [
+    'mocha-no-only',
+  ],
 };

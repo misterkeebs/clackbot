@@ -6,7 +6,7 @@ const iface = new FakeInterface();
 const doar = require('../../../src/commands/discord/Doar');
 const User = require('../../../src/models/User');
 
-describe.only('Doar', () => {
+describe('Doar', () => {
   beforeEach(() => iface.reset());
 
   describe('when command is correct', async () => {
