@@ -16,7 +16,6 @@ class DiscordInterface {
 
     this.client.on('message', async msg => {
       const processed = await this.preProcess(client, msg);
-      console.log('processed', processed);
       if (processed) return;
       if (msg.author.bot) return;
       if (!msg.content.startsWith('!')) return;
