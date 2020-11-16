@@ -1,6 +1,11 @@
 const _ = require('lodash');
 
 const User = require('../models/User');
+const BuySell = require('../processors/BuySell');
+
+const PROCESSORS = [
+  BuySell,
+];
 
 class DiscordInterface {
   constructor(bot, client) {
@@ -9,6 +14,7 @@ class DiscordInterface {
     this.name = 'discord';
 
     this.client.on('message', async msg => {
+      if (await this.preProcess(client, msg)) return;
       if (msg.author.bot) return;
       if (!msg.content.startsWith('!')) return;
 
@@ -57,6 +63,10 @@ class DiscordInterface {
     }
 
     return channel.send(`${dbUser} ${message}`);
+  }
+
+  async preProcess(client, msg) {
+    return PROCESSORS.find(procClass => new procClass().handle(msg));
   }
 }
 
