@@ -1,10 +1,11 @@
 const _ = require('lodash');
+const Promise = require('bluebird');
 
 const User = require('../models/User');
 const BuySell = require('../processors/BuySell');
 
 const PROCESSORS = [
-  BuySell,
+  new BuySell(),
 ];
 
 class DiscordInterface {
@@ -14,7 +15,9 @@ class DiscordInterface {
     this.name = 'discord';
 
     this.client.on('message', async msg => {
-      if (await this.preProcess(client, msg)) return;
+      const processed = await this.preProcess(client, msg);
+      console.log('processed', processed);
+      if (processed) return;
       if (msg.author.bot) return;
       if (!msg.content.startsWith('!')) return;
 
@@ -66,7 +69,14 @@ class DiscordInterface {
   }
 
   async preProcess(client, msg) {
-    return PROCESSORS.find(procClass => new procClass().handle(msg));
+    let resolved = false;
+    const result = await Promise.map(PROCESSORS, async proc => {
+      if (resolved) return Promise.resolve();
+      const res = await proc.handle(msg);
+      if (res) resolved = true;
+      return res;
+    });
+    return result.find(r => !!r);
   }
 }
 
