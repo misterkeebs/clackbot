@@ -37,7 +37,7 @@ class DiscordInterface {
       if (!handler) return;
 
       if (!user) {
-        return msg.reply(`você precisa linkar a sua conta do Twitch. Prá isso, visite o chat do SrTeclados e digite \`!eusou ${userName}.\``);
+        return msg.reply(`você precisa linkar a sua conta do Twitch. Prá isso, visite o chat do SrTeclados e digite \`!eusou ${userName}\``);
       }
 
       this.bot.handleMessage(this, { channel: msg.channel.id, user: user.displayName, message: msg.content, rawMessage: msg });
