@@ -51,7 +51,9 @@ class BuySellProcessor {
       obedece ao formato aceito:
     `;
 
-    const reply = `${text.split('\n').map(s => s.trim()).join(' ')}\n\n> ${msg.content}\n\n${error}`;
+    const moreInfo = `**Mais detalhes**: https://discord.com/channels/412393574898860032/440344266322083861/718958391535468564`;
+
+    const reply = `${text.split('\n').map(s => s.trim()).join(' ')}\n\n> ${msg.content}\n\n${error}\n\n${moreInfo}`;
     await msg.author.send(reply);
     return true;
   }
