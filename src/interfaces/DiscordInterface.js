@@ -37,17 +37,11 @@ class DiscordInterface {
       if (!handler) return;
 
       if (!user) {
-        return msg.reply(`você precisa linkar a sua conta do Twitch. Prá isso, visite o chat do SrTeclados e digite \`!eusou ${userName}\``);
+        return msg.reply(`você precisa linkar a sua conta do Twitch. Prá isso, visite o chat do SrTeclados, visitando https://www.twitch.tv/popout/SrTeclados/chat, e digitando \`!eusou ${userName}\``);
       }
 
       this.bot.handleMessage(this, { channel: msg.channel.id, user: user.displayName, message: msg.content, rawMessage: msg });
     });
-
-    // this.client.on('chat', async (channel, userData, message, _self) => {
-    //   console.log('userData', userData);
-    //   const user = userData['display-name'];
-    //   await this.bot.handleMessage(this, { channel, user, message, userData });
-    // });
   }
 
   async reply(channelId, dbUser, message) {
