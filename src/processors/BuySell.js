@@ -23,6 +23,7 @@ class BuySellProcessor {
       }
     }
 
+    return true;
   }
 
   process(content, fallback=this.fullError()) {
