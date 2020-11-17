@@ -16,6 +16,8 @@ module.exports = async (twitch, discord) => {
     eusou: require('./commands/EuSou'),
 
     doar: require('./commands/discord/Doar'),
+    gb: require('./commands/discord/GroupBuys'),
+    gbs: require('./commands/discord/GroupBuys'),
   });
 
   return bot.start().then(ifaces => {

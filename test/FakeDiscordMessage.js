@@ -1,28 +1,41 @@
 class Author {
-  constructor(message) {
+  constructor(message, { username='user', discriminator='0001' }={}) {
     this.message = message;
+    this.username = username;
+    this.discriminator = discriminator;
   }
 
   async send(content) {
     this.message.addDirectMessage(content);
     return Promise.resolve();
   }
+
+  toString() {
+    return `@${this.username}#${this.discriminator}`;
+  }
 }
 
 class Channel {
   constructor(message, name) {
+    this.message = message;
     this.name = name;
+    this.channelMessages = this.message.channelMessages;
+  }
+
+  async send(content) {
+    this.channelMessages.push(content);
+    return Promise.resolve();
   }
 }
 
-class FakeMessage {
-  constructor(content, { channelName }) {
+class FakeDiscordMessage {
+  constructor(content, { channelName='channel' }={}) {
+    this.channelMessages = [];
+    this.directMessages = [];
+
     this.content = content;
     this.author = new Author(this);
-    if (channelName) {
-      this.channel = new Channel(this, channelName);
-    }
-    this.directMessages = [];
+    this.channel = new Channel(this, channelName);
   }
 
   addDirectMessage(content) {
@@ -32,9 +45,13 @@ class FakeMessage {
   get lastDirectMessage() {
     return this.directMessages[this.directMessages.length-1];
   }
+
+  get lastChannelMessage() {
+    return this.channelMessages[this.channelMessages.length-1];
+  }
 }
 
-module.exports = FakeMessage;
+module.exports = FakeDiscordMessage;
 
 {/* <ref *2> Message {
   channel: <ref *1> TextChannel {

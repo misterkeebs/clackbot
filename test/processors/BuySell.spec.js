@@ -1,6 +1,6 @@
 const { expect } = require('chai');
 
-const FakeMessage = require('./FakeMessage');
+const FakeMessage = require('../FakeDiscordMessage');
 
 const BuySell = require('../../src/processors/BuySell');
 
