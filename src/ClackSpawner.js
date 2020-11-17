@@ -24,12 +24,12 @@ class ClackSpawner {
   }
 
   async check() {
-    const _channel = await twitch.getCurrentStream(channelName);
+    const channel = await twitch.getCurrentStream(channelName);
 
-    // if (!channel) {
-    //   console.log(channelName, 'is not streaming, skipping.');
-    //   return;
-    // }
+    if (!channel) {
+      console.log(channelName, 'is not streaming, skipping.');
+      return;
+    }
 
     // finds current raffle
     const raffle = await Raffle.current();
