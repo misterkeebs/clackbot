@@ -40,7 +40,13 @@ class DiscordInterface {
         return msg.reply(`você precisa linkar a sua conta do Twitch. Prá isso, visite o chat do SrTeclados, visitando https://www.twitch.tv/popout/SrTeclados/chat, e digitando \`!eusou ${userName}\``);
       }
 
-      this.bot.handleMessage(this, { channel: msg.channel.id, user: user.displayName, message: msg.content, rawMessage: msg });
+      try {
+        await this.bot.handleMessage(this, { channel: msg.channel.id, user: user.displayName, message: msg.content, rawMessage: msg });
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('Error on', command, err);
+        this.reply(msg.channel.id, user.displayName, `houve um erro de processamento no seu comando: ${err}`);
+      }
     });
   }
 

@@ -74,11 +74,15 @@ class GroupByCmd extends DiscordCmd {
         endsAt.locale('pt-BR');
         fields.push({ name: 'Termina', value: moment(endsAt).format('DD MMM [às] HH[h]mm'), inline: true });
       }
-      const embed = new Discord.MessageEmbed()
+      let embed = new Discord.MessageEmbed()
         .setColor('#0099ff')
         .setTitle(gb.name)
         .setURL(gb.url)
         .addFields(fields);
+
+      if (gb.image) {
+        embed = embed.setThumbnail(gb.image);
+      }
 
       await this.channel.send(embed);
     });
@@ -92,9 +96,16 @@ class GroupByCmd extends DiscordCmd {
     const { field, name, newValue } = groups;
     const [ gb ] = await GroupBuy.query().where('name', name);
 
+    if (!gb) {
+      return this.reply(`o group buy **${name}** não foi encontrado.`);
+    }
+
     if (field === 'nome') {
       await gb.$query().patch({ name: newValue });
       return this.reply(`nome alterado para ${newValue}.`);
+    } else if (field === 'imagem') {
+      await gb.$query().patch({ image: newValue });
+      return this.reply(`imagem alterada para ${newValue}.`);
     } else if (field === 'inicio' || field === 'início' || field === 'fim') {
       const { groups } = newValue.match(GB_TIME_RE);
       const { startDate, startTime } = groups;
