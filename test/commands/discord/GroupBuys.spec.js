@@ -6,10 +6,10 @@ const gb = require('../../../src/commands/discord/GroupBuys');
 const GroupBuy = require('../../../src/models/GroupBuy');
 const FakeDiscordMessage = require('../../FakeDiscordMessage');
 
-describe.only('GroupBuys', () => {
+describe('GroupBuys', () => {
   const iface = {};
 
-  describe.only('with no params', async () => {
+  describe('with no params', async () => {
     let rawMessage;
 
     beforeEach(async () => {
