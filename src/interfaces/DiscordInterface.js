@@ -3,8 +3,10 @@ const Promise = require('bluebird');
 
 const User = require('../models/User');
 const BuySell = require('../processors/BuySell');
+const ImgOnly = require('../processors/ImageOnly');
 
 const PROCESSORS = [
+  new ImgOnly(),
   new BuySell(),
 ];
 
