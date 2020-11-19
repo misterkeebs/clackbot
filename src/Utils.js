@@ -26,9 +26,19 @@ function isTwitchSub(twitchUserData) {
   return _.get(twitchUserData, 'subscriber') || !!_.get(twitchUserData, 'badges.founder');
 }
 
+function hasDiscordRole(msg, role) {
+  return msg.member.roles.cache.find(r => r.name === role);
+}
+
+function hasAnyDiscordRole(msg, roles) {
+  return msg.member.roles.cache.find(r => roles.includes(r.name));
+}
+
 module.exports = {
   randomInt,
   send,
   isTwitchMod,
   isTwitchSub,
+  hasDiscordRole,
+  hasAnyDiscordRole,
 };

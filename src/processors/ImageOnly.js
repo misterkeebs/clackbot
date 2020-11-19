@@ -1,10 +1,15 @@
+const _ = require('lodash');
+const { hasAnyDiscordRole } = require('../Utils');
+
 class ImageOnly {
   constructor(channels) {
     this.channels = (channels || process.env.IMAGE_ONLY_CHANNELS).split(',');
+    this.allowedRoles = _.get(process.env, 'IMAGE_ONLY_ALLOW_ROLES', '').split(',');
   }
 
   async handle(msg) {
     if (!msg.channel || !this.channels.includes(msg.channel.name)) return false;
+    if (hasAnyDiscordRole(msg, this.allowedRoles)) return false;
 
     const { attachments } = msg;
 
