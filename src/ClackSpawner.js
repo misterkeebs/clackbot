@@ -3,7 +3,6 @@ const moment = require('moment');
 const Promise = require('bluebird');
 
 const TwitchApi = require('./TwitchApi');
-const discord = require('./DiscordClient');
 const { send } = require('./Utils');
 
 const annChannel = process.env.DISCORD_ANNOUNCE_CHANNEL || 'announcements';
@@ -16,9 +15,9 @@ const Raffle = require('./models/Raffle');
 const GroupBuy = require('./models/GroupBuy');
 
 class ClackSpawner {
-  constructor(client) {
+  constructor(client, discord) {
     this.client = client;
-    discord.login(process.env.DISCORD_TOKEN);
+    this.discord = discord;
   }
 
   notify(animation, title, text) {
@@ -99,7 +98,7 @@ class ClackSpawner {
     if (!alertRole) return;
 
     const gbs = await GroupBuy.pending();
-    const channel = discord.channels.cache.find(c => c.name === annChannel);
+    const channel = this.discord.channels.cache.find(c => c.name === annChannel);
 
     await Promise.map(gbs, async gb => {
       const time = moment(gb.startsAt);
