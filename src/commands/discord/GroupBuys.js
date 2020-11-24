@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const Promise = require('bluebird');
 const moment = require('moment');
+const dedent = require('dedent');
 
 const GroupBuy = require('../../models/GroupBuy');
 
@@ -124,7 +125,12 @@ class GroupByCmd extends DiscordCmd {
   async add() {
     const { groups } = this.message.content.match(GB_ADD_RE) || {};
     if (!groups) {
-      return this.reply('favor incluir ao menos a data de início.');
+      return this.reply(dedent`favor incluir ao menos a data de início. Use uma das formas abaixo:
+
+      !gb add Nome GB 12/10 https://gb1.com
+      !gb add Nome GB 12/10 às 8:00 https://gb2.com
+      !gb add Nome GB de 12/10 às 8:00 até 14/11 às 21:45 https://gb3.com
+      `);
     }
     console.log('groups', groups);
     const { name, startDate, startTime, endDate, endTime, url } = groups;

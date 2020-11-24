@@ -220,7 +220,7 @@ describe('GroupBuys', () => {
       });
 
       it('replies with an error message', async () => {
-        expect(rawMessage.lastChannelMessage).to.eql('@user#0001 favor incluir ao menos a data de início.');
+        expect(rawMessage.lastChannelMessage).to.include('@user#0001 favor incluir ao menos a data de início.');
       });
 
       it(`doesn't create the group buy`, async () => {

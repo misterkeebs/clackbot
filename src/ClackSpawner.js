@@ -1,18 +1,24 @@
 /* eslint-disable no-console */
 const moment = require('moment');
+const Promise = require('bluebird');
 
 const TwitchApi = require('./TwitchApi');
+const discord = require('./DiscordClient');
 const { send } = require('./Utils');
 
+const annChannel = process.env.DISCORD_ANNOUNCE_CHANNEL || 'announcements';
+const alertRole = process.env.DISCORD_GB_ALERT_ROLE;
 const channelName = process.env.TWITCH_CHANNEL;
 const twitch = new TwitchApi();
 
 const Session = require('./models/Session');
 const Raffle = require('./models/Raffle');
+const GroupBuy = require('./models/GroupBuy');
 
 class ClackSpawner {
   constructor(client) {
     this.client = client;
+    discord.login(process.env.DISCORD_TOKEN);
   }
 
   notify(animation, title, text) {
@@ -27,7 +33,8 @@ class ClackSpawner {
     const channel = await twitch.getCurrentStream(channelName);
 
     if (!channel) {
-      console.log(channelName, 'is not streaming, skipping.');
+      console.log(channelName, 'is not streaming, checking for other things to notify.');
+      await this.checkDiscord();
       return;
     }
 
@@ -86,6 +93,27 @@ class ClackSpawner {
       `Envie <code>!pegar</code> agora para acumular ${session.bonus} clacks!`);
     await this.timer(`PEGAR ${session.bonus} CLACKS`, session.endsAt.toISOString());
     this.client.action(channelName, `Atenção, vocês têm ${session.duration} minuto(s) para pegar ${session.bonus} clack(s) com o comando !pegar`);
+  }
+
+  async checkDiscord() {
+    const gbs = await GroupBuy.pending();
+    const channel = discord.channels.cache.find(c => c.name === annChannel);
+
+    await Promise.map(gbs, async gb => {
+      const time = moment(gb.startsAt);
+      time.locale('pt-br');
+
+      if (time.isBefore(moment())) {
+        channel.send(`<@&${alertRole}> **${gb.name}** começou - ${gb.url}`);
+        return gb.markNotified();
+      }
+
+      if (!gb.warnedAt) {
+        channel.send(`<@&${alertRole}> **${gb.name}** começa ${time.fromNow()} - ${gb.url}`);
+        return gb.markWarned();
+      }
+      return Promise.resolve();
+    });
   }
 }
 
