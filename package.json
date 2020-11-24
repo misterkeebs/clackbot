@@ -29,7 +29,8 @@
     "pg": "^8.4.2",
     "socket.io": "^2.3.0",
     "tmi.js": "^1.5.0",
-    "twitch-js": "^2.0.0-beta.33"
+    "twitch-js": "^2.0.0-beta.33",
+    "yt-search": "^2.5.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",

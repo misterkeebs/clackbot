@@ -18,6 +18,7 @@ module.exports = async (twitch, discord) => {
     doar: require('./commands/discord/Doar'),
     gb: require('./commands/discord/GroupBuys'),
     gbs: require('./commands/discord/GroupBuys'),
+    vid: require('./commands/discord/Vid'),
   });
 
   return bot.start().then(ifaces => {
