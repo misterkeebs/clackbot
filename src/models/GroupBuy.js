@@ -43,7 +43,7 @@ class GroupBuy extends Model {
 
   static ending() {
     return this.query()
-      .where(raw('DATE(ends_at)'), raw(`DATE('${moment().toISOString()}')`))
+      .where(raw('DATE(ends_at)'), raw(`DATE('${moment().format('YYYY-MM-DD')}')`))
       .whereNull('endNotifiedAt');
   }
 
