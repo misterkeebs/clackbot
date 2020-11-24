@@ -96,6 +96,8 @@ class ClackSpawner {
   }
 
   async checkDiscord() {
+    if (!alertRole) return;
+
     const gbs = await GroupBuy.pending();
     const channel = discord.channels.cache.find(c => c.name === annChannel);
 
