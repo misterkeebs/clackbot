@@ -9,6 +9,35 @@ describe('GroupBuy', async () => {
   afterEach(() => tk.reset());
 
   describe('.pending', async () => {
+    let gb1, gb2, gb3, gb4;
+    let ending;
+
+    beforeEach(async () => {
+      gb1 = await GroupBuy.query().insertAndFetch({ name: 'GMK One', endsAt: moment().endOf('day') });
+      gb2 = await GroupBuy.query().insertAndFetch({ name: 'GMK Two', endsAt: moment().add(1, 'day') });
+      gb3 = await GroupBuy.query().insertAndFetch({ name: 'GMK Three', endsAt: moment().add(-1, 'day') });
+      gb4 = await GroupBuy.query().insertAndFetch({ name: 'GMK Three', endsAt: moment(), endNotifiedAt: moment() });
+      ending = (await GroupBuy.ending()).map(g => g.id);
+    });
+
+    it('includes groupbuys that finish today', async () => {
+      expect(ending).to.include(gb1.id);
+    });
+
+    it('excludes groupbuys that finish tomorrow', async () => {
+      expect(ending).to.not.include(gb2.id);
+    });
+
+    it('excludes groupbuys that already finished', async () => {
+      expect(ending).to.not.include(gb3.id);
+    });
+
+    it('excludes groupbuys that were already notified', async () => {
+      expect(ending).to.not.include(gb4.id);
+    });
+  });
+
+  describe('.pending', async () => {
     let gb1, gb2, gb3, gb4, gb5;
     let pending;
 

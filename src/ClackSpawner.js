@@ -119,6 +119,23 @@ class ClackSpawner {
       }
       return Promise.resolve();
     });
+
+    const endingGbs = await GroupBuy.ending();
+    await Promise.map(endingGbs, async gb => {
+      const time = moment(gb.endsAt);
+      time.locale('pt-br');
+
+      if (time.isBefore(moment())) {
+        channel.send(`<@&${alertRole}> **${gb.name}** terminou`);
+        return gb.markEndNotified();
+      }
+
+      if (!gb.endWarnedAt) {
+        channel.send(`<@&${alertRole}> **${gb.name}** termina ${time.fromNow()} - ${gb.url}`);
+        return gb.markEndWarned();
+      }
+      return Promise.resolve();
+    });
   }
 }
 

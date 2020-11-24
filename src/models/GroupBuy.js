@@ -1,4 +1,6 @@
 const moment = require('moment');
+const { raw } = require('objection');
+
 const Model = require('./Model');
 
 class GroupBuy extends Model {
@@ -22,6 +24,8 @@ class GroupBuy extends Model {
         updatedBy: { type: 'string' },
         warnedAt: { type: 'datetime' },
         notifiedAt: { type: 'datetime' },
+        endWarnedAt: { type: 'datetime' },
+        endNotifiedAt: { type: 'datetime' },
       },
     };
   }
@@ -37,12 +41,26 @@ class GroupBuy extends Model {
       .whereNull('notifiedAt');
   }
 
+  static ending() {
+    return this.query()
+      .where(raw('DATE(ends_at)'), raw(`DATE('${moment().toISOString()}')`))
+      .whereNull('endNotifiedAt');
+  }
+
   markNotified() {
     return this.$query().patchAndFetch({ notifiedAt: new Date() });
   }
 
   markWarned() {
     return this.$query().patchAndFetch({ warnedAt: new Date() });
+  }
+
+  markEndNotified() {
+    return this.$query().patchAndFetch({ endNotifiedAt: new Date() });
+  }
+
+  markEndWarned() {
+    return this.$query().patchAndFetch({ endWarnedAt: new Date() });
   }
 }
 
