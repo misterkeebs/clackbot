@@ -37,6 +37,10 @@ class ClackSpawner {
       return;
     }
 
+    // checks Discord in parallel
+    console.log('Checking Discord events...');
+    this.checkDiscord();
+
     // finds current raffle
     const raffle = await Raffle.current();
     if (raffle) {
