@@ -6,6 +6,9 @@ const server = express();
 const morgan = require('morgan');
 const cors = require('cors');
 
+const Guesses = require('./commands/Guesses');
+const guesses = Guesses.getInstance();
+
 server.use(cors());
 server.use(morgan('dev'));
 server.use(express.json());
@@ -23,6 +26,13 @@ server.post('/timer', (req, res) => {
 
 server.post('/startRaffle', (req, res) => {
   server.io.emit('startRaffle', req.body);
+  res.json({ ok: true });
+});
+
+server.get('/finishWpm', async (req, res) => {
+  const { wpm } = req.query;
+  const iface = { send: (channel, msg) => server.twitchClient.action(channel, msg) };
+  await guesses.pickWinner(iface, process.env.TWITCH_CHANNEL, wpm);
   res.json({ ok: true });
 });
 

@@ -46,6 +46,14 @@ class User extends Model {
     return bonus;
   }
 
+  static async addBonus(displayName, bonus) {
+    let [ user ] = await User.query().where('displayName', displayName);
+    if (!user) {
+      user = await User.query().insertAndFetch({ displayName, bonus: 0 });
+    }
+    return await user.$query().patchAndFetch({ bonus: user.bonus + bonus });
+  }
+
   static async createFromSession(displayName, session, subscriber=false) {
     const bonus = session.bonusAmount(subscriber);
     return User.query().insertAndFetch({ displayName, bonus, lastSessionId: session.id });
