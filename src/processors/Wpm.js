@@ -10,6 +10,7 @@ class Wpm {
 
     const wpm = parseInt(msg.trim(), 10);
     guesses.add(user, wpm);
+    iface.reply(process.env.TWITCH_CHANNEL, user, `seu WPM de ${wpm} foi registrado!`);
     return true;
   }
 }
