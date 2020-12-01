@@ -130,7 +130,7 @@ class ClackSpawner {
         return gb.markEndNotified();
       }
 
-      if (!gb.endWarnedAt) {
+      if (gb.hasStarted() && !gb.endWarnedAt) {
         channel.send(`<@&${alertRole}> **${gb.name}** termina ${time.fromNow()} - ${gb.url}`);
         return gb.markEndWarned();
       }

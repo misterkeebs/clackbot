@@ -83,4 +83,26 @@ describe('GroupBuy', async () => {
       expect(gb.notifiedAt).to.eql(new Date());
     });
   });
+
+  describe('#hasStarted', async () => {
+    let gb1, gb2, gb3;
+
+    beforeEach(async () => {
+      gb1 = await GroupBuy.query().insertAndFetch({ name: 'Started', startsAt: moment().add(-1, 'hour') });
+      gb2 = await GroupBuy.query().insertAndFetch({ name: 'Not started', startsAt: moment().add(1, 'hour') });
+      gb3 = await GroupBuy.query().insertAndFetch({ name: 'No time to start' });
+    });
+
+    it('is true when start time is in the past', async () => {
+      expect(gb1.hasStarted()).to.be.true;
+    });
+
+    it('is false when start time is in the future', async () => {
+      expect(gb2.hasStarted()).to.be.false;
+    });
+
+    it('is false when start time is null', async () => {
+      expect(gb3.hasStarted()).to.be.false;
+    });
+  });
 });

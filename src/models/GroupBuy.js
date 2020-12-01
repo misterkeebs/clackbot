@@ -47,6 +47,10 @@ class GroupBuy extends Model {
       .whereNull('endNotifiedAt');
   }
 
+  hasStarted() {
+    return moment(this.startsAt).isBefore(moment());
+  }
+
   markNotified() {
     return this.$query().patchAndFetch({ notifiedAt: new Date() });
   }
