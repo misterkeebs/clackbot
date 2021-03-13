@@ -4,6 +4,7 @@ module.exports = {
   development: {
     client: 'pg',
     connection: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
   },
   test: {
     client: 'pg',
@@ -17,9 +18,11 @@ module.exports = {
   staging: {
     client: 'pg',
     connection: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
   },
   production: {
     client: 'pg',
     connection: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
   },
 };
