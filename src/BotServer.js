@@ -6,7 +6,7 @@ const TwitchInterface = require('./interfaces/TwitchInterface');
 module.exports = async (twitch, discord) => {
   const bot = new Bot();
 
-  bot.registerInterface(new TwitchInterface(bot, twitch));
+  // bot.registerInterface(new TwitchInterface(bot, twitch));
   bot.registerInterface(new DiscordInterface(bot, discord));
   bot.registerCommands({
     pegar: require('./commands/Pegar'),
@@ -20,6 +20,7 @@ module.exports = async (twitch, discord) => {
     gb: require('./commands/discord/GroupBuys'),
     gbs: require('./commands/discord/GroupBuys'),
     vid: require('./commands/discord/Vid'),
+    resgatar: require('./commands/discord/Resgatar'),
   });
 
   return bot.start().then(ifaces => {

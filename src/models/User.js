@@ -28,6 +28,21 @@ class User extends Model {
     };
   }
 
+  static get relationMappings() {
+    const RedeemableCode = require('./RedeemableCode');
+
+    return {
+      redeemedCodes: {
+        relation: Model.HasManyRelation,
+        modelClass: RedeemableCode,
+        join: {
+          from: 'user.id',
+          to: 'redeemable_code.redeemed_by',
+        },
+      },
+    };
+  }
+
   async useBonus(amount) {
     return this.$query().patchAndFetch({ bonus: this.bonus - amount });
   }
@@ -44,6 +59,16 @@ class User extends Model {
     await this.$query().patch({ sols: this.sols - amount });
     await receiver.$query().patch({ bonus: receiver.bonus + bonus });
     return bonus;
+  }
+
+  async redeem(amount) {
+    if (this.bonus < amount) throw new NotEnoughBonusError();
+
+    const RedeemableCode = require('./RedeemableCode');
+    const codeObj = await RedeemableCode.redeem(this);
+
+    const user = await this.$query().patchAndFetch({ bonus: this.bonus - amount });
+    return { bonus: user.bonus, code: codeObj.code };
   }
 
   static async addBonus(displayName, bonus) {

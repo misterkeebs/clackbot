@@ -3,7 +3,7 @@ const { hasAnyDiscordRole } = require('../Utils');
 
 class ImageOnly {
   constructor(channels) {
-    this.channels = (channels || process.env.IMAGE_ONLY_CHANNELS).split(',');
+    this.channels = (channels || _.get(process.env, 'IMAGE_ONLY_CHANNELS', '')).split(',');
     this.allowedRoles = _.get(process.env, 'IMAGE_ONLY_ALLOW_ROLES', '').split(',');
   }
 

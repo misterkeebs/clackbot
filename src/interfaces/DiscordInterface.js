@@ -30,6 +30,7 @@ class DiscordInterface {
       const userName = `${author.username}#${author.discriminator}`;
 
       const discordId = msg.author.id;
+      console.log(' ***', discordId);
       const [ user ] = await User.query()
         .where('discordId', discordId)
         .orWhere('discordWannabe', userName);
