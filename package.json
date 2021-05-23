@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node .",
     "test": "NODE_ENV=test DB_ENV=test mocha --file ./test/Init.js './test/**/*.spec.js'",
-    "test:watch": "NODE_ENV=test DB_ENV=test mocha -w --file ./test/Init.js './test/**/*.spec.js'"
+    "test:watch": "NODE_ENV=test DB_ENV=test mocha -w --file ./test/Init.js './test/**/*.spec.js'",
+    "gencodes": "node gencodes.js 50",
+    "gencodes:reset": "node gencodes.js --reset"
   },
   "dependencies": {
     "bluebird": "^3.7.2",
@@ -27,6 +29,7 @@
     "node-fetch": "^2.6.1",
     "objection": "^2.2.3",
     "pg": "^8.4.2",
+    "randomstring": "^1.2.1",
     "socket.io": "^2.3.0",
     "tmi.js": "^1.5.0",
     "twitch-js": "^2.0.0-beta.33",
