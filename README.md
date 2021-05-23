@@ -19,13 +19,13 @@ Todo usuário poderá controlar seus pontos através de um comando específico `
 
 Certos eventos gerarão clacks para os usuários, da seguinte forma:
 
-| Meio     | Ação         | Clacks |
-|----------|--------------|--------|
-| Twitch   | Follow       | 10     |
-| Twitch   | Subscribe    | 100    |
-| Twitch   | `!pegar` com espontânea em intervalos randômicos (15-30min)  | 30-200 |
-| Twitch   | `!pegar` ao final do stream | 20 |
-| Discord  | `+clack @usuario` como agradecimento por uma dica | +2 para quem recebe, -1 para quem doa |
+| Meio    | Ação                                                        | Clacks                                |
+| ------- | ----------------------------------------------------------- | ------------------------------------- |
+| Twitch  | Follow                                                      | 10                                    |
+| Twitch  | Subscribe                                                   | 100                                   |
+| Twitch  | `!pegar` com espontânea em intervalos randômicos (15-30min) | 30-200                                |
+| Twitch  | `!pegar` ao final do stream                                 | 20                                    |
+| Discord | `+clack @usuario` como agradecimento por uma dica           | +2 para quem recebe, -1 para quem doa |
 
 Assinantes do Twitch terão um multiplicador de 2x quando uma ação ocorrer. Por exemplo, ao `!pegar` um randômico de 40 clacks, o usuário será creditado com 80.
 
@@ -35,4 +35,4 @@ Será um widget que será exibido durante as lives.
 
 ## Misc
 
-URL para obter tokens: https://id.twitch.tv/oauth2/authorize?client_id=&redirect_uri=http://localhost=&response_type=token&scope=channel:moderate+chat:edit+chat:read
+URL para obter tokens: https://id.twitch.tv/oauth2/authorize?client_id=&redirect_uri=http://localhost&response_type=token&scope=channel:moderate+chat:edit+chat:read
