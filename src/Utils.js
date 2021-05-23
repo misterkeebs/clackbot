@@ -5,6 +5,16 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+function weighedRandom(values) {
+  const rnd = randomInt(0, 100);
+  if (rnd <= 50) return values[0];
+  if (rnd <= 75) return values[1];
+  if (rnd <= 88) return values[2];
+  if (rnd <= 94) return values[3];
+  if (rnd <= 98) return values[4];
+  return values[5];
+}
+
 function send(path, body) {
   const url = `${process.env.API_SERVER}/${path}`;
   // eslint-disable-next-line no-console
@@ -36,6 +46,7 @@ function hasAnyDiscordRole(msg, roles) {
 
 module.exports = {
   randomInt,
+  weighedRandom,
   send,
   isTwitchMod,
   isTwitchSub,

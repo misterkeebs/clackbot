@@ -7,7 +7,6 @@ const User = require('./User');
 const NoCodesLeftError = require('./NoCodesLeftError');
 const AlreadyRedeemedError = require('./AlreadyRedeemedError');
 
-
 class RedeemableCode extends Model {
   static get tableName() {
     return 'redeemable_codes';

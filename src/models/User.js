@@ -1,9 +1,13 @@
 const _ = require('lodash');
+const moment = require('moment');
+
 const Model = require('./Model');
+const { weighedRandom } = require('../Utils');
 
 const DONATION_RATE = process.env.DONATION_RATE || 0.5;
 
 const NotEnoughBonusError = require('./NotEnoughBonusError');
+const AlreadyRedeemedError = require('./AlreadyRedeemedError');
 
 class User extends Model {
   static get tableName() {
@@ -20,7 +24,7 @@ class User extends Model {
         displayName: { type: 'string' },
         bonus: { type: 'integer' },
         sols: { type: 'integer' },
-        lastSessionId: { type: 'integer'},
+        lastSessionId: { type: 'integer' },
         discordWannabe: { type: 'string' },
         twitchWannabe: { type: 'string' },
         linkedAt: { type: 'datetime' },
@@ -47,7 +51,7 @@ class User extends Model {
     return this.$query().patchAndFetch({ bonus: this.bonus - amount });
   }
 
-  async addFromSession(session, subscriber=false) {
+  async addFromSession(session, subscriber = false) {
     const bonus = this.bonus + session.bonusAmount(subscriber);
     return this.$query().patchAndFetch({ bonus, lastSessionId: session.id });
   }
@@ -72,24 +76,45 @@ class User extends Model {
   }
 
   static async addBonus(displayName, bonus) {
-    let [ user ] = await User.query().where('displayName', displayName);
+    let [user] = await User.query().where('displayName', displayName);
     if (!user) {
       user = await User.query().insertAndFetch({ displayName, bonus: 0 });
     }
     return await user.$query().patchAndFetch({ bonus: user.bonus + bonus });
   }
 
-  static async createFromSession(displayName, session, subscriber=false) {
+  static async createFromSession(displayName, session, subscriber = false) {
     const bonus = session.bonusAmount(subscriber);
     return User.query().insertAndFetch({ displayName, bonus, lastSessionId: session.id });
   }
 
   static async updateOrCreate(displayName, attrs) {
-    const [ user ] = await User.query().where('displayName', displayName);
+    const [user] = await User.query().where('displayName', displayName);
     if (_.isEmpty(attrs)) return user;
     if (user) return user.$query().patchAndFetch(attrs);
 
     return User.query().insertAndFetch({ displayName, ...attrs });
+  }
+
+  async daily() {
+    if (this.lastDailyAt) {
+      const nextClaim = moment(this.lastDailyAt).add(24, 'hours');
+
+      if (nextClaim.isAfter(moment())) {
+        throw new AlreadyRedeemedError(nextClaim);
+      }
+    }
+
+    const sols = weighedRandom([1, 2, 3, 4, 5]);
+    const bonus = weighedRandom([0, 1, 2, 3, 4]);
+
+    await this.$query().patch({
+      bonus: _.get(this, 'bonus', 0) + bonus,
+      sols: _.get(this, 'sols', 0) + sols,
+      lastDailyAt: 'now',
+    });
+
+    return { sols, bonus };
   }
 }
 

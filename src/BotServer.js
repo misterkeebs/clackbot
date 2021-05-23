@@ -21,6 +21,7 @@ module.exports = async (twitch, discord) => {
     gbs: require('./commands/discord/GroupBuys'),
     vid: require('./commands/discord/Vid'),
     resgatar: require('./commands/discord/Resgatar'),
+    daily: require('./commands/discord/Daily'),
   });
 
   return bot.start().then(ifaces => {
