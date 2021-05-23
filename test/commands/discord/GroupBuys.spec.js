@@ -30,7 +30,7 @@ describe('GroupBuys', () => {
     });
 
     it('shows GB 2', async () => {
-      const [ embed ] = rawMessage.channelMessages;
+      const [embed] = rawMessage.channelMessages;
       expect(embed.title).to.eql('GB 2');
       expect(embed.fields[0].name).to.eql('Começa');
       expect(embed.fields[0].value).to.eql('15 nov às 22h20');
@@ -66,7 +66,7 @@ describe('GroupBuys', () => {
       });
 
       it('sets the new name', async () => {
-        const [ newGB ] = await GroupBuy.query();
+        const [newGB] = await GroupBuy.query();
         expect(newGB.name).to.eql('LZ Lagarto');
       });
     });
@@ -80,12 +80,12 @@ describe('GroupBuys', () => {
       });
 
       it('replies with a confirmation message', async () => {
-        expect(rawMessage.lastChannelMessage).to.eql('@user#0001 início alterado para qua, 15 jul 2020 à0 14:32.');
+        expect(rawMessage.lastChannelMessage).to.eql('@user#0001 início alterado para qui, 15 jul 2021 à0 14:32.');
       });
 
       it('sets the new start date', async () => {
-        const [ newGB ] = await GroupBuy.query();
-        expect(newGB.startsAt.toISOString()).to.eql('2020-07-15T17:32:00.000Z');
+        const [newGB] = await GroupBuy.query();
+        expect(newGB.startsAt.toISOString()).to.eql('2021-07-15T17:32:00.000Z');
       });
     });
 
@@ -98,12 +98,12 @@ describe('GroupBuys', () => {
       });
 
       it('replies with a confirmation message', async () => {
-        expect(rawMessage.lastChannelMessage).to.eql('@user#0001 fim alterado para qua, 15 jul 2020 à0 14:32.');
+        expect(rawMessage.lastChannelMessage).to.eql('@user#0001 fim alterado para qui, 15 jul 2021 à0 14:32.');
       });
 
       it('sets the new end date', async () => {
-        const [ newGB ] = await GroupBuy.query();
-        expect(newGB.endsAt.toISOString()).to.eql('2020-07-15T17:32:00.000Z');
+        const [newGB] = await GroupBuy.query();
+        expect(newGB.endsAt.toISOString()).to.eql('2021-07-15T17:32:00.000Z');
       });
     });
 
@@ -144,7 +144,7 @@ describe('GroupBuys', () => {
         rawMessage = new FakeDiscordMessage('!gb add GMK Metaverse de 12/01 as 23:00 até 12/02 às 14:00 http://metaverse.com');
         await gb(iface, { rawMessage });
         groupBuys = await GroupBuy.query();
-        [ groupBuy ] = groupBuys;
+        [groupBuy] = groupBuys;
       });
 
       it('replies with a confirmation message', async () => {
@@ -160,11 +160,11 @@ describe('GroupBuys', () => {
       });
 
       it('sets the right start date', async () => {
-        expect(groupBuy.startsAt.toISOString()).to.eql('2020-01-13T02:00:00.000Z');
+        expect(groupBuy.startsAt.toISOString()).to.eql('2021-01-13T02:00:00.000Z');
       });
 
       it('sets the right end date', async () => {
-        expect(groupBuy.endsAt.toISOString()).to.eql('2020-02-12T17:00:00.000Z');
+        expect(groupBuy.endsAt.toISOString()).to.eql('2021-02-12T17:00:00.000Z');
       });
 
       it('sets the URL', async () => {
@@ -181,7 +181,7 @@ describe('GroupBuys', () => {
         rawMessage = new FakeDiscordMessage('!gb add GMK Metaverse de 12/01 as 23:00');
         await gb(iface, { rawMessage });
         groupBuys = await GroupBuy.query();
-        [ groupBuy ] = groupBuys;
+        [groupBuy] = groupBuys;
       });
 
       it('replies with a confirmation message', async () => {
@@ -197,7 +197,7 @@ describe('GroupBuys', () => {
       });
 
       it('sets the right start date', async () => {
-        expect(groupBuy.startsAt.toISOString()).to.eql('2020-01-12T03:00:00.000Z');
+        expect(groupBuy.startsAt.toISOString()).to.eql('2021-01-12T03:00:00.000Z');
       });
 
       it('sets the right end date', async () => {

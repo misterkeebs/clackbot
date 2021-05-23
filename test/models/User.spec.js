@@ -63,7 +63,7 @@ describe('daily', async () => {
       expect(sols).to.be.above(0);
       expect(sols).to.be.below(6);
       expect(bonus).to.be.above(-1);
-      expect(bonus).to.be.below(4);
+      expect(bonus).to.be.below(5);
     });
   });
 });
