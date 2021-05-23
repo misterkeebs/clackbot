@@ -6,7 +6,7 @@ const TwitchInterface = require('./interfaces/TwitchInterface');
 module.exports = async (twitch, discord) => {
   const bot = new Bot();
 
-  // bot.registerInterface(new TwitchInterface(bot, twitch));
+  bot.registerInterface(new TwitchInterface(bot, twitch));
   bot.registerInterface(new DiscordInterface(bot, discord));
   bot.registerCommands({
     pegar: require('./commands/Pegar'),
