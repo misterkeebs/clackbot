@@ -7,7 +7,7 @@ const resgatar = require('../../../src/commands/discord/Resgatar');
 const User = require('../../../src/models/User');
 const RedeemableCode = require('../../../src/models/RedeemableCode');
 
-describe.only('Resgatar', () => {
+describe('Resgatar', () => {
   beforeEach(() => iface.reset());
 
   describe(`when there are no codes left`, async () => {
