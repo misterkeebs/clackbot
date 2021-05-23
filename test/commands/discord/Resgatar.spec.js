@@ -7,7 +7,7 @@ const resgatar = require('../../../src/commands/discord/Resgatar');
 const User = require('../../../src/models/User');
 const RedeemableCode = require('../../../src/models/RedeemableCode');
 
-describe('Resgatar', () => {
+describe.only('Resgatar', () => {
   beforeEach(() => iface.reset());
 
   describe(`when there are no codes left`, async () => {
@@ -96,7 +96,58 @@ describe('Resgatar', () => {
     });
 
     it('sends error message', async () => {
-      expect(iface.lastMessage).to.eql('você já resgatou seu código.');
+      expect(iface.lastMessage).to.eql('você já resgatou seu código. Caso não tenha recebido ainda, mande `!resgatar reenviar` para receber a DM novamente.');
+    });
+  });
+
+  describe('resending', async () => {
+    describe(`when user didn't claim a code before`, async () => {
+      beforeEach(async () => {
+        const user = await User.query().insert({ displayName: 'user', bonus: 51 });
+        await RedeemableCode.query().insert({ code: 'DEF456' });
+
+        const author = {
+          send: msg => lastMessage = msg,
+        };
+        const rawMessage = {
+          author,
+        };
+        await resgatar(iface, {
+          channel: 'channel',
+          user: 'user',
+          message: 'resgatar reenviar',
+          rawMessage,
+        });
+      });
+
+      it('sends error message', async () => {
+        expect(iface.lastMessage).to.eql('você não resgatou um código ainda.');
+      });
+    });
+
+    describe('when user claimed a code before', async () => {
+      beforeEach(async () => {
+        const user = await User.query().insert({ displayName: 'user', bonus: 51 });
+        await RedeemableCode.query().insert({ code: 'ABC123', redeemed_by: user.id });
+        await RedeemableCode.query().insert({ code: 'DEF456' });
+
+        const author = {
+          send: msg => lastMessage = msg,
+        };
+        const rawMessage = {
+          author,
+        };
+        await resgatar(iface, {
+          channel: 'channel',
+          user: 'user',
+          message: 'resgatar reenviar',
+          rawMessage,
+        });
+      });
+
+      it('sends error message', async () => {
+        expect(lastMessage).to.eql('Você resgatou 50 clacks e pode usar o código **ABC123** no sorteio atual.');
+      });
     });
   });
 });
