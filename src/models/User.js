@@ -105,8 +105,8 @@ class User extends Model {
       }
     }
 
-    const sols = weighedRandom([1, 2, 3, 4, 5]);
-    const bonus = weighedRandom([0, 1, 2, 3, 4]);
+    const sols = weighedRandom([1, 2, 3, 4, 5, 6]);
+    const bonus = weighedRandom([0, 1, 2, 3, 4, 5]);
 
     await this.$query().patch({
       bonus: _.get(this, 'bonus', 0) + bonus,

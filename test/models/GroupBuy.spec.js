@@ -4,7 +4,7 @@ const tk = require('timekeeper');
 
 const GroupBuy = require('../../src/models/GroupBuy');
 
-xdescribe('GroupBuy', async () => {
+describe('GroupBuy', async () => {
   beforeEach(() => tk.freeze(1605576014801));
   afterEach(() => tk.reset());
 
