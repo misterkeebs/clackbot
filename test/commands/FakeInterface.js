@@ -7,6 +7,7 @@ class FakeInterface {
 
   reset() {
     this.calls = [];
+    this.channel = null;
   }
 
   reply(channel, user, message) {

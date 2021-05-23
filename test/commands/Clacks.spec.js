@@ -29,7 +29,45 @@ describe('Clacks', () => {
       it('sends number of clacks', async () => {
         await User.query().insert({ displayName: 'felipe', bonus: 10 });
         await clacks(iface, { channel: 'channel', user: 'felipe' });
-        expect(iface.lastMessage).to.eql('você já tem 10 clacks.');
+        expect(iface.lastMessage).to.eql('você já tem :coin: 10.');
+      });
+    });
+  });
+
+  describe('on Discord', async () => {
+    describe('when has no clacks', async () => {
+      it('sends a friendly message', async () => {
+        await User.query().insert({ displayName: 'felipe', bonus: 0 });
+        iface.name = 'discord';
+        await clacks(iface, { channel: 'channel', user: 'felipe' });
+        expect(iface.lastMessage).to.eql('você ainda não tem clacks, assista os streams no Twitch para ganhar!');
+      });
+    });
+
+    describe('when has clacks', async () => {
+      it('sends number of clacks', async () => {
+        await User.query().insert({ displayName: 'felipe', bonus: 10 });
+        iface.name = 'discord';
+        await clacks(iface, { channel: 'channel', user: 'felipe' });
+        expect(iface.lastMessage).to.eql('você já tem :coin: 10.');
+      });
+    });
+
+    describe('when has sols', async () => {
+      it('sends number of sols', async () => {
+        await User.query().insert({ displayName: 'felipe', sols: 10 });
+        iface.name = 'discord';
+        await clacks(iface, { channel: 'channel', user: 'felipe' });
+        expect(iface.lastMessage).to.eql('você já tem :sun_with_face: 10.');
+      });
+    });
+
+    describe('when has clacks and sols', async () => {
+      it('sends number of both', async () => {
+        await User.query().insert({ displayName: 'felipe', bonus: 8, sols: 2 });
+        iface.name = 'discord';
+        await clacks(iface, { channel: 'channel', user: 'felipe' });
+        expect(iface.lastMessage).to.eql('você já tem :coin: 8 e :sun_with_face: 2.');
       });
     });
   });
