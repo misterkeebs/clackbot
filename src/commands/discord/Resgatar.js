@@ -14,6 +14,7 @@ const Doar = async (iface, { channel, user: userName, message, rawMessage = {} }
     if (command === 'reenviar') {
       const codeObj = await RedeemableCode.query().where('redeemed_by', user.id).first();
       if (codeObj) {
+        await iface.reply(channel, userName, `seu código foi reenviado em DM.`);
         return await author.send(`Você resgatou 50 clacks e pode usar o código **${codeObj.code}** no sorteio atual.`);
       }
       return await iface.reply(channel, userName, 'você não resgatou um código ainda.');

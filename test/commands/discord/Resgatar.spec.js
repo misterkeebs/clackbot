@@ -95,7 +95,7 @@ describe.only('Resgatar', () => {
       });
     });
 
-    it('sends error message', async () => {
+    it('sends reply', async () => {
       expect(iface.lastMessage).to.eql('você já resgatou seu código. Caso não tenha recebido ainda, mande `!resgatar reenviar` para receber a DM novamente.');
     });
   });
@@ -145,7 +145,11 @@ describe.only('Resgatar', () => {
         });
       });
 
-      it('sends error message', async () => {
+      it('sends a reply', async () => {
+        expect(iface.lastMessage).to.eql('seu código foi reenviado em DM.');
+      });
+
+      it('sends the DM message', async () => {
         expect(lastMessage).to.eql('Você resgatou 50 clacks e pode usar o código **ABC123** no sorteio atual.');
       });
     });
