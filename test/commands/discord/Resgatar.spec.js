@@ -154,4 +154,55 @@ describe.only('Resgatar', () => {
       });
     });
   });
+
+  describe('left', async () => {
+    describe(`when there are codes left`, async () => {
+      beforeEach(async () => {
+        const user = await User.query().insert({ displayName: 'user', bonus: 51 });
+        await RedeemableCode.query().insert({ code: 'ABC123' });
+        await RedeemableCode.query().insert({ code: 'DEF456' });
+
+        const author = {
+          send: msg => lastMessage = msg,
+        };
+        const rawMessage = {
+          author,
+        };
+        await resgatar(iface, {
+          channel: 'channel',
+          user: 'user',
+          message: 'resgatar quantos',
+          rawMessage,
+        });
+      });
+
+      it('sends message', async () => {
+        expect(iface.lastMessage).to.eql('ainda temos 2 códigos disponíveis.');
+      });
+    });
+
+    describe('when there are no codes left', async () => {
+      beforeEach(async () => {
+        const user = await User.query().insert({ displayName: 'user', bonus: 51 });
+        await RedeemableCode.query().insert({ code: 'ABC123', redeemed_by: user.id });
+
+        const author = {
+          send: msg => lastMessage = msg,
+        };
+        const rawMessage = {
+          author,
+        };
+        await resgatar(iface, {
+          channel: 'channel',
+          user: 'user',
+          message: 'resgatar quantos',
+          rawMessage,
+        });
+      });
+
+      it('sends message', async () => {
+        expect(iface.lastMessage).to.eql('todos os códigos já foram usados.');
+      });
+    });
+  });
 });

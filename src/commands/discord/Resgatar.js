@@ -1,6 +1,7 @@
 const NotEnoughBonusError = require('../../models/NotEnoughBonusError');
 const NoCodesLeftError = require('../../models/NoCodesLeftError');
 const AlreadyRedeemedError = require('../../models/AlreadyRedeemedError');
+
 const User = require('../../models/User');
 const RedeemableCode = require('../../models/RedeemableCode');
 
@@ -18,6 +19,13 @@ const Doar = async (iface, { channel, user: userName, message, rawMessage = {} }
         return await author.send(`Você resgatou 50 clacks e pode usar o código **${codeObj.code}** no sorteio atual.`);
       }
       return await iface.reply(channel, userName, 'você não resgatou um código ainda.');
+    }
+    if (command === 'quantos') {
+      const { count } = await RedeemableCode.query().whereNull('redeemed_by').count().first();
+      if (count > 0) {
+        return await iface.reply(channel, userName, `ainda temos ${count} códigos disponíveis.`);
+      }
+      return await iface.reply(channel, userName, 'todos os códigos já foram usados.');
     }
     const codeObj = await user.redeem(amount);
     await author.send(`Você resgatou 50 clacks e pode usar o código **${codeObj.code}** no sorteio atual.`);
