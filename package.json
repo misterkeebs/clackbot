@@ -8,7 +8,7 @@
     "start": "node .",
     "test": "NODE_ENV=test DB_ENV=test mocha --file ./test/Init.js './test/**/*.spec.js'",
     "test:watch": "NODE_ENV=test DB_ENV=test mocha -w --file ./test/Init.js './test/**/*.spec.js'",
-    "gencodes": "node gencodes.js 50",
+    "gencodes": "node gencodes.js 100",
     "gencodes:reset": "node gencodes.js --reset"
   },
   "dependencies": {
