@@ -47,6 +47,15 @@ class User extends Model {
     };
   }
 
+  static async find(identifier) {
+    if (identifier.startsWith('<@!')) {
+      const id = identifier.substring(3, identifier.length - 1);
+      const discordUser = await this.query().where('discord_id', id).first();
+      if (discordUser) return discordUser;
+    }
+    return this.query().where('display_name', identifier).first();
+  }
+
   async useBonus(amount) {
     return this.$query().patchAndFetch({ bonus: this.bonus - amount });
   }

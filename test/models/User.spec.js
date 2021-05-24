@@ -67,3 +67,23 @@ describe('daily', async () => {
     });
   });
 });
+
+describe('find', async () => {
+  describe('with the twitch handle', async () => {
+    it('returns the user', async () => {
+      await User.query().insert({ displayName: 'user' });
+      const user = await User.find('user');
+      expect(user).to.exist;
+      expect(user.displayName).to.eql('user');
+    });
+  });
+
+  describe('with the discord mention', async () => {
+    it('returns the user', async () => {
+      await User.query().insert({ displayName: 'user', discordId: '312260311144595457' });
+      const user = await User.find('<@!312260311144595457>');
+      expect(user).to.exist;
+      expect(user.displayName).to.eql('user');
+    });
+  });
+});
