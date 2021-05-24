@@ -106,7 +106,10 @@ class User extends Model {
   }
 
   static async leaders() {
-    return await this.query().orderBy('bonus', 'desc').orderBy('sols', 'desc');
+    return await this.query()
+      .whereNotNull('bonus')
+      .orderBy('bonus', 'desc')
+      .orderBy('sols', 'desc');
   }
 
   async daily() {
