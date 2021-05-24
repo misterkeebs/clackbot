@@ -61,8 +61,10 @@ class User extends Model {
   }
 
   async addFromSession(session, subscriber = false) {
-    const bonus = this.bonus + session.bonusAmount(subscriber);
-    return this.$query().patchAndFetch({ bonus, lastSessionId: session.id });
+    const amount = session.bonusAmount(subscriber);
+    const bonus = this.bonus + amount;
+    const sols = this.sols + amount;
+    return this.$query().patchAndFetch({ bonus, sols, lastSessionId: session.id });
   }
 
   async donate(amount, receiver) {
@@ -93,8 +95,13 @@ class User extends Model {
   }
 
   static async createFromSession(displayName, session, subscriber = false) {
-    const bonus = session.bonusAmount(subscriber);
-    return User.query().insertAndFetch({ displayName, bonus, lastSessionId: session.id });
+    const amount = session.bonusAmount(subscriber);
+    return User.query().insertAndFetch({
+      displayName,
+      bonus: amount,
+      sols: amount,
+      lastSessionId: session.id,
+    });
   }
 
   static async updateOrCreate(displayName, attrs) {

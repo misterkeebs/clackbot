@@ -6,7 +6,7 @@ const iface = new FakeInterface();
 const top = require('../../../src/commands/discord/Top');
 const User = require('../../../src/models/User');
 
-describe.only('Top', async () => {
+xdescribe('Top', async () => {
   beforeEach(async () => {
     await User.query().insert({ displayName: 'user1', bonus: 20 });
     await User.query().insert({ displayName: 'user2', bonus: 100 });

@@ -48,7 +48,7 @@ describe('Pegar', () => {
       });
 
       it(`doesn't change the user's bonus`, async () => {
-        const [ user ] = await User.query().where('displayName', 'user');
+        const [user] = await User.query().where('displayName', 'user');
         expect(user.bonus).to.eql(10);
       });
     });
@@ -68,12 +68,17 @@ describe('Pegar', () => {
       });
 
       it('adds bonus to user', async () => {
-        const [ user ] = await User.query().where('displayName', 'user');
+        const [user] = await User.query().where('displayName', 'user');
         expect(user.bonus).to.eql(10);
       });
 
+      it('adds sols to user', async () => {
+        const [user] = await User.query().where('displayName', 'user');
+        expect(user.sols).to.eql(10);
+      });
+
       it('sets the last session id', async () => {
-        const [ user ] = await User.query().where('displayName', 'user');
+        const [user] = await User.query().where('displayName', 'user');
         expect(user.lastSessionId).to.eql(session.id);
       });
     });
@@ -93,8 +98,13 @@ describe('Pegar', () => {
       });
 
       it('adds 2x bonus to user', async () => {
-        const [ user ] = await User.query().where('displayName', 'user');
+        const [user] = await User.query().where('displayName', 'user');
         expect(user.bonus).to.eql(20);
+      });
+
+      it('adds 2x sols to user', async () => {
+        const [user] = await User.query().where('displayName', 'user');
+        expect(user.sols).to.eql(20);
       });
     });
 
@@ -113,8 +123,39 @@ describe('Pegar', () => {
       });
 
       it('adds 2x bonus to user', async () => {
-        const [ user ] = await User.query().where('displayName', 'user');
+        const [user] = await User.query().where('displayName', 'user');
         expect(user.bonus).to.eql(20);
+      });
+
+      it('adds 2x sols to user', async () => {
+        const [user] = await User.query().where('displayName', 'user');
+        expect(user.sols).to.eql(20);
+      });
+    });
+
+    describe('when user already had bonus', async () => {
+      beforeEach(async () => {
+        await User.query().insert({ displayName: 'user', bonus: 20 });
+        await pegar(iface, {
+          channel: 'channel',
+          user: 'user',
+          message: '!pegar',
+          userData: {},
+        });
+      });
+
+      it('sends a message with total clacks', async () => {
+        expect(iface.lastMessage).to.eql('você pegou 10 clack(s)! Você agora tem um total de 30.');
+      });
+
+      it('adds bonus to user', async () => {
+        const [user] = await User.query().where('displayName', 'user');
+        expect(user.bonus).to.eql(30);
+      });
+
+      it('adds sols to user', async () => {
+        const [user] = await User.query().where('displayName', 'user');
+        expect(user.sols).to.eql(10);
       });
     });
   });
