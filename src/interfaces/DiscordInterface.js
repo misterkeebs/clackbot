@@ -25,13 +25,13 @@ class DiscordInterface {
       console.log('msg', msg.content);
 
       const { author } = msg;
-      const [ rawCommand, _params ] = msg.content.split(' ');
+      const [rawCommand, _params] = msg.content.split(' ');
       const command = rawCommand.slice(1);
       const userName = `${author.username}#${author.discriminator}`;
 
       const discordId = msg.author.id;
       console.log(' ***', discordId);
-      const [ user ] = await User.query()
+      const [user] = await User.query()
         .where('discordId', discordId)
         .orWhere('discordWannabe', userName);
 
@@ -53,21 +53,21 @@ class DiscordInterface {
     });
   }
 
-  async reply(channelId, dbUser, message) {
+  async reply(channelId, dbUser, message, attachment) {
     const channel = this.client.channels.cache.find(c => c.id === channelId);
     const displayName = dbUser.displayName || dbUser;
     if (Number.isFinite(dbUser)) {
-      return channel.send(`${dbUser} ${message}`);
+      return channel.send(`${dbUser} ${message}`, attachment);
     }
 
     if (_.isString(displayName)) {
-      const [ user ] = await User.query().where('displayName', displayName);
+      const [user] = await User.query().where('displayName', displayName);
       if (user.discordId) {
-        return channel.send(`<@${user.discordId}> ${message}`);
+        return channel.send(`<@${user.discordId}> ${message}`, attachment);
       }
     }
 
-    return channel.send(`${dbUser} ${message}`);
+    return channel.send(`${dbUser} ${message}`, attachment);
   }
 
   async preProcess(client, msg) {

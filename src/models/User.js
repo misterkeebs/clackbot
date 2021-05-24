@@ -105,6 +105,10 @@ class User extends Model {
     return User.query().insertAndFetch({ displayName, ...attrs });
   }
 
+  static async leaders() {
+    return await this.query().orderBy('bonus', 'desc').orderBy('sols', 'desc');
+  }
+
   async daily() {
     if (this.lastDailyAt) {
       const nextClaim = moment(this.lastDailyAt).add(24, 'hours');
