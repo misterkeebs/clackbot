@@ -107,6 +107,7 @@ class User extends Model {
 
   static async leaders() {
     return await this.query()
+      .limit(10)
       .whereNotNull('bonus')
       .orderBy('bonus', 'desc')
       .orderBy('sols', 'desc');

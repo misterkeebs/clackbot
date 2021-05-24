@@ -95,7 +95,7 @@ async function drawLeaderboard(leaders) {
     ctx.shadowOffsetY = 2;
     ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
     ctx.fillText(`#${i + 1}`, 15, sy + 27);
-    ctx.fillText(fittingString(ctx, discordWannabe, 200), 45, sy + 27);
+    ctx.fillText(fittingString(ctx, discordWannabe, 200), 50, sy + 27);
 
     await fillTextWithTwemoji(ctx, `🪙 ${bonus}`, fx - 180, sy + 27);
     if (sols) await fillTextWithTwemoji(ctx, `🌞 ${sols}`, fx - 100, sy + 27);
