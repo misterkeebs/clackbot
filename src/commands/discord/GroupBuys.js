@@ -51,7 +51,7 @@ class GroupByCmd extends DiscordCmd {
   async list() {
     const gbs = await GroupBuy.query()
       .where('startsAt', '<=', moment())
-      .where(function() {
+      .where(function () {
         this
           .whereNull('endsAt')
           .orWhere('endsAt', '>=', moment());
@@ -95,7 +95,7 @@ class GroupByCmd extends DiscordCmd {
       return this.reply('use o comando assim: `!gb mod [nome|início|fim] para <novo valor>`.');
     }
     const { field, name, newValue } = groups;
-    const [ gb ] = await GroupBuy.query().where('name', name);
+    const [gb] = await GroupBuy.query().where('name', name);
 
     if (!gb) {
       return this.reply(`o group buy **${name}** não foi encontrado.`);
@@ -132,7 +132,6 @@ class GroupByCmd extends DiscordCmd {
       !gb add Nome GB de 12/10 às 8:00 até 14/11 às 21:45 https://gb3.com
       `);
     }
-    console.log('groups', groups);
     const { name, startDate, startTime, endDate, endTime, url } = groups;
     const startsAt = parse(startDate, startTime);
     const endsAt = parse(endDate, endTime);
