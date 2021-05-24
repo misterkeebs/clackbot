@@ -15,7 +15,7 @@ describe('daily', async () => {
     it('allows user to claim', async () => {
       const { sols, bonus } = await user.daily();
       expect(sols).to.be.above(0);
-      expect(sols).to.be.below(6);
+      expect(sols).to.be.below(7);
       expect(bonus).to.be.above(-1);
       expect(bonus).to.be.below(4);
     });
