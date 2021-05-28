@@ -122,7 +122,7 @@ class User extends Model {
 
   async daily() {
     if (this.lastDailyAt) {
-      const nextClaim = moment(this.lastDailyAt).add(24, 'hours');
+      const nextClaim = moment(this.lastDailyAt).add(22, 'hours');
 
       if (nextClaim.isAfter(moment())) {
         throw new AlreadyRedeemedError(nextClaim);
@@ -130,7 +130,7 @@ class User extends Model {
     }
 
     const sols = weighedRandom([1, 2, 3, 4, 5, 6]);
-    const bonus = weighedRandom([0, 1, 2, 3, 4, 5]);
+    const bonus = weighedRandom([0, 0, 0, 1, 3, 5]);
 
     await this.$query().patch({
       bonus: _.get(this, 'bonus', 0) + bonus,
