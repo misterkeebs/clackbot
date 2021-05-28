@@ -116,8 +116,8 @@ class User extends Model {
     return await this.query()
       .limit(10)
       .whereNotNull('bonus')
-      .orderBy('bonus', 'desc')
-      .orderBy('sols', 'desc');
+      .whereNotNull('discordWannabe')
+      .orderByRaw('bonus DESC NULLS LAST, sols DESC NULLS LAST');
   }
 
   async daily() {

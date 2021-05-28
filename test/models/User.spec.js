@@ -87,3 +87,30 @@ describe('find', async () => {
     });
   });
 });
+
+describe('leaders', async () => {
+  describe('with regular users', async () => {
+    let leaders;
+
+    beforeEach(async () => {
+      await User.query().insert({ displayName: 'user1', discordWannabe: 'user1#0001', bonus: 100 });
+      await User.query().insert({ displayName: 'userx', bonus: 21100 });
+      await User.query().insert({ displayName: 'usery' });
+      await User.query().insert({ displayName: 'user2', discordWannabe: 'user2#0001', bonus: 1 });
+      await User.query().insert({ displayName: 'user3', discordWannabe: 'user3#0001', bonus: 10 });
+      await User.query().insert({ displayName: 'user4', discordWannabe: 'user4#0001', bonus: 1000 });
+      await User.query().insert({ displayName: 'user5', discordWannabe: 'user5#0001', bonus: 101 });
+      await User.query().insert({ displayName: 'user6', discordWannabe: 'user6#0001', bonus: 101, sols: 10 });
+
+      leaders = await User.leaders();
+    });
+
+    it('shows leaders by bonus in descending order', async () => {
+      expect(leaders.map(u => u.displayName)).to.eql(['user4', 'user6', 'user5', 'user1', 'user3', 'user2']);
+    });
+
+    it('excludes users with no Discord integration', async () => {
+      expect(leaders).to.not.include('userx');
+    });
+  });
+});
