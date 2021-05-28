@@ -21,7 +21,7 @@ Top.interfaces = ['discord'];
 
 Canvas.registerFont('./src/fonts/Roboto-Regular.ttf', { family: 'Roboto' });
 
-const canvas = Canvas.createCanvas(500, 500);
+const canvas = Canvas.createCanvas(500, 460);
 const ix = 10;
 const iy = 10;
 const fx = canvas.width;
