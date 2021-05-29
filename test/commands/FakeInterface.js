@@ -14,8 +14,16 @@ class FakeInterface {
     this.calls.push({ channel, user, message });
   }
 
+  send(channel, message) {
+    this.calls.push({ channel, message });
+  }
+
   get lastMessage() {
     return _.get(_.last(this.calls), 'message');
+  }
+
+  get lastReceiver() {
+    return _.get(_.last(this.calls), 'user');
   }
 }
 

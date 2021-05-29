@@ -23,6 +23,7 @@ module.exports = async (twitch, discord) => {
     resgatar: require('./commands/discord/Resgatar'),
     daily: require('./commands/discord/Daily'),
     top: require('./commands/discord/Top'),
+    denada: require('./commands/discord/Denada'),
   });
 
   return bot.start().then(ifaces => {
