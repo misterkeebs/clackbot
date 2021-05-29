@@ -75,16 +75,68 @@ describe('Doar', () => {
           });
 
           it('adds the bonus to the receiver', async () => {
-            const [ receiver ] = await User.query().where('displayName', 'felipe');
+            const [receiver] = await User.query().where('displayName', 'felipe');
             expect(receiver.bonus).to.eql(3);
           });
 
           it('removes the sols from the donor', async () => {
-            const [ donor ] = await User.query().where('displayName', 'user');
+            const [donor] = await User.query().where('displayName', 'user');
             expect(donor.sols).to.eql(0);
           });
         });
       });
+    });
+  });
+
+  describe('when user donates more than 5 sols', async () => {
+    beforeEach(async () => {
+      await User.query().insert({ displayName: 'user', sols: 12 });
+      await User.query().insert({ displayName: 'felipe', bonus: 1, discordId: '399970540586270722' });
+
+      const users = new Map();
+      users.set('399970540586270722', {
+        id: '399970540586270722',
+        username: 'felipe',
+        discriminator: '0001',
+      });
+      const rawMessage = { mentions: { users } };
+      await doar(iface, {
+        channel: 'channel',
+        user: 'user',
+        message: 'doar 5 felipe',
+        rawMessage,
+      });
+    });
+
+    it('receives a kickback of 1 clack', async () => {
+      const [sender] = await User.query().where('displayName', 'user');
+      expect(sender.bonus).to.eql(1);
+    });
+  });
+
+  describe('when user donates more than 10 sols', async () => {
+    beforeEach(async () => {
+      await User.query().insert({ displayName: 'user', sols: 12 });
+      await User.query().insert({ displayName: 'felipe', bonus: 1, discordId: '399970540586270722' });
+
+      const users = new Map();
+      users.set('399970540586270722', {
+        id: '399970540586270722',
+        username: 'felipe',
+        discriminator: '0001',
+      });
+      const rawMessage = { mentions: { users } };
+      await doar(iface, {
+        channel: 'channel',
+        user: 'user',
+        message: 'doar 10 felipe',
+        rawMessage,
+      });
+    });
+
+    it('receives a kickback of 2 clacks', async () => {
+      const [sender] = await User.query().where('displayName', 'user');
+      expect(sender.bonus).to.eql(2);
     });
   });
 

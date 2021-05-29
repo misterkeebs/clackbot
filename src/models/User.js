@@ -5,6 +5,7 @@ const Model = require('./Model');
 const { weighedRandom } = require('../Utils');
 
 const DONATION_RATE = process.env.DONATION_RATE || 0.5;
+const KICKBACK_UNIT = process.env.KICKBACK_UNIT || 5;
 
 const NotEnoughBonusError = require('./NotEnoughBonusError');
 const AlreadyRedeemedError = require('./AlreadyRedeemedError');
@@ -71,7 +72,11 @@ class User extends Model {
     if (this.sols < amount) throw new NotEnoughBonusError();
 
     const bonus = Math.ceil(amount * DONATION_RATE);
-    await this.$query().patch({ sols: this.sols - amount });
+    let kickbackAmount = 0;
+    if (amount >= KICKBACK_UNIT) {
+      kickbackAmount = Math.floor(amount / KICKBACK_UNIT);
+    }
+    await this.$query().patch({ sols: this.sols - amount, bonus: this.bonus + kickbackAmount });
     await receiver.$query().patch({ bonus: receiver.bonus + bonus });
     return bonus;
   }
