@@ -205,4 +205,19 @@ describe('Resgatar', () => {
       });
     });
   });
+
+  describe('wrong subcommand', async () => {
+    beforeEach(async () => {
+      await resgatar(iface, {
+        channel: 'channel',
+        user: 'user',
+        message: 'resgatar xyz',
+        rawMessage: {},
+      });
+    });
+
+    it('sends an error message', async () => {
+      expect(iface.lastMessage).to.eql('comando inválido. Use `!ajuda resgatar` para mais informações.');
+    });
+  });
 });
