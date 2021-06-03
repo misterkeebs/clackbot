@@ -4,29 +4,45 @@ const Command = require('./Command');
 const { isClass } = require('../Utils');
 
 class Comandos extends Command {
+  interfaces = ['discord', 'twitch'];
+  description = 'lista todos os comandos (o que vc está vendo agora)';
+
   async handle() {
-    return await this.handleByInterface();
+    this.reply(await this.handleByInterface());
   }
 
-  async handleDiscord() {
+  filter(ifaceName, blanks = false) {
     const { handlers } = this.bot;
-    const discordCmds = Object.keys(handlers)
+    return Object.keys(handlers)
       .filter(k => {
         const handler = handlers[k];
         const interfaces = (isClass(handler)
           ? new handler({}).interfaces
           : handler.interfaces) || [];
 
-        return interfaces.includes('discord');
-      }).sort();
-    const msg = ['comandos disponíveis:', ''];
-    msg.push(discordCmds.map(cmd => `\`${cmd}\``));
+        return interfaces.includes(ifaceName) || (blanks && _.isEmpty(interfaces));
+      })
+      .sort()
+      .map(cmd => {
+        const handler = handlers[cmd];
+        const desc = isClass(handler)
+          ? new handler({}).description
+          : handler.description;
+        return { cmd, desc };
+      });
+  }
 
-    this.reply(_.flatten(msg).join('\n'));
+  async handleDiscord() {
+    const commands = this.filter('discord');
+    const msg = ['comandos disponíveis:', ''];
+    msg.push(commands.map(o => `\`${o.cmd}\`${o.desc ? ` - ${o.desc}` : ''}`));
+
+    return _.flatten(msg).join('\n');
   }
 
   async handleTwitch() {
-
+    const cmds = this.filter('twitch', true).map(o => `${o.cmd}`);
+    return `comandos disponíveis: ${cmds.join(', ')}`;
   }
 }
 
