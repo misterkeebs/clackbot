@@ -10,6 +10,7 @@ const AMOUNT = 50;
 
 class ResgatarCommand extends Command {
   command = 'resgatar';
+  interfaces = ['discord'];
 
   async handleDefault() {
     try {
@@ -53,9 +54,4 @@ class ResgatarCommand extends Command {
   }
 }
 
-const Resgatar = async (iface, { channel, user: userName, message, rawMessage = {} }) => {
-  await new ResgatarCommand({ iface, channel, userName, message, rawMessage }).run();
-};
-Resgatar.interfaces = ['discord'];
-
-module.exports = Resgatar;
+module.exports = ResgatarCommand;

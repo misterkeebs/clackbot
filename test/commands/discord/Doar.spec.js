@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const FakeInterface = require('../FakeInterface');
 const iface = new FakeInterface();
 
-const doar = require('../../../src/commands/discord/Doar');
+const Doar = require('../../../src/commands/discord/Doar');
 const User = require('../../../src/models/User');
 
 describe('Doar', () => {
@@ -14,12 +14,13 @@ describe('Doar', () => {
       beforeEach(async () => {
         const mentions = new Map();
         const rawMessage = { mentions };
-        await doar(iface, {
+        await new Doar({
+          iface,
           channel: 'channel',
           user: 'user',
           message: 'doar 2 felipe',
           rawMessage,
-        });
+        }).run();
       });
 
       it('sends an error', async () => {
@@ -38,12 +39,13 @@ describe('Doar', () => {
             discriminator: '0001',
           });
           const rawMessage = { mentions: { users } };
-          await doar(iface, {
+          await new Doar({
+            iface,
             channel: 'channel',
             user: 'user',
             message: 'doar 2 felipe',
             rawMessage,
-          });
+          }).run();
         });
 
         it('sends error message', async () => {
@@ -63,12 +65,13 @@ describe('Doar', () => {
             discriminator: '0001',
           });
           const rawMessage = { mentions: { users } };
-          await doar(iface, {
+          await new Doar({
+            iface,
             channel: 'channel',
             user: 'user',
             message: 'doar 3 felipe',
             rawMessage,
-          });
+          }).run();
         });
 
         it('sends error message', async () => {
@@ -100,12 +103,13 @@ describe('Doar', () => {
         discriminator: '0001',
       });
       const rawMessage = { mentions: { users } };
-      await doar(iface, {
+      await new Doar({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'doar 5 felipe',
         rawMessage,
-      });
+      }).run();
     });
 
     it('receives a kickback of 1 clack', async () => {
@@ -126,12 +130,13 @@ describe('Doar', () => {
         discriminator: '0001',
       });
       const rawMessage = { mentions: { users } };
-      await doar(iface, {
+      await new Doar({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'doar 10 felipe',
         rawMessage,
-      });
+      }).run();
     });
 
     it('receives a kickback of 2 clacks', async () => {
@@ -152,12 +157,13 @@ describe('Doar', () => {
         discriminator: '0001',
       });
       const rawMessage = { mentions: { users } };
-      await doar(iface, {
+      await new Doar({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'doar 3 felipe',
         rawMessage,
-      });
+      }).run();
     });
 
     it('sends error message', async () => {
@@ -176,12 +182,13 @@ describe('Doar', () => {
         discriminator: '0001',
       });
       const rawMessage = { mentions: { users } };
-      await doar(iface, {
+      await new Doar({
+        iface,
         channel: 'channel',
         user: 'felipe',
         message: 'doar 3 felipe',
         rawMessage,
-      });
+      }).run();
     });
 
     it('sends error message', async () => {
@@ -190,35 +197,35 @@ describe('Doar', () => {
   });
 
   describe(`when command has no params`, () => {
-    beforeEach(async () => await doar(iface, { channel: 'channel', user: 'user', message: 'doar' }));
+    beforeEach(async () => await new Doar({ iface, channel: 'channel', user: 'user', message: 'doar' }).run());
     it('sends error message', async () => {
       expect(iface.lastMessage).to.eql('use `!doar <sols> @<usuário>`. Para mais informações sobre como doações funcionam use !ajuda doar.');
     });
   });
 
   describe(`when command has not enough params`, () => {
-    beforeEach(async () => await doar(iface, { channel: 'channel', user: 'user', message: 'doar 8' }));
+    beforeEach(async () => await new Doar({ iface, channel: 'channel', user: 'user', message: 'doar 8' }).run());
     it('sends error message', async () => {
       expect(iface.lastMessage).to.eql('use `!doar <sols> @<usuário>`. Para mais informações sobre como doações funcionam use !ajuda doar.');
     });
   });
 
   describe(`when command is malformed`, () => {
-    beforeEach(async () => await doar(iface, { channel: 'channel', user: 'user', message: 'doar x felipe' }));
+    beforeEach(async () => await new Doar({ iface, channel: 'channel', user: 'user', message: 'doar x felipe' }).run());
     it('sends error message', async () => {
       expect(iface.lastMessage).to.eql('use `!doar <sols> @<usuário>`. Para mais informações sobre como doações funcionam use !ajuda doar.');
     });
   });
 
   describe(`when trying to donate zero`, () => {
-    beforeEach(async () => await doar(iface, { channel: 'channel', user: 'user', message: 'doar 0 felipe' }));
+    beforeEach(async () => await new Doar({ iface, channel: 'channel', user: 'user', message: 'doar 0 felipe' }).run());
     it('sends error message', async () => {
       expect(iface.lastMessage).to.eql('use `!doar <sols> @<usuário>`. Para mais informações sobre como doações funcionam use !ajuda doar.');
     });
   });
 
   describe(`when trying to donate a negative amount`, () => {
-    beforeEach(async () => await doar(iface, { channel: 'channel', user: 'user', message: 'doar -1 felipe' }));
+    beforeEach(async () => await new Doar({ iface, channel: 'channel', user: 'user', message: 'doar -1 felipe' }).run());
     it('sends error message', async () => {
       expect(iface.lastMessage).to.eql('use `!doar <sols> @<usuário>`. Para mais informações sobre como doações funcionam use !ajuda doar.');
     });

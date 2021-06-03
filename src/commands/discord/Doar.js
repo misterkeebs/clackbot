@@ -4,6 +4,8 @@ const User = require('../../models/User');
 const NotEnoughBonusError = require('../../models/NotEnoughBonusError');
 
 class DoarCommand extends Command {
+  interfaces = ['discord'];
+
   async handle() {
     const [amountStr, receiverName] = this.args;
     const amount = parseInt(amountStr, 10);
@@ -36,9 +38,4 @@ class DoarCommand extends Command {
   }
 }
 
-const Doar = async (iface, { channel, user: userName, message, rawMessage = {} }) => {
-  return await new DoarCommand({ iface, channel, userName, message, rawMessage }).run();
-};
-Doar.interfaces = ['discord'];
-
-module.exports = Doar;
+module.exports = DoarCommand;

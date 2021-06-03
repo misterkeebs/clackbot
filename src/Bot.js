@@ -20,12 +20,15 @@ class Bot {
 
   async handleMessage(iface, options) {
     const { message } = options;
-    const [ cmdPart ] = message.split(' ');
+    const [cmdPart] = message.split(' ');
     const command = cmdPart.trim().replace(/^!/, '');
     const handler = this.handlers[command];
     if (!handler) return;
     if (_.isArray(handler.interfaces) && !handler.interfaces.includes(iface.name)) return;
 
+    if (handler.toString().includes('class ')) {
+      return await new handler({ ...options, iface }).run();
+    }
     await handler(iface, options);
   }
 

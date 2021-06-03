@@ -6,6 +6,8 @@ const AlreadyRedeemedError = require('../../models/AlreadyRedeemedError');
 const User = require('../../models/User');
 
 class DailyCommand extends Command {
+  interfaces = ['discord'];
+
   async handle() {
     try {
       const { sols, bonus } = await this.user.daily();
@@ -25,9 +27,4 @@ class DailyCommand extends Command {
   }
 }
 
-const Daily = async (iface, { channel, user: userName, message, rawMessage = {} }) => {
-  await new DailyCommand({ iface, channel, userName, message, rawMessage }).run();
-};
-Daily.interfaces = ['discord'];
-
-module.exports = Daily;
+module.exports = DailyCommand;

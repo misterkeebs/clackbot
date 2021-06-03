@@ -2,6 +2,8 @@ const User = require('../../models/User');
 const Command = require('../Command');
 
 class DenadaCommand extends Command {
+  interfaces = ['discord'];
+
   async handle() {
     const [receiverName] = this.args;
     if (!receiverName) {
@@ -24,9 +26,4 @@ class DenadaCommand extends Command {
   }
 }
 
-const Denada = async (iface, { channel, user: userName, message, rawMessage = {} }) => {
-  await new DenadaCommand({ iface, channel, userName, message, rawMessage }).run();
-};
-Denada.interfaces = ['discord'];
-
-module.exports = Denada;
+module.exports = DenadaCommand;

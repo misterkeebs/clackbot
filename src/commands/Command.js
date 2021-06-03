@@ -3,10 +3,10 @@ const _ = require('lodash');
 const User = require('../models/User');
 
 class Command {
-  constructor({ iface, channel, userName, message, rawMessage = {} }) {
+  constructor({ iface, channel, user, message, rawMessage = {} }) {
     this.iface = iface;
     this.channel = channel;
-    this.userName = userName;
+    this.userName = user;
     this.message = message;
     this.rawMessage = rawMessage;
   }
