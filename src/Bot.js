@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const { isClass } = require('./Utils');
 
 class Bot {
   constructor() {
@@ -26,7 +27,7 @@ class Bot {
     if (!handler) return;
     if (_.isArray(handler.interfaces) && !handler.interfaces.includes(iface.name)) return;
 
-    if (handler.toString().includes('class ')) {
+    if (isClass(handler)) {
       return await new handler({ ...options, iface }).run();
     }
     await handler(iface, options);

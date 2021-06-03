@@ -11,6 +11,10 @@ class Command {
     this.rawMessage = rawMessage;
   }
 
+  get bot() {
+    return _.get(this, 'iface.bot');
+  }
+
   get args() {
     return this.message.split(' ').slice(1);
   }
@@ -32,6 +36,16 @@ class Command {
   async run() {
     await this.load();
     await this.handle();
+  }
+
+  async handleByInterface() {
+    if (this.iface.name === 'discord') {
+      return await this.handleDiscord();
+    }
+    if (this.iface.name === 'twitch') {
+      return await this.handleTwitch();
+    }
+    throw new Error('Unkown interface name: ' + this.iface.name);
   }
 
   async handleSubcommand() {
@@ -76,7 +90,7 @@ class Command {
   }
 
   async sendDirect(message) {
-    this.author.send(message);
+    return await this.author.send(message);
   }
 }
 
