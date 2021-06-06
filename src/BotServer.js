@@ -9,6 +9,7 @@ module.exports = async (twitch, discord) => {
   bot.registerInterface(new TwitchInterface(bot, twitch));
   bot.registerInterface(new DiscordInterface(bot, discord));
   bot.registerCommands({
+    comandos: require('./commands/Comandos'),
     pegar: require('./commands/Pegar'),
     clacks: require('./commands/Clacks'),
     rodada: require('./commands/Rodada'),
@@ -17,8 +18,6 @@ module.exports = async (twitch, discord) => {
     wpm: require('./commands/Wpm'),
 
     doar: require('./commands/discord/Doar'),
-    gb: require('./commands/discord/GroupBuys'),
-    gbs: require('./commands/discord/GroupBuys'),
     vid: require('./commands/discord/Vid'),
     resgatar: require('./commands/discord/Resgatar'),
     daily: require('./commands/discord/Daily'),

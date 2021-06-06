@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const FakeInterface = require('../FakeInterface');
 const iface = new FakeInterface();
 
-const denada = require('../../../src/commands/discord/Denada');
+const Denada = require('../../../src/commands/discord/Denada');
 const User = require('../../../src/models/User');
 
 describe('Denada', () => {
@@ -20,12 +20,13 @@ describe('Denada', () => {
         discriminator: '0001',
       });
       const rawMessage = { mentions: { users } };
-      await denada(iface, {
+      await new Denada({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'denada <!@399970540586270722>',
         rawMessage,
-      });
+      }).run();
     });
 
     it('sends a message with instructions', async () => {
