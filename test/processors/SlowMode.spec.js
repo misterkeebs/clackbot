@@ -63,7 +63,7 @@ describe('SlowModeProcessor', async () => {
         });
 
         it('sends a direct message to the user', async () => {
-          expect(msg.directMessages).to.include('Sua mensagem no canal **#canal** foi excluída porque este canal permite apenas um envio a cada 6 horas. Você pode enviar a mensagem novamente em aproximadamente em uma hora.');
+          expect(msg.directMessages).to.include('Sua mensagem no canal **#canal** foi excluída porque este canal permite apenas um envio a cada 6 horas. Você pode enviar a mensagem novamente aproximadamente em uma hora.');
         });
       });
     });

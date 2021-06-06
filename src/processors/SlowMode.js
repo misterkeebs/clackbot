@@ -44,7 +44,7 @@ class SlowModeProcessor {
     const interval = this.intervals[channelName];
     const nextAllowedDate = moment(user.lastAnnounceAt).add(interval, 'hours');
     if (nextAllowedDate.isAfter(moment())) {
-      await msg.author.send(`Sua mensagem no canal **#${msg.channel.name}** foi excluída porque este canal permite apenas um envio a cada ${interval} horas. Você pode enviar a mensagem novamente em aproximadamente ${moment(nextAllowedDate).fromNow()}.`);
+      await msg.author.send(`Sua mensagem no canal **#${msg.channel.name}** foi excluída porque este canal permite apenas um envio a cada ${interval} horas. Você pode enviar a mensagem novamente aproximadamente ${moment(nextAllowedDate).fromNow()}.`);
       await msg.delete();
       return true;
     }
