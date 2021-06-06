@@ -4,7 +4,7 @@ const moment = require('moment');
 const FakeInterface = require('../FakeInterface');
 const iface = new FakeInterface();
 
-const daily = require('../../../src/commands/discord/Daily');
+const Daily = require('../../../src/commands/discord/Daily');
 const User = require('../../../src/models/User');
 
 describe('Daily', async () => {
@@ -13,11 +13,12 @@ describe('Daily', async () => {
 
     beforeEach(async () => {
       user = await User.query().insert({ displayName: 'user' });
-      await daily(iface, {
+      await new Daily({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'daily',
-      });
+      }).run();
     });
 
     it('allows user to claim', async () => {
@@ -32,11 +33,12 @@ describe('Daily', async () => {
       const lastDailyAt = moment().subtract(21, 'hours');
       nextSlot = moment(lastDailyAt).add(22, 'hours');
       user = await User.query().insert({ displayName: 'user', lastDailyAt });
-      await daily(iface, {
+      await new Daily({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'daily',
-      });
+      }).run();
     });
 
     it('tells the user when he/she can claim again', async () => {
@@ -50,11 +52,12 @@ describe('Daily', async () => {
     beforeEach(async () => {
       const lastDailyAt = moment().subtract(23, 'hours');
       user = await User.query().insert({ displayName: 'user', lastDailyAt });
-      await daily(iface, {
+      await new Daily({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'daily',
-      });
+      }).run();
     });
 
     it('allows user to claim', async () => {

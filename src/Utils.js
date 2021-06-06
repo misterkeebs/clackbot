@@ -1,6 +1,10 @@
 const fetch = require('node-fetch');
 const _ = require('lodash');
 
+function isClass(x) {
+  return x.toString().includes('class ');
+}
+
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -45,6 +49,7 @@ function hasAnyDiscordRole(msg, roles) {
 }
 
 module.exports = {
+  isClass,
   randomInt,
   weighedRandom,
   send,

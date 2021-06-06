@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const FakeInterface = require('../FakeInterface');
 const iface = new FakeInterface();
 
-const resgatar = require('../../../src/commands/discord/Resgatar');
+const Resgatar = require('../../../src/commands/discord/Resgatar');
 const User = require('../../../src/models/User');
 const RedeemableCode = require('../../../src/models/RedeemableCode');
 
@@ -16,12 +16,13 @@ describe('Resgatar', () => {
       await User.query().insert({ displayName: 'user', bonus: 51 });
 
       const rawMessage = {};
-      await resgatar(iface, {
+      await new Resgatar({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'resgatar',
         rawMessage,
-      });
+      }).run();
     });
 
     it('sends error message', async () => {
@@ -34,12 +35,13 @@ describe('Resgatar', () => {
       await User.query().insert({ displayName: 'user', bonus: 49 });
 
       const rawMessage = {};
-      await resgatar(iface, {
+      await new Resgatar({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'resgatar',
         rawMessage,
-      });
+      }).run();
     });
 
     it('sends error message', async () => {
@@ -58,12 +60,13 @@ describe('Resgatar', () => {
       const rawMessage = {
         author,
       };
-      await resgatar(iface, {
+      await new Resgatar({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'resgatar',
         rawMessage,
-      });
+      }).run();
     });
 
     it('sends confirmation message on the channel', async () => {
@@ -87,12 +90,13 @@ describe('Resgatar', () => {
       const rawMessage = {
         author,
       };
-      await resgatar(iface, {
+      await new Resgatar({
+        iface,
         channel: 'channel',
         user: 'user',
         message: 'resgatar',
         rawMessage,
-      });
+      }).run();
     });
 
     it('sends reply', async () => {
@@ -112,12 +116,13 @@ describe('Resgatar', () => {
         const rawMessage = {
           author,
         };
-        await resgatar(iface, {
+        await new Resgatar({
+          iface,
           channel: 'channel',
           user: 'user',
           message: 'resgatar reenviar',
           rawMessage,
-        });
+        }).run();
       });
 
       it('sends error message', async () => {
@@ -137,12 +142,13 @@ describe('Resgatar', () => {
         const rawMessage = {
           author,
         };
-        await resgatar(iface, {
+        await new Resgatar({
+          iface,
           channel: 'channel',
           user: 'user',
           message: 'resgatar reenviar',
           rawMessage,
-        });
+        }).run();
       });
 
       it('sends a reply', async () => {
@@ -168,12 +174,13 @@ describe('Resgatar', () => {
         const rawMessage = {
           author,
         };
-        await resgatar(iface, {
+        await new Resgatar({
+          iface,
           channel: 'channel',
           user: 'user',
           message: 'resgatar quantos',
           rawMessage,
-        });
+        }).run();
       });
 
       it('sends message', async () => {
@@ -192,17 +199,34 @@ describe('Resgatar', () => {
         const rawMessage = {
           author,
         };
-        await resgatar(iface, {
+        await new Resgatar({
+          iface,
           channel: 'channel',
           user: 'user',
           message: 'resgatar quantos',
           rawMessage,
-        });
+        }).run();
       });
 
       it('sends message', async () => {
         expect(iface.lastMessage).to.eql('todos os códigos já foram usados.');
       });
+    });
+  });
+
+  describe('wrong subcommand', async () => {
+    beforeEach(async () => {
+      await new Resgatar({
+        iface,
+        channel: 'channel',
+        user: 'user',
+        message: 'resgatar xyz',
+        rawMessage: {},
+      }).run();
+    });
+
+    it('sends an error message', async () => {
+      expect(iface.lastMessage).to.eql('comando inválido. Use `!ajuda resgatar` para mais informações.');
     });
   });
 });
