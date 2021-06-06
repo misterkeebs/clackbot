@@ -1,6 +1,7 @@
 class Author {
-  constructor(message, { username='user', discriminator='0001' }={}) {
+  constructor(message, { authorID = '399970540586270722', username = 'user', discriminator = '0001' } = {}) {
     this.message = message;
+    this.id = authorID;
     this.username = username;
     this.discriminator = discriminator;
   }
@@ -29,13 +30,32 @@ class Channel {
 }
 
 class FakeDiscordMessage {
-  constructor(content, { channelName='channel' }={}) {
+  constructor(content, {
+    authorID,
+    channelName = 'channel',
+    createdTimestamp = new Date().getTime(),
+  } = {}) {
+    this.reset();
+    this.content = content;
+    this.createdTimestamp = createdTimestamp;
+    this.author = new Author(this, { authorID });
+    this.channel = new Channel(this, channelName);
+    this.deleted = false;
+  }
+
+  reset() {
     this.channelMessages = [];
     this.directMessages = [];
+  }
 
-    this.content = content;
-    this.author = new Author(this);
-    this.channel = new Channel(this, channelName);
+  async delete() {
+    this.deleted = true;
+    return Promise.resolve();
+  }
+
+  addMessage({ authorID, createdTimestamp }) {
+    const msg = new Message({ authorID, createdTimestamp });
+    this.channel.messages.add(msg);
   }
 
   addDirectMessage(content) {
@@ -43,11 +63,11 @@ class FakeDiscordMessage {
   }
 
   get lastDirectMessage() {
-    return this.directMessages[this.directMessages.length-1];
+    return this.directMessages[this.directMessages.length - 1];
   }
 
   get lastChannelMessage() {
-    return this.channelMessages[this.channelMessages.length-1];
+    return this.channelMessages[this.channelMessages.length - 1];
   }
 }
 
