@@ -49,7 +49,8 @@ class SlowModeProcessor {
       return true;
     }
 
-    return true;
+    await user.$query().update({ lastAnnounceAt: 'now' });
+    return false;
   }
 }
 

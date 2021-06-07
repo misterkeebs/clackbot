@@ -66,6 +66,34 @@ describe('SlowModeProcessor', async () => {
           expect(msg.directMessages).to.include('Sua mensagem no canal **#canal** foi excluída porque este canal permite apenas um envio a cada 6 horas. Você pode enviar a mensagem novamente aproximadamente em uma hora.');
         });
       });
+
+      describe('when user sent a message after the interval', async () => {
+        let msg, res, initialAnnDate;
+
+        beforeEach(async () => {
+          msg = new FakeMessage('WTS Tada68', {
+            authorID: '12345',
+            channelName: 'canal',
+          });
+          const lastAnnounceAt = moment().add(-7, 'hours');
+          await DiscordUser.query().insert({ discordId: '12345', lastAnnounceAt });
+          initialAnnDate = lastAnnounceAt;
+          res = await proc.handle(msg);
+        });
+
+        it('keeps the message', async () => {
+          expect(msg.deleted).to.be.false;
+        });
+
+        it('returns true to stop processing', async () => {
+          expect(res).to.eql(false);
+        });
+
+        it('sets the last announce', async () => {
+          const user = await DiscordUser.query().where('discordId', '12345').first();
+          expect(user.lastAnnounceAt).to.not.eql(initialAnnDate);
+        });
+      });
     });
   });
 
