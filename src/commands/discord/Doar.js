@@ -27,8 +27,10 @@ class DoarCommand extends Command {
     }
 
     try {
-      const receivedBonus = await this.user.donate(amount, this.receiver);
-      return await this.reply(`obrigado por doar ${amount} sols. O usuário ${receiverName} recebeu ${receivedBonus} clacks.`);
+      const { bonus, kickbackAmount } = await this.user.donate(amount, this.receiver)
+      const receivedBonus = bonus;
+      const kickbackMsg = kickbackAmount > 0 ? ` e você recebeu ${kickbackAmount} clacks de volta!` : `.`;
+      return await this.reply(`obrigado por doar ${amount} sols. O usuário ${receiverName} recebeu ${receivedBonus} clacks${kickbackMsg}`);
     } catch (err) {
       if (err instanceof NotEnoughBonusError) {
         return await this.reply(`você não tem ${amount} sols para doar.`);

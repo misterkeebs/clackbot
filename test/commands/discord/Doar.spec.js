@@ -7,7 +7,12 @@ const Doar = require('../../../src/commands/discord/Doar');
 const User = require('../../../src/models/User');
 
 describe('Doar', () => {
-  beforeEach(() => iface.reset());
+  let randomRes = 2;
+
+  beforeEach(() => {
+    User.weighedRandom = () => randomRes;
+    iface.reset();
+  });
 
   describe('when command is correct', async () => {
     describe(`when receiving user isn't mentioned`, async () => {
@@ -112,9 +117,13 @@ describe('Doar', () => {
       }).run();
     });
 
-    it('receives a kickback of 1 clack', async () => {
+    it('sends a message with the kickback', async () => {
+      expect(iface.lastMessage).to.eql('obrigado por doar 5 sols. O usuário felipe recebeu 3 clacks e você recebeu 2 clacks de volta!');
+    });
+
+    it('receives a kickback', async () => {
       const [sender] = await User.query().where('displayName', 'user');
-      expect(sender.bonus).to.eql(1);
+      expect(sender.bonus).to.eql(2);
     });
   });
 

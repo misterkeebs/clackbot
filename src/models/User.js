@@ -74,11 +74,14 @@ class User extends Model {
     const bonus = Math.ceil(amount * DONATION_RATE);
     let kickbackAmount = 0;
     if (amount >= KICKBACK_UNIT) {
-      kickbackAmount = Math.floor(amount / KICKBACK_UNIT);
+      kickbackAmount = User.weighedRandom([0, 0, 0,
+        Math.round(amount * (KICKBACK_UNIT * 0.5)),
+        Math.round(amount * (KICKBACK_UNIT * 1)),
+        Math.round(amount * (KICKBACK_UNIT * 1.5))]);
     }
     await this.$query().patch({ sols: this.sols - amount, bonus: this.bonus + kickbackAmount });
     await receiver.$query().patch({ bonus: receiver.bonus + bonus });
-    return bonus;
+    return { bonus, kickbackAmount };
   }
 
   async redeem(amount) {
@@ -146,5 +149,6 @@ class User extends Model {
     return { sols, bonus };
   }
 }
+User.weighedRandom = weighedRandom;
 
 module.exports = User;
