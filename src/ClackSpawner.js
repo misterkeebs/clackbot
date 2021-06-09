@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 const moment = require('moment');
 const Promise = require('bluebird');
+const Discord = require('discord.js');
 
 const TwitchApi = require('./TwitchApi');
 const { send } = require('./Utils');
@@ -8,16 +9,17 @@ const { send } = require('./Utils');
 const annChannel = process.env.DISCORD_ANNOUNCE_CHANNEL || 'announcements';
 const alertRole = process.env.DISCORD_GB_ALERT_ROLE;
 const channelName = process.env.TWITCH_CHANNEL;
-const twitch = new TwitchApi();
 
 const Session = require('./models/Session');
 const Raffle = require('./models/Raffle');
 const GroupBuy = require('./models/GroupBuy');
 
 class ClackSpawner {
-  constructor(client, discord) {
+  constructor(client, discord, twitch = new TwitchApi()) {
     this.client = client;
     this.discord = discord;
+    this.twitch = twitch;
+    this.streaming = false;
   }
 
   notify(animation, title, text) {
@@ -29,12 +31,21 @@ class ClackSpawner {
   }
 
   async check() {
-    const channel = await twitch.getCurrentStream(channelName);
+    const channel = await this.twitch.getCurrentStream(channelName);
 
     if (!channel) {
+      if (this.streaming) {
+        console.log(channelName, 'finished streaming.');
+      }
+      this.streaming = false;
       console.log(channelName, 'is not streaming, checking for other things to notify.');
       await this.checkDiscord();
       return;
+    }
+
+    if (channel && !this.streaming) {
+      this.streaming = true;
+      this.announceStream(channel);
     }
 
     // checks Discord in parallel
@@ -83,7 +94,7 @@ class ClackSpawner {
 
     console.log('Current sessions', currentSessions.length);
 
-    const [ session ] = currentSessions;
+    const [session] = currentSessions;
 
     if (!session) {
       console.log('No current sessions');
@@ -96,6 +107,28 @@ class ClackSpawner {
       `Envie <code>!pegar</code> agora para acumular ${session.bonus} clacks!`);
     await this.timer(`PEGAR ${session.bonus} CLACKS`, session.endsAt.toISOString());
     this.client.action(channelName, `Atenção, vocês têm ${session.duration} minuto(s) para pegar ${session.bonus} clack(s) com o comando !pegar`);
+  }
+
+  async announceStream(stream) {
+    const user = await this.twitch.getUser(stream.user_login);
+    const image = stream.thumbnail_url.replace('{width}', 320).replace('{height}', 180)
+
+    const embed = new Discord.MessageEmbed()
+      .setColor('#543e94')
+      .setTitle(stream.title)
+      .setURL(`https://twitch.tv/${stream.user_login}`)
+      .setAuthor(stream.user_name, user.profile_image_url)
+      .setThumbnail(user.profile_image_url)
+      .addFields(
+        { name: 'About', value: stream.game_name, inline: true },
+        { name: 'Viewers', value: stream.viewer_count, inline: true },
+      )
+      .setImage(image);
+
+    const guild = this.discord.guilds.cache.find(g => g.name === process.env.DISCORD_GUILD_NAME);
+    const { everyone } = guild.roles;
+    const channel = this.discord.channels.cache.find(c => c.name === 'ann');
+    channel.send(`${everyone.toString()} **${user.display_name}** acabou de entrar ao vivo, vai conferir: https://twitch.tv/${user.login}`, embed);
   }
 
   async checkDiscord() {

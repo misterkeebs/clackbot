@@ -51,6 +51,12 @@ class TwitchApi {
     const res = await this.get('moderation/moderators', { broadcaster_id: userId });
     console.log('res', res);
   }
+
+  async getUser(login) {
+    const res = await this.get('users', { login });
+    console.log('res', res);
+    return res.data[0];
+  }
 }
 
 module.exports = TwitchApi;
