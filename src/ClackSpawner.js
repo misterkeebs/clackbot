@@ -39,7 +39,7 @@ class ClackSpawner {
       }
       this.streaming = false;
       console.log(channelName, 'is not streaming, checking for other things to notify.');
-      await this.checkDiscord();
+      // await this.checkDiscord();
       return;
     }
 
