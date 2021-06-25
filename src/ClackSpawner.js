@@ -127,7 +127,7 @@ class ClackSpawner {
 
     const guild = this.discord.guilds.cache.find(g => g.name === process.env.DISCORD_GUILD_NAME);
     const { everyone } = guild.roles;
-    const channel = this.discord.channels.cache.find(c => c.name === 'ann');
+    const channel = this.discord.channels.cache.find(c => c.name === 'announcements');
     channel.send(`${everyone.toString()} **${user.display_name}** acabou de entrar ao vivo, vai conferir: https://twitch.tv/${user.login}`, embed);
   }
 
