@@ -76,9 +76,9 @@ class GroupBuyCommand extends Command {
 
     const embedFields = fields.map(([label, field, format]) => {
       const fv = gb[field];
-      // if (_.isEmpty(fv)) {
-      //   return null;
-      // }
+      if (_.isEmpty(fv)) {
+        return null;
+      }
       const value = format ? formats[format](fv) : fv;
       return { name: label, value };
     }).filter(v => !!v);
