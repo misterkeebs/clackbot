@@ -21,6 +21,7 @@ class GroupBuyNotifier {
     if (!lastRun) return true;
 
     const lastRunDate = moment(lastRun);
+
     const validIfAfter = lastRunDate.add(1, 'day').startOf('day');
     if (!moment().isAfter(validIfAfter)) return false;
 
@@ -29,7 +30,7 @@ class GroupBuyNotifier {
 
   async execute() {
     console.log('Checking if GB notify can run...');
-    if (!this.canRun(alertHour)) return;
+    if (!await this.canRun(alertHour)) return;
 
     console.log('Updating groupbuys...');
     await this.update();
