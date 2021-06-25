@@ -23,6 +23,7 @@ module.exports = async (twitch, discord) => {
     daily: require('./commands/discord/Daily'),
     top: require('./commands/discord/Top'),
     denada: require('./commands/discord/Denada'),
+    gb: require('./commands/discord/GroupBuy'),
   });
 
   return bot.start().then(ifaces => {

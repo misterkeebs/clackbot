@@ -2,11 +2,11 @@ const moment = require('moment');
 const { expect } = require('chai');
 const tk = require('timekeeper');
 
-const gb = require('../../../src/commands/discord/GroupBuys');
-const GroupBuy = require('../../../src/models/GroupBuy');
-const FakeDiscordMessage = require('../../FakeDiscordMessage');
+// const gb = require('../../../src/commands/discord/GroupBuys');
+// const GroupBuy = require('../../../src/models/GroupBuy');
+// const FakeDiscordMessage = require('../../FakeDiscordMessage');
 
-describe('GroupBuys', () => {
+xdescribe('GroupBuys', () => {
   const iface = {};
 
   describe('with no params', async () => {
