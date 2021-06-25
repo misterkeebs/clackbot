@@ -9,7 +9,11 @@ class Setting extends Model {
   static idColumn = 'key';
 
   static async set(key, value) {
-    return await Setting.query().insert({ key, value });
+    const res = await Setting.query().update({ key, value });
+    if (res === 0) {
+      return await Setting.query().insert({ key, value });
+    }
+    return res;
   }
 
   static async get(key) {
