@@ -4,6 +4,7 @@ require('dotenv').config();
 const twitch = require('./src/TwitchClient');
 const ClackSpawner = require('./src/ClackSpawner');
 const discord = require('./src/DiscordClient');
+const GroupBuyNotifier = require('./src/tasks/GroupBuyNotifier');
 
 const sleep = process.env.SLEEP_BETWEEN_SPAWNS || 30;
 
@@ -26,10 +27,12 @@ async function init() {
   client = await twitch.connect();
   discordClient = await connect();
   spawner = new ClackSpawner(client, discordClient);
+  notifier = new GroupBuyNotifier(client, discordClient);
 }
 
 async function main() {
   await spawner.check();
+  await notifier.execute();
 }
 
 function run() {

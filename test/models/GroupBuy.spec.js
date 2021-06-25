@@ -1,6 +1,7 @@
 const moment = require('moment');
-const { expect } = require('chai');
 const tk = require('timekeeper');
+const { expect } = require('chai');
+const { readFixture } = require('../Utils');
 
 const GroupBuy = require('../../src/models/GroupBuy');
 
@@ -8,7 +9,31 @@ describe('GroupBuy', async () => {
   beforeEach(() => tk.freeze(1605576014801));
   afterEach(() => tk.reset());
 
-  describe('.pending', async () => {
+  describe('.starting', async () => {
+    let gb1, gb2, gb3;
+    let starting;
+
+    beforeEach(async () => {
+      gb1 = await GroupBuy.query().insertAndFetch({ name: 'GMK One', startsAt: moment().endOf('day') });
+      gb2 = await GroupBuy.query().insertAndFetch({ name: 'GMK Two', startsAt: moment().add(1, 'day') });
+      gb3 = await GroupBuy.query().insertAndFetch({ name: 'GMK Three', startsAt: moment().add(-1, 'day') });
+      starting = (await GroupBuy.starting()).map(g => g.id);
+    });
+
+    it('includes groupbuys that start today', async () => {
+      expect(starting).to.include(gb1.id);
+    });
+
+    it('excludes groupbuys that start tomorrow', async () => {
+      expect(starting).to.not.include(gb2.id);
+    });
+
+    it('excludes groupbuys that already started', async () => {
+      expect(starting).to.not.include(gb3.id);
+    });
+  });
+
+  describe('.ending', async () => {
     let gb1, gb2, gb3, gb4;
     let ending;
 
@@ -32,7 +57,7 @@ describe('GroupBuy', async () => {
       expect(ending).to.not.include(gb3.id);
     });
 
-    it('excludes groupbuys that were already notified', async () => {
+    xit('excludes groupbuys that were already notified', async () => {
       expect(ending).to.not.include(gb4.id);
     });
   });
@@ -103,6 +128,16 @@ describe('GroupBuy', async () => {
 
     it('is false when start time is null', async () => {
       expect(gb3.hasStarted()).to.be.false;
+    });
+  });
+
+  describe('fromData', async () => {
+    let buy;
+
+    it('parses a GB entry', async () => {
+      const json = readFixture('gb-data').pop();
+      const buy = await GroupBuy.fromData(json);
+      expect(buy.type).to.eql('switches');
     });
   });
 });

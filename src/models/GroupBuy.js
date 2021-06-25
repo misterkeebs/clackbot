@@ -1,4 +1,5 @@
 const moment = require('moment');
+const _ = require('lodash');
 const { raw } = require('objection');
 
 const Model = require('./Model');
@@ -6,6 +7,44 @@ const Model = require('./Model');
 class GroupBuy extends Model {
   static get tableName() {
     return 'groupbuys';
+  }
+
+  static async sync() {
+    const res = await fetch(`https://www.mechgroupbuys.com/gb-data`);
+    const json = await res.json();
+    const data = json.map(entry => Buy.fromJson(entry));
+  }
+
+  static async fromData(json) {
+    function parseDate(date) {
+      if (_.isEmpty(date)) return null;
+      const res = moment(date, 'MM-DD-YY');
+      if (!res.isValid()) return null;
+      return res;
+    }
+
+    try {
+      return await this.query().insertAndFetch({
+        type: json.type,
+        name: json.name,
+        startsAt: parseDate(json.startDate),
+        endsAt: parseDate(json.endDate),
+        onlyDisplayMonth: json.onlyDisplayMonth === 'TRUE',
+        pricing: json.pricing,
+        saleType: json.saleType,
+        vendors: json.vendors,
+        additionalLinks: json.additionalLinks,
+        mainImage: json.mainImage,
+        additionalImages: json.additionalImages,
+        additionalDescription: json.additionalDescription,
+        discordMessage: json.discordMessage,
+        redditMessage: json.redditMessage,
+        siteMessage: json.siteMessage,
+      });
+    } catch (err) {
+      console.error("Error with data", json, err);
+      throw err;
+    }
   }
 
   static get jsonSchema() {
@@ -33,7 +72,7 @@ class GroupBuy extends Model {
   static pending() {
     return this.query()
       .where('startsAt', '<=', moment().add(1, 'hour'))
-      .where(function() {
+      .where(function () {
         this
           .whereNull('endsAt')
           .orWhere('endsAt', '>=', moment());
@@ -43,8 +82,12 @@ class GroupBuy extends Model {
 
   static ending() {
     return this.query()
-      .where(raw('DATE(ends_at)'), raw(`DATE('${moment().format('YYYY-MM-DD')}')`))
-      .whereNull('endNotifiedAt');
+      .where(raw('DATE(ends_at)'), raw(`DATE('${moment().format('YYYY-MM-DD')}')`));
+  }
+
+  static starting() {
+    return this.query()
+      .where(raw('DATE(starts_at)'), raw(`DATE('${moment().format('YYYY-MM-DD')}')`));
   }
 
   hasStarted() {
