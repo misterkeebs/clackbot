@@ -53,26 +53,38 @@ class GroupBuyCommand extends Command {
     }).join('\n');
   }
 
+  static formatLinks(str) {
+    return str.split(',').map(s => s.trim()).map(s => {
+      const [key, ...values] = s.split(':');
+      const value = values.join(':');
+      if (value.includes(':')) {
+        const [k, v] = value.trim().replace(/:/, '|').split('|');
+        return `- [${k} (${key})](${v})`;
+      }
+      return `> ${s}`;
+    });
+  }
+
   async sendCard(gb) {
     const fields = [
       ['Starts', 'startsAt', 'date'],
       ['Ends', 'endsAt', 'date'],
       ['Sale Type', 'saleType'],
       ['Pricing', 'pricing', 'multi'],
-      ['Vendors', 'vendors', 'multi'],
+      ['Vendors', 'vendors', 'links'],
     ];
 
     const formats = {
       date: v => moment(v).format('DD MMM YYYY'),
       multi: v => GroupBuyCommand.formatMulti(v),
+      links: v => GroupBuyCommand.formatLinks(v),
     };
 
     const embed = new Discord.MessageEmbed()
       .setColor('#543e94')
-      .setTitle(gb.name)
       .setImage(gb.mainImage)
       .setThumbnail(alertImage)
-      .setAuthor('Informação do GroupBuy', 'https://images-ext-2.discordapp.net/external/7mJlSRNI6rDgvoVR1LSqXJvsgiGI4rHO2Msgg5b8M88/https/static-cdn.jtvnw.net/jtv_user_pictures/7ecbe0e8-904d-49c5-b87d-dcadda378864-profile_image-300x300.png');
+      .setAuthor(gb.name, 'https://images-ext-2.discordapp.net/external/7mJlSRNI6rDgvoVR1LSqXJvsgiGI4rHO2Msgg5b8M88/https/static-cdn.jtvnw.net/jtv_user_pictures/7ecbe0e8-904d-49c5-b87d-dcadda378864-profile_image-300x300.png');
 
     const embedFields = fields.map(([label, field, format]) => {
       const fv = gb[field];
@@ -80,7 +92,7 @@ class GroupBuyCommand extends Command {
         return null;
       }
       const value = format ? formats[format](fv) : fv;
-      return { name: label, value };
+      return { name: label, value, inline: true };
     }).filter(v => !!v);
 
     embed.addFields(embedFields);
