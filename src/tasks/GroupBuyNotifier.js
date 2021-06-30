@@ -76,12 +76,22 @@ class GroupBuyNotifier {
     gbs.forEach(gb => {
       const body = [];
       fields.forEach(([label, field, format]) => {
-        const item = (label ? `> ${label}: ` : '> ')
-          + (format === 'date' ? moment(gb[field]).format('MMM D') : gb[field]);
-        body.push(item);
+        if (gb[field] && (format === 'date' || gb[field].length > 0)) {
+          const item = (label ? `> ${label}: ` : '> ')
+            + (format === 'date' ? moment(gb[field]).format('MMM D') : gb[field]);
+          body.push(item);
+        }
       });
+
+      if (gb.additionalLinks && gb.additionalLinks.length) {
+        const [link] = gb.additionalLinks.split(',').map(l => l.trim());
+        const parts = link.split(': ');
+        body.push(`> [${parts[0]}](${parts[1]})`);
+      }
+
       embed.addField(gb.name, body.join('\n'), true);
     });
+
 
     const channel = this.discord.channels.cache.find(c => c.name === annChannel);
     return channel.send(`<@&${alertRole}> there are ${gbs.length} groupbuys ${title} today:`, embed);

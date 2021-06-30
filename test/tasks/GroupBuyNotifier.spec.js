@@ -10,6 +10,158 @@ const Setting = require('../../src/models/Setting');
 describe('GroupBuyNotifier', async () => {
   const gb = new GroupBuyNotifier();
 
+  describe('formatNotice', async () => {
+    describe('with additionalLinks', async () => {
+      let msg, embed;
+
+      beforeEach(async () => {
+        const gbs = [
+          {
+            name: 'GMK Duck',
+            startsAt: moment('2020-01-01'),
+            endsAt: moment('2020-03-01'),
+            pricing: 'Base: 150',
+            additionalLinks: 'Geekhack: http://something',
+          }
+        ];
+        const discord = {
+          channels: {
+            cache: [
+              {
+                name: 'ann',
+                send: (_msg, _embed) => {
+                  msg = _msg;
+                  embed = _embed;
+                },
+              }
+            ]
+          }
+        };
+        new GroupBuyNotifier({}, discord).formatNotice('starting', '#000000', gbs);
+      });
+
+      it('sends a message showing the number of GBs', async () => {
+        expect(msg).to.eql('<@&780599217051664400> there are 1 groupbuys starting today:');
+      });
+
+      it('includes the GB name', async () => {
+        expect(embed.fields[0].name).to.eql('GMK Duck');
+      });
+
+      it('includes the GB base price', async () => {
+        expect(embed.fields[0].value).to.include('> Base: 150\n');
+      });
+
+      it('includes the start date', async () => {
+        expect(embed.fields[0].value).to.include('> Starts: jan 1\n');
+      });
+
+      it('includes the end date', async () => {
+        expect(embed.fields[0].value).to.include('> Ends: mar 1\n');
+      });
+
+      it('includes the link', async () => {
+        expect(embed.fields[0].value).to.include('> [Geekhack](http://something)');
+      });
+    });
+
+    describe('with no additionalLinks', async () => {
+      let msg, embed;
+
+      beforeEach(async () => {
+        const gbs = [
+          {
+            name: 'GMK Duck',
+            startsAt: moment('2020-01-01'),
+            endsAt: moment('2020-03-01'),
+            pricing: 'Base: 150',
+            additionalLinks: '',
+          }
+        ];
+        const discord = {
+          channels: {
+            cache: [
+              {
+                name: 'ann',
+                send: (_msg, _embed) => {
+                  msg = _msg;
+                  embed = _embed;
+                },
+              }
+            ]
+          }
+        };
+        new GroupBuyNotifier({}, discord).formatNotice('starting', '#000000', gbs);
+      });
+
+      it('sends a message showing the number of GBs', async () => {
+        expect(msg).to.eql('<@&780599217051664400> there are 1 groupbuys starting today:');
+      });
+
+      it('includes the GB name', async () => {
+        expect(embed.fields[0].name).to.eql('GMK Duck');
+      });
+
+      it('includes the GB base price', async () => {
+        expect(embed.fields[0].value).to.include('> Base: 150');
+      });
+
+      it('includes the start date', async () => {
+        expect(embed.fields[0].value).to.include('> Starts: jan 1\n');
+      });
+
+      it('includes the end date', async () => {
+        expect(embed.fields[0].value).to.include('> Ends: mar 1\n');
+      });
+    });
+
+    describe.only('with no endDate', async () => {
+      let msg, embed;
+
+      beforeEach(async () => {
+        const gbs = [
+          {
+            name: 'GMK Duck',
+            startsAt: moment('2020-01-01'),
+            endsAt: '',
+            pricing: 'Base: 150',
+            additionalLinks: '',
+          }
+        ];
+        const discord = {
+          channels: {
+            cache: [
+              {
+                name: 'ann',
+                send: (_msg, _embed) => {
+                  msg = _msg;
+                  embed = _embed;
+                },
+              }
+            ]
+          }
+        };
+        new GroupBuyNotifier({}, discord).formatNotice('starting', '#000000', gbs);
+      });
+
+      it('sends a message showing the number of GBs', async () => {
+        expect(msg).to.eql('<@&780599217051664400> there are 1 groupbuys starting today:');
+      });
+
+      it('includes the GB name', async () => {
+        expect(embed.fields[0].name).to.eql('GMK Duck');
+      });
+
+      it('includes the GB base price', async () => {
+        expect(embed.fields[0].value).to.include('> Base: 150');
+      });
+
+      it('includes the start date', async () => {
+        expect(embed.fields[0].value).to.include('> Starts: jan 1\n');
+      });
+    });
+  });
+
   describe('sync', async () => {
     it('creates all the entries', async () => {
       const json = () => Promise.resolve(readFixture('gb-data'));
@@ -78,8 +230,8 @@ describe('GroupBuyNotifier', async () => {
       console.log('gb1', gb1);
       console.log('gb2', gb2);
     });
+
     it('shows all GBs that start today', async () => {
-      // ...
       // await gb.execute();
     });
 
