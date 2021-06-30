@@ -115,7 +115,7 @@ describe('GroupBuyNotifier', async () => {
       });
     });
 
-    describe.only('with no endDate', async () => {
+    describe('with no endDate', async () => {
       let msg, embed;
 
       beforeEach(async () => {
