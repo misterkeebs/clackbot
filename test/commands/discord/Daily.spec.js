@@ -26,12 +26,12 @@ describe('Daily', async () => {
     });
   });
 
-  describe('when user has claimed in less than 22 hours ago', async () => {
+  describe('when user has claimed in less than 11 hours ago', async () => {
     let user, nextSlot;
 
     beforeEach(async () => {
-      const lastDailyAt = moment().subtract(21, 'hours');
-      nextSlot = moment(lastDailyAt).add(22, 'hours');
+      const lastDailyAt = moment().subtract(10, 'hours');
+      nextSlot = moment(lastDailyAt).add(11, 'hours');
       user = await User.query().insert({ displayName: 'user', lastDailyAt });
       await new Daily({
         iface,
@@ -46,11 +46,11 @@ describe('Daily', async () => {
     });
   });
 
-  describe('when user claimed in more than 22 hours ago', async () => {
+  describe('when user claimed in more than 11 hours ago', async () => {
     let user;
 
     beforeEach(async () => {
-      const lastDailyAt = moment().subtract(23, 'hours');
+      const lastDailyAt = moment().subtract(12, 'hours');
       user = await User.query().insert({ displayName: 'user', lastDailyAt });
       await new Daily({
         iface,

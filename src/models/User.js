@@ -130,7 +130,7 @@ class User extends Model {
 
   async daily() {
     if (this.lastDailyAt) {
-      const nextClaim = moment(this.lastDailyAt).add(22, 'hours');
+      const nextClaim = moment(this.lastDailyAt).add(11, 'hours');
 
       if (nextClaim.isAfter(moment())) {
         throw new AlreadyRedeemedError(nextClaim);

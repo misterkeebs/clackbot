@@ -92,7 +92,6 @@ class GroupBuyNotifier {
       embed.addField(gb.name, body.join('\n'), true);
     });
 
-
     const channel = this.discord.channels.cache.find(c => c.name === annChannel);
     return channel.send(`<@&${alertRole}> there are ${gbs.length} groupbuys ${title} today:`, embed);
   }
