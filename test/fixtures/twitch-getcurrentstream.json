@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "id": "streamid",
+      "user_id": "user_id",
+      "user_login": "login",
+      "user_name": "name",
+      "game_id": "game_id",
+      "game_name": "Just chatting",
+      "type": "live",
+      "title": "[PT/EN] Elongate Build",
+      "viewer_count": 8,
+      "started_at": "2021-03-09T16:59:39Z",
+      "language": "pt-br",
+      "thumbnail_url": "https://static-cdn.jtvnw.net/previews-ttv/live_user_amar-{width}x{height}.jpg",
+      "tag_ids": [
+        "9166ad14-41f1-4b04-a3b8-c8eb838c6be6"
+      ],
+      "is_mature": false
+    }
+  ]
+}
