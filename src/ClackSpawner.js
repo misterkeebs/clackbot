@@ -134,41 +134,41 @@ class ClackSpawner {
   async checkDiscord() {
     if (!alertRole) return;
 
-    const gbs = await GroupBuy.pending();
-    const channel = this.discord.channels.cache.find(c => c.name === annChannel);
+    // const gbs = await GroupBuy.pending();
+    // const channel = this.discord.channels.cache.find(c => c.name === annChannel);
 
-    await Promise.map(gbs, async gb => {
-      const time = moment(gb.startsAt);
-      time.locale('pt-br');
+    // await Promise.map(gbs, async gb => {
+    //   const time = moment(gb.startsAt);
+    //   time.locale('pt-br');
 
-      if (time.isBefore(moment())) {
-        channel.send(`<@&${alertRole}> **${gb.name}** começou - ${gb.url}`);
-        return gb.markNotified();
-      }
+    //   if (time.isBefore(moment())) {
+    //     channel.send(`<@&${alertRole}> **${gb.name}** começou - ${gb.url}`);
+    //     return gb.markNotified();
+    //   }
 
-      if (!gb.warnedAt) {
-        channel.send(`<@&${alertRole}> **${gb.name}** começa ${time.fromNow()} - ${gb.url}`);
-        return gb.markWarned();
-      }
-      return Promise.resolve();
-    });
+    //   if (!gb.warnedAt) {
+    //     channel.send(`<@&${alertRole}> **${gb.name}** começa ${time.fromNow()} - ${gb.url}`);
+    //     return gb.markWarned();
+    //   }
+    //   return Promise.resolve();
+    // });
 
-    const endingGbs = await GroupBuy.ending();
-    await Promise.map(endingGbs, async gb => {
-      const time = moment(gb.endsAt);
-      time.locale('pt-br');
+    // const endingGbs = await GroupBuy.ending();
+    // await Promise.map(endingGbs, async gb => {
+    //   const time = moment(gb.endsAt);
+    //   time.locale('pt-br');
 
-      if (time.isBefore(moment())) {
-        channel.send(`<@&${alertRole}> **${gb.name}** terminou`);
-        return gb.markEndNotified();
-      }
+    //   if (time.isBefore(moment())) {
+    //     channel.send(`<@&${alertRole}> **${gb.name}** terminou`);
+    //     return gb.markEndNotified();
+    //   }
 
-      if (gb.hasStarted() && !gb.endWarnedAt) {
-        channel.send(`<@&${alertRole}> **${gb.name}** termina ${time.fromNow()} - ${gb.url}`);
-        return gb.markEndWarned();
-      }
-      return Promise.resolve();
-    });
+    //   if (gb.hasStarted() && !gb.endWarnedAt) {
+    //     channel.send(`<@&${alertRole}> **${gb.name}** termina ${time.fromNow()} - ${gb.url}`);
+    //     return gb.markEndWarned();
+    //   }
+    //   return Promise.resolve();
+    // });
   }
 }
 
