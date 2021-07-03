@@ -48,7 +48,12 @@ function hasAnyDiscordRole(msg, roles) {
   return msg.member.roles.cache.find(r => roles.includes(r.name));
 }
 
+function plural(target, count, plural = 's') {
+  return count === 1 ? target : target + plural;
+}
+
 module.exports = {
+  plural,
   isClass,
   randomInt,
   weighedRandom,

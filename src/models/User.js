@@ -94,6 +94,11 @@ class User extends Model {
     return { bonus: user.bonus, code: codeObj.code };
   }
 
+  async addBonus(bonus) {
+    if (bonus === 0) return;
+    return this.$query().patch({ bonus: this.bonus + bonus });
+  }
+
   static async addBonus(displayName, bonus) {
     let [user] = await User.query().where('displayName', displayName);
     if (!user) {

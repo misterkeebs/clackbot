@@ -24,6 +24,8 @@ module.exports = async (twitch, discord) => {
     top: require('./commands/discord/Top'),
     denada: require('./commands/discord/Denada'),
     gb: require('./commands/discord/GroupBuy'),
+    forca: require('./commands/discord/ForcaCmd'),
+    f: require('./commands/discord/ForcaCmd'),
   });
 
   return bot.start().then(ifaces => {

@@ -81,6 +81,10 @@ class Command {
     return user;
   }
 
+  async sendToChannel(message, embed) {
+    return await this.rawMessage.channel.send(message, embed);
+  }
+
   async reply(message) {
     return await this.iface.reply(this.channel, this.userName, message);
   }

@@ -1,8 +1,16 @@
 const _ = require('lodash');
 
 class FakeInterface {
-  constructor() {
+  constructor(opts) {
     this.calls = [];
+    this.channelMessages = [];
+    this.rawMessage = {
+      channel: {
+        send: (message, embed) => {
+          this.channelMessages.push({ message, embed });
+        }
+      },
+    };
   }
 
   reset() {
@@ -14,8 +22,8 @@ class FakeInterface {
     this.calls.push({ channel, user, message });
   }
 
-  send(channel, message) {
-    this.calls.push({ channel, message });
+  get lastChannelMessage() {
+    return _.get(_.last(this.channelMessages), 'message');
   }
 
   get lastMessage() {
