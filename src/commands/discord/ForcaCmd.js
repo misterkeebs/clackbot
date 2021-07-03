@@ -23,6 +23,11 @@ class ForcaCommand extends Command {
       this.forca.start();
     } else {
       const [guess] = this.args;
+      if (!guess) {
+        this.reply('faltou a letra... Use `!forca <letra>` para chutar uma letra.');
+        return;
+      }
+
       try {
         const guesses = this.forca.guess(guess);
 

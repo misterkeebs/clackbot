@@ -57,6 +57,18 @@ describe('ForcaCmd', async () => {
         });
       });
 
+      describe(`when user doesn't provide a letter to guess`, async () => {
+        beforeEach(async () => {
+          forca.start('paçoca')
+          await sendMessage('forca a');
+          await sendMessage('forca');
+        });
+
+        it('replies with an error', async () => {
+          expect(iface.lastMessage).to.eql('faltou a letra... Use `!forca <letra>` para chutar uma letra.');
+        });
+      });
+
       describe('that matches one letter', async () => {
         beforeEach(async () => {
           forca.start('paçoca')
