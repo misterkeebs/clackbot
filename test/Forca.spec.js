@@ -77,6 +77,44 @@ describe('Forca', async () => {
         expect(forca.errors).to.include('x');
       });
     });
+
+    describe('when guessing the word', async () => {
+      describe('with the right word', async () => {
+        let forca;
+
+        beforeEach(async () => {
+          forca = new Forca();
+          forca.start('paçoca');
+          forca.guess('pacoca');
+        });
+
+        it('finishes the game', async () => {
+          expect(forca.isFinished()).to.be.true;
+        });
+
+        it('marks the game as a win', async () => {
+          expect(forca.isWin()).to.be.true;
+        });
+      });
+
+      describe('with the wrong word', async () => {
+        let forca;
+
+        beforeEach(async () => {
+          forca = new Forca();
+          forca.start('paçoca');
+          forca.guess('copaca');
+        });
+
+        it('finishes the game', async () => {
+          expect(forca.isFinished()).to.be.true;
+        });
+
+        it(`doesn't mark the game as a win`, async () => {
+          expect(forca.isWin()).to.be.false;
+        });
+      });
+    });
   });
 
   describe('toString', async () => {
@@ -97,7 +135,6 @@ describe('Forca', async () => {
       });
     });
 
-
     describe('with multiple guesses', async () => {
       it('returns the guessed characters', async () => {
         const forca = new Forca();
@@ -105,6 +142,15 @@ describe('Forca', async () => {
         forca.guess('a');
         forca.guess('c');
         expect(forca.toString()).to.eql('_ A Ç _ C A');
+      });
+    });
+
+    describe('when finished and guessed', async () => {
+      it('returns all characters', async () => {
+        const forca = new Forca();
+        forca.start('paçoca');
+        forca.guess('acorca');
+        expect(forca.toString()).to.eql('P A Ç O C A');
       });
     });
   });

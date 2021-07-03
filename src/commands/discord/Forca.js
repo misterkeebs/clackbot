@@ -21,11 +21,13 @@ const EQUIV = {
 
 class Forca {
   constructor() {
-    this.running = false;
+    this.reset();
   }
 
   reset() {
     this.running = false;
+    this.madeGuess = false;
+    this.guessedRight = false;
   }
 
   pickWord() {
@@ -53,7 +55,19 @@ class Forca {
     return this.word.split('').filter(c => this.getEquiv(c) === char).length
   }
 
+  guessWord(word) {
+    const guessed = word.split('').map(w => this.getEquiv(w)).join('').toLowerCase();
+    const actual = this.word.split('').map(w => this.getEquiv(w)).join('').toLowerCase();
+
+    this.madeGuess = true;
+    this.guessedRight = guessed === actual;
+  }
+
   guess(c) {
+    if (c.length >= 3) {
+      return this.guessWord(c);
+    }
+
     const char = this.getEquiv(c.toLowerCase());
     if (this.hasGuessed(char)) {
       throw new AlreadyGuessedError();
@@ -76,7 +90,7 @@ class Forca {
   }
 
   isFinished() {
-    return this.isWin() || this.errors.length > MAX_ERRORS;
+    return this.madeGuess || this.isWin() || this.errors.length > MAX_ERRORS;
   }
 
   hasGuessed(char) {
@@ -84,6 +98,7 @@ class Forca {
   }
 
   isWin() {
+    if (this.madeGuess && this.guessedRight) return true;
     if (this.word.split('').find(c => !this.hasGuessed(c)) === undefined) {
       this.reset();
       return true;
@@ -91,9 +106,13 @@ class Forca {
     return false;
   }
 
+  displayChar(char) {
+    return this.hasGuessed(char) || this.isFinished();
+  }
+
   toString() {
     const chars = this.word.split('');
-    return chars.map(c => this.hasGuessed(c) ? `${c.toUpperCase()} ` : `_ `).join('').trim();
+    return chars.map(c => this.displayChar(c) ? `${c.toUpperCase()} ` : `_ `).join('').trim();
   }
 
   start(word) {

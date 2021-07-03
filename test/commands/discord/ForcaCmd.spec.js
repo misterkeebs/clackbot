@@ -8,7 +8,7 @@ const ForcaCmd = require('../../../src/commands/discord/ForcaCmd');
 const User = require('../../../src/models/User');
 
 describe('ForcaCmd', async () => {
-  const forca = new Forca();
+  let forca;
 
   async function sendMessage(message) {
     return await new ForcaCmd({
@@ -22,16 +22,22 @@ describe('ForcaCmd', async () => {
 
   beforeEach(async () => {
     iface.reset();
+    forca = new Forca();
     await User.query().insert({ displayName: 'user' });
   });
 
   describe('when there is no game in course', async () => {
     beforeEach(async () => {
+      forca.pickWord = () => 'sambar';
       await sendMessage('forca');
     });
 
     it('starts a new game', async () => {
       expect(forca.isRunning()).to.be.true;
+    });
+
+    it('sends the word', async () => {
+      expect(iface.lastChannelMessage).to.contain('_ _ _ _ _ _');
     });
   });
 
@@ -167,6 +173,48 @@ describe('ForcaCmd', async () => {
         it(`doesn't give the user any bonuses`, async () => {
           const [user] = await User.query().where('displayName', 'user');
           expect(user.bonus).to.eql(10);
+        });
+      });
+    });
+
+    describe('when user sends a guess', async () => {
+      describe('and misses', async () => {
+        beforeEach(async () => {
+          forca.start('paçoca')
+          await sendMessage('forca pelota');
+        });
+
+        it('displays the full word', async () => {
+          expect(iface.lastChannelMessage).to.include('P A Ç O C A');
+        });
+
+        it('replies to the user saying he was hung', async () => {
+          expect(iface.lastMessage).to.eql('você foi enforcado! A palavra era **PAÇOCA**. :skull:');
+        });
+
+        it(`doesn't give the user any bonuses`, async () => {
+          const [user] = await User.query().where('displayName', 'user');
+          expect(user.bonus).to.be.null;
+        });
+      });
+
+      describe('and guesses right', async () => {
+        beforeEach(async () => {
+          forca.start('paçoca')
+          await sendMessage('forca paçoca');
+        });
+
+        it('displays the full word', async () => {
+          expect(iface.lastChannelMessage).to.include('P A Ç O C A');
+        });
+
+        it('replies to the user saying he was hung', async () => {
+          expect(iface.lastMessage).to.eql('você acertou a palavra e ganhou :coin: **5**. :heart:');
+        });
+
+        it(`doesn't give the user the win bonus`, async () => {
+          const [user] = await User.query().where('displayName', 'user');
+          expect(user.bonus).to.eql(5);
         });
       });
     });
