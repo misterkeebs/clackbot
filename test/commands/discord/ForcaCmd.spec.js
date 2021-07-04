@@ -216,6 +216,12 @@ describe('ForcaCmd', async () => {
           const [user] = await User.query().where('displayName', 'user');
           expect(user.bonus).to.eql(5);
         });
+
+        it('allows a new game to start', async () => {
+          forca.pickWord = () => 'paçoca';
+          await sendMessage('forca x');
+          expect(iface.lastChannelMessage).to.include('_ _ _ _ _ _');
+        });
       });
     });
   });

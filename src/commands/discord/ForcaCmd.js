@@ -59,6 +59,9 @@ class ForcaCommand extends Command {
       if (err instanceof AlreadyGuessedError) {
         this.reply(`a letra ${guess.toUpperCase()} já foi usada, tente outra.`);
       } else {
+        forca.reset();
+        this.reply(`houve um erro inesperado no jogo: ${err}.`);
+        console.error('Error during play', err);
         throw err;
       }
     }

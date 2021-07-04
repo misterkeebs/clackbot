@@ -98,8 +98,8 @@ class Forca {
   }
 
   isWin() {
-    if (this.madeGuess && this.guessedRight) return true;
-    if (this.word.split('').find(c => !this.hasGuessed(c)) === undefined) {
+    if ((this.madeGuess && this.guessedRight)
+      || (this.word.split('').find(c => !this.hasGuessed(c)) === undefined)) {
       this.reset();
       return true;
     }
