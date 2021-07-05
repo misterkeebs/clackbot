@@ -114,5 +114,44 @@ describe('TicTacToeCmd', async () => {
       await sendMessage('velha A1', { user: 'user2' });
       expect(iface.lastMessage).to.eql('a posição A1 já está ocupada, tente outra vez.');
     });
+
+    describe('when player1 wins', async () => {
+      beforeEach(async () => {
+        await sendMessage('velha A1');
+        await sendMessage('velha B1', { user: 'user2' });
+        await sendMessage('velha A2');
+        await sendMessage('velha B2', { user: 'user2' });
+        await sendMessage('velha A3');
+      });
+
+      it('sends a winning message', async () => {
+        expect(iface.lastChannelMessage).to.eql('<@!987654> o jogador <@!123456> ganhou e levou :coin: **5**!');
+      });
+
+      it('gives the winner a bonus', async () => {
+        const [user] = await User.query().where('displayName', 'user1');
+        expect(user.bonus).to.eql(5);
+      });
+    });
+
+    describe('when player2 wins', async () => {
+      beforeEach(async () => {
+        await sendMessage('velha C1');
+        await sendMessage('velha B1', { user: 'user2' });
+        await sendMessage('velha A2');
+        await sendMessage('velha B2', { user: 'user2' });
+        await sendMessage('velha A3');
+        await sendMessage('velha B3', { user: 'user2' });
+      });
+
+      it('sends a winning message', async () => {
+        expect(iface.lastChannelMessage).to.eql('<@!123456> o jogador <@!987654> ganhou e levou :coin: **5**!');
+      });
+
+      it('gives the winner a bonus', async () => {
+        const [user] = await User.query().where('displayName', 'user2');
+        expect(user.bonus).to.eql(5);
+      });
+    });
   });
 });

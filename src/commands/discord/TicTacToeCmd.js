@@ -7,6 +7,8 @@ const NotPlayerTurnError = require('./NotPlayerTurnError');
 const InvalidMoveError = require('./InvalidMoveError');
 const UnavailableCellError = require('./UnavailableCelError');
 
+const WIN_BONUS = 5;
+
 const invites = [];
 
 class TicTacToeCmd extends Command {
@@ -90,9 +92,11 @@ class TicTacToeCmd extends Command {
       const player2 = await User.query().findById(this.game.player2);
 
       if (this.game.getWinner() === this.game.player1) {
-        await this.sendToChannel(`<@!${player2.discordId}> o jogador <@!${player1.discordId}> ganhou!`, embed);
+        await player1.addBonus(WIN_BONUS);
+        await this.sendToChannel(`<@!${player2.discordId}> o jogador <@!${player1.discordId}> ganhou e levou :coin: **${WIN_BONUS}**!`, embed);
       } else if (this.game.getWinner() === this.game.player2) {
-        await this.sendToChannel(`<@!${player1.discordId}> o jogador <@!${player2.discordId}> ganhou!`, embed);
+        await player2.addBonus(WIN_BONUS);
+        await this.sendToChannel(`<@!${player1.discordId}> o jogador <@!${player2.discordId}> ganhou e levou :coin: **${WIN_BONUS}**!`, embed);
       } else {
         await this.sendToChannel(`<@!${player1.discordId}> <@!${player2.discordId}> houve um empate!`, embed);
       }
