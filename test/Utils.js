@@ -1,8 +1,15 @@
 const fs = require('fs');
 
-const readFixture = name => {
-  const file = `test/fixtures/${name}.json`;
-  return JSON.parse(fs.readFileSync(file, 'utf8'));
+const fixturePath = name => {
+  return `test/fixtures/${name}`;
+}
+
+const readRawFixture = name => {
+  return fs.readFileSync(fixturePath(name), 'utf8');
 };
 
-module.exports = { readFixture };
+const readFixture = name => {
+  return JSON.parse(readRawFixture(`${name}.json`));
+};
+
+module.exports = { fixturePath, readRawFixture, readFixture };

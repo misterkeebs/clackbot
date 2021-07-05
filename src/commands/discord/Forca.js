@@ -117,6 +117,7 @@ class Forca {
 
   start(word) {
     this.word = (word || this.pickWord()).toLowerCase();
+    console.log('The word is', this.word);
     this.errors = [];
     this.guesses = [];
     this.running = true;

@@ -26,6 +26,7 @@ module.exports = async (twitch, discord) => {
     gb: require('./commands/discord/GroupBuy'),
     forca: require('./commands/discord/ForcaCmd'),
     f: require('./commands/discord/ForcaCmd'),
+    velha: require('./commands/discord/TicTacToeCmd'),
   });
 
   return bot.start().then(ifaces => {
