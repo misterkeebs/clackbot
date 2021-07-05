@@ -70,4 +70,29 @@ describe('TicTacToeCmd', async () => {
       });
     });
   });
+
+  describe('within a game', async () => {
+    beforeEach(async () => {
+      const users = new Map();
+      users.set('987654', {
+        id: '987654',
+        username: 'user2',
+        discriminator: '0001',
+      });
+      const rawMessage = { mentions: { users } };
+      await sendMessage(`velha <@!${user2.discordId}>`, { rawMessage });
+      await sendMessage('velha aceito', { user: 'user2' });
+    });
+
+    it('sends an error for an invalid move', async () => {
+      await sendMessage('velha X2');
+      expect(iface.lastMessage).to.eql('a jogada X2 não é válida, use uma letra (A, B ou C) e um número (1, 2 ou 3) - ex. `!velha A3`');
+    });
+
+    it(`sends an error when trying to play a cell that's already taken`, async () => {
+      await sendMessage('velha A1');
+      await sendMessage('velha A1', { user: 'user2' });
+      expect(iface.lastMessage).to.eql('a posição A1 já está ocupada, tente outra vez.');
+    });
+  });
 });

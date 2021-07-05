@@ -3,6 +3,7 @@ Canvas.registerFont('./src/fonts/Roboto-Regular.ttf', { family: 'Roboto' });
 
 const InvalidMoveError = require('./InvalidMoveError');
 const NotPlayerTurnError = require('./NotPlayerTurnError');
+const UnavailableCellError = require('./UnavailableCelError');
 
 const games = [];
 
@@ -98,12 +99,14 @@ class TicTacToe {
   };
 
   play(player, posString) {
-    const { x, y } = this.posToCoord(posString);
+    const { x, y } = this.posToCoord(posString.toUpperCase());
+    if ((x < 0 || y < 0) || (x > 2 || y > 2)) throw new InvalidMoveError(`Invalid move: ${posString}`);
+
     const line = this.board[y];
     const cell = line[x];
 
     if (this.board[y][x]) {
-      throw new InvalidMoveError();
+      throw new UnavailableCellError();
     }
     if (!this.isNext(player)) {
       throw new NotPlayerTurnError();

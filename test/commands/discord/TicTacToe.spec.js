@@ -7,6 +7,7 @@ const InvalidMoveError = require('../../../src/commands/discord/InvalidMoveError
 const NotPlayerTurnError = require('../../../src/commands/discord/NotPlayerTurnError');
 
 const TicTacToe = require('../../../src/commands/discord/TicTacToe');
+const UnavailableCellError = require('../../../src/commands/discord/UnavailableCelError');
 const User = require('../../../src/models/User');
 const { readRawFixture, fixturePath } = require('../../Utils');
 
@@ -49,9 +50,33 @@ describe.only('TicTacToe', async () => {
   });
 
   describe('play', async () => {
+    it('raises error when coordinates are out of range', async () => {
+      const play = () => game.play(user1, 'D1');
+      expect(play).to.throw(InvalidMoveError);
+    });
+
+    it('raises error when coordinates are invalid', async () => {
+      expect(() => game.play(user1, 'SASA')).to.throw(InvalidMoveError);
+      expect(() => game.play(user1, '!!')).to.throw(InvalidMoveError);
+    });
+
     describe('when cell is vacant', async () => {
       beforeEach(async () => {
         game.play(user1, 'A2');
+      });
+
+      it(`adds the player's move to the position`, async () => {
+        expect(game.board[0][1]).to.equal(user1.id);
+      });
+
+      it('sets the nextPlayer', async () => {
+        expect(game.nextPlayer).to.equal(user2.id);
+      });
+    });
+
+    describe('playing with lowercase', async () => {
+      beforeEach(async () => {
+        game.play(user1, 'a2');
       });
 
       it(`adds the player's move to the position`, async () => {
@@ -69,7 +94,7 @@ describe.only('TicTacToe', async () => {
       });
 
       it(`throws an exception`, async () => {
-        expect(() => game.play(user2, 'A2')).to.throw(InvalidMoveError);
+        expect(() => game.play(user2, 'A2')).to.throw(UnavailableCellError);
       });
     });
 

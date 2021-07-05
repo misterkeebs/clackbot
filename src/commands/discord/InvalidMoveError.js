@@ -1,6 +1,6 @@
 class InvalidMoveError extends Error {
-  constructor() {
-    super(`This move is invalid`);
+  constructor(str = `This move is invalid`) {
+    super(str);
   }
 }
 

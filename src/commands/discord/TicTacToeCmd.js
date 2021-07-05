@@ -5,6 +5,7 @@ const Command = require('../Command');
 const User = require('../../models/User');
 const NotPlayerTurnError = require('./NotPlayerTurnError');
 const InvalidMoveError = require('./InvalidMoveError');
+const UnavailableCellError = require('./UnavailableCelError');
 
 const invites = [];
 
@@ -55,7 +56,11 @@ class TicTacToeCmd extends Command {
           return;
         }
         if (e instanceof InvalidMoveError) {
-          await this.reply(`você não pode fazer essa jogada.`);
+          await this.reply(`a jogada ${param} não é válida, use uma letra (A, B ou C) e um número (1, 2 ou 3) - ex. \`!velha A3\``);
+          return;
+        }
+        if (e instanceof UnavailableCellError) {
+          await this.reply(`a posição ${param} já está ocupada, tente outra vez.`);
           return;
         }
 
@@ -72,7 +77,6 @@ class TicTacToeCmd extends Command {
       .attachFiles(attachment)
       .setImage('attachment://game.png');
 
-    console.log('this.game.isFinished()', this.game.isFinished());
     if (this.game.isFinished()) {
       const player1 = await User.query().findById(this.game.player1);
       const player2 = await User.query().findById(this.game.player2);
