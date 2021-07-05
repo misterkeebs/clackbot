@@ -32,6 +32,16 @@ describe('TicTacToeCmd', async () => {
   });
 
   describe('with no game', async () => {
+    describe('accepting an invalid invite', async () => {
+      beforeEach(async () => {
+        await sendMessage('velha ACEITO');
+      });
+
+      it('sends an error message', async () => {
+        expect(iface.lastMessage).to.include('você não tem convites pendentes');
+      });
+    });
+
     describe('with no params', async () => {
       it('sends an error message', async () => {
         await sendMessage('velha');
@@ -61,7 +71,7 @@ describe('TicTacToeCmd', async () => {
         });
 
         it('sends a message to the other player', async () => {
-          expect(iface.lastMessage).to.eql('<@!123456> seu convite foi aceito! Começando novo jogo...');
+          expect(iface.findChannelMessage('<@!123456> seu convite foi aceito! Começando novo jogo...')).to.not.be.undefined;
         });
 
         it('sends the start game message', async () => {

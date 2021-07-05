@@ -22,6 +22,10 @@ class FakeInterface {
     this.calls.push({ channel, user, message });
   }
 
+  findChannelMessage(msg) {
+    return _.find(this.channelMessages, { message: msg });
+  }
+
   get lastChannelMessage() {
     return _.get(_.last(this.channelMessages), 'message');
   }

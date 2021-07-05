@@ -11,7 +11,7 @@ const UnavailableCellError = require('../../../src/commands/discord/UnavailableC
 const User = require('../../../src/models/User');
 const { readRawFixture, fixturePath } = require('../../Utils');
 
-describe.only('TicTacToe', async () => {
+describe('TicTacToe', async () => {
   let game, user1, user2;
 
   beforeEach(async () => {

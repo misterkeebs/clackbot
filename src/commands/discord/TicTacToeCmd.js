@@ -29,16 +29,18 @@ class TicTacToeCmd extends Command {
       return;
     }
 
-    if (param === 'aceito') {
-      const invitePos = invites.findIndex(i => i[1].id === this.user.id);
-      if (invitePos > -1) {
-        const invite = invites[invitePos];
-        invites.splice(invitePos, 1);
-        this.game = this.ticTacToeClass.newGame(invite[0], invite[1]);
-        await this.sendToChannel(`<@!${invite[0].discordId}> seu convite foi aceito! Começando novo jogo...`);
-        return await this.handleGame();
+    if (param.toLowerCase() === 'aceito') {
+      if (this.user) {
+        const invitePos = invites.findIndex(i => i[1].id === this.user.id);
+        if (invitePos > -1) {
+          const invite = invites[invitePos];
+          invites.splice(invitePos, 1);
+          this.game = this.ticTacToeClass.newGame(invite[0], invite[1]);
+          await this.sendToChannel(`<@!${invite[0].discordId}> seu convite foi aceito! Começando novo jogo...`);
+          return await this.handleGame();
+        }
       }
-      await this.reply('você não tem convites pendentes. Para começar uma nova partida mande `!velha <@usuario>.`');
+      return await this.reply('você não tem convites pendentes. Para começar uma nova partida mande `!velha <@usuario>.`');
     }
 
     invites.push([this.user, this.receiver]);
