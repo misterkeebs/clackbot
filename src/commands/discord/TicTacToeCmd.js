@@ -17,6 +17,10 @@ class TicTacToeCmd extends Command {
     this.ticTacToeClass = ticTacToeClass;
   }
 
+  async sendInvalid() {
+    await this.reply('você tem que convidar alguém. Use `!velha <@convidado>` para jogar. Para mais informações use `!ajuda velha`.');
+  }
+
   async handle() {
     this.game = this.ticTacToeClass.gameFor(this.user);
     if (this.game) {
@@ -25,7 +29,7 @@ class TicTacToeCmd extends Command {
 
     const [param] = this.args;
     if (!param) {
-      await this.reply('você tem que convidar alguém. Use `!velha <@convidado>` para jogar. Para mais informações use `!ajuda velha`.');
+      await this.sendInvalid();
       return;
     }
 
@@ -42,6 +46,8 @@ class TicTacToeCmd extends Command {
       }
       return await this.reply('você não tem convites pendentes. Para começar uma nova partida mande `!velha <@usuario>.`');
     }
+
+    if (!this.receiver) return await this.sendInvalid();
 
     invites.push([this.user, this.receiver]);
     this.sendToReceiver(`o usuário <@!${this.user.discordId}> está te convidando para uma partida de jogo da velha. Para aceitar digite \`!velha aceito\`.`);

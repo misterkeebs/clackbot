@@ -42,6 +42,16 @@ describe('TicTacToeCmd', async () => {
       });
     });
 
+    describe('inviting an invalid user', async () => {
+      beforeEach(async () => {
+        await sendMessage('velha hje');
+      });
+
+      it('sends an error message', async () => {
+        expect(iface.lastMessage).to.include('você tem que convidar alguém. Use `!velha <@convidado>` para jogar. Para mais informações use `!ajuda velha`.');
+      });
+    });
+
     describe('with no params', async () => {
       it('sends an error message', async () => {
         await sendMessage('velha');
