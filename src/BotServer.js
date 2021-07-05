@@ -27,6 +27,7 @@ module.exports = async (twitch, discord) => {
     forca: require('./commands/discord/ForcaCmd'),
     f: require('./commands/discord/ForcaCmd'),
     velha: require('./commands/discord/TicTacToeCmd'),
+    v: require('./commands/discord/TicTacToeCmd'),
   });
 
   return bot.start().then(ifaces => {
