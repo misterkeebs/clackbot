@@ -43,8 +43,8 @@ class TicTacToe {
   }
 
   finish() {
-    const pos = games.find(this);
-    games = games.filter(game => game !== pos);
+    const pos = games.find(g => g === this);
+    games.splice(pos, 1);
   }
 
   isFinished() {
