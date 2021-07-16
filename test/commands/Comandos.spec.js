@@ -11,7 +11,7 @@ class Test {
   static interfaces = ['discord', 'twitch'];
 }
 
-describe.only('Comandos', () => {
+describe('Comandos', () => {
   beforeEach(async () => {
     iface.bot = {
       handlers: {
