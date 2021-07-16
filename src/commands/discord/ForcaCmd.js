@@ -11,7 +11,7 @@ const AlreadyGuessedError = require('./AlreadyGuessedError');
 const _forca = new Forca();
 
 class ForcaCommand extends Command {
-  interfaces = ['discord'];
+  static interfaces = ['discord'];
 
   constructor(options, forca = _forca) {
     super(options);

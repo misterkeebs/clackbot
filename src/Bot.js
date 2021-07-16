@@ -25,6 +25,7 @@ class Bot {
     const command = cmdPart.trim().replace(/^!/, '');
     const handler = this.handlers[command];
     if (!handler) return;
+    console.log('handler.interfaces', handler.interfaces);
     if (_.isArray(handler.interfaces) && !handler.interfaces.includes(iface.name)) return;
 
     if (isClass(handler)) {

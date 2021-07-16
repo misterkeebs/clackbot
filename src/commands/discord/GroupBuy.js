@@ -12,7 +12,7 @@ const alertThumb = process.env.DISCORD_GB_THUMB;
 const alertImage = process.env.DISCORD_GB_IMAGE;
 
 class GroupBuyCommand extends Command {
-  interfaces = ['discord'];
+  static interfaces = ['discord'];
 
   async handle() {
     const [query, spos] = this.args.join(' ').split('~');

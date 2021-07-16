@@ -2,7 +2,7 @@ const User = require('../../models/User');
 const Command = require('../Command');
 
 class DenadaCommand extends Command {
-  interfaces = ['discord'];
+  static interfaces = ['discord'];
 
   async handle() {
     const [receiverName] = this.args;

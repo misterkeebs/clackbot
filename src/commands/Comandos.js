@@ -4,7 +4,7 @@ const Command = require('./Command');
 const { isClass } = require('../Utils');
 
 class Comandos extends Command {
-  interfaces = ['discord', 'twitch'];
+  static interfaces = ['discord', 'twitch'];
   description = 'lista todos os comandos (o que vc está vendo agora)';
 
   async handle() {
@@ -16,9 +16,7 @@ class Comandos extends Command {
     return Object.keys(handlers)
       .filter(k => {
         const handler = handlers[k];
-        const interfaces = (isClass(handler)
-          ? new handler({}).interfaces
-          : handler.interfaces) || [];
+        const interfaces = handler.interfaces || [];
 
         return interfaces.includes(ifaceName) || (blanks && _.isEmpty(interfaces));
       })

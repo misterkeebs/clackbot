@@ -8,10 +8,10 @@ const User = require('../../src/models/User');
 
 class Test {
   description = 'a test command';
-  interfaces = ['discord', 'twitch'];
+  static interfaces = ['discord', 'twitch'];
 }
 
-describe('Comandos', () => {
+describe.only('Comandos', () => {
   beforeEach(async () => {
     iface.bot = {
       handlers: {

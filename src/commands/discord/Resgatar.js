@@ -10,7 +10,7 @@ const AMOUNT = 50;
 
 class ResgatarCommand extends Command {
   command = 'resgatar';
-  interfaces = ['discord'];
+  static interfaces = ['discord'];
 
   async handleDefault() {
     try {

@@ -12,7 +12,7 @@ const WIN_BONUS = 5;
 const invites = [];
 
 class TicTacToeCmd extends Command {
-  interfaces = ['discord'];
+  static interfaces = ['discord'];
 
   constructor(options, ticTacToeClass = TicTacToe) {
     super(options);
