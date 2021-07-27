@@ -96,7 +96,7 @@ class TicTacToe {
     const y = posString.charCodeAt(0) - 65;
     const x = parseInt(posString.slice(1), 10) - 1;
     return { x, y };
-  };
+  }
 
   play(player, posString) {
     const { x, y } = this.posToCoord(posString.toUpperCase());
@@ -170,7 +170,7 @@ class TicTacToe {
           ctx.fillText(text, centerX, centerY);
         }
       }
-    }
+    };
 
     function drawO(x, y) {
       const halfSectionSize = (0.5 * sectionSize);
@@ -188,7 +188,7 @@ class TicTacToe {
     }
 
     function drawX(x, y) {
-      ctx.strokeStyle = "#f1be32";
+      ctx.strokeStyle = '#f1be32';
 
       ctx.beginPath();
 
