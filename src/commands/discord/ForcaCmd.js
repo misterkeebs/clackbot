@@ -1,8 +1,8 @@
 const Command = require('../Command');
 const User = require('../../models/User');
 
-const GUESS_BONUS = 1;
-const WIN_BONUS = 5;
+const GUESS_BONUS = 0;
+const WIN_BONUS = 1;
 
 const Forca = require('./Forca');
 const { plural } = require('../../Utils');
