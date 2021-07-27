@@ -7,7 +7,7 @@ const Forca = require('../../../src/commands/discord/Forca');
 const ForcaCmd = require('../../../src/commands/discord/ForcaCmd');
 const User = require('../../../src/models/User');
 
-describe('ForcaCmd', async () => {
+describe.only('ForcaCmd', async () => {
   let forca;
 
   async function sendMessage(message, options = {}) {
@@ -71,12 +71,7 @@ describe('ForcaCmd', async () => {
         });
 
         it('replies to the user saying it guessed right and got bonus', async () => {
-          expect(iface.lastMessage).to.eql('existem 2 letras A na palavra, vc ganhou :coin: **2**.');
-        });
-
-        it('gives the user 2 clacks - one for each letter', async () => {
-          const [user] = await User.query().where('displayName', 'user');
-          expect(user.bonus).to.eql(2);
+          expect(iface.lastMessage).to.eql('existem 2 letras A na palavra.');
         });
       });
 
@@ -103,13 +98,13 @@ describe('ForcaCmd', async () => {
           expect(iface.lastChannelMessage).to.include('P A _ _ _ A');
         });
 
-        it('replies to the user saying it guessed right and got bonus', async () => {
-          expect(iface.lastMessage).to.eql('existe 1 letra P na palavra, vc ganhou :coin: **1**.');
+        it('replies to the user saying it guessed right and got no bonus', async () => {
+          expect(iface.lastMessage).to.eql('existe 1 letra P na palavra.');
         });
 
-        it('gives the user 1 clack', async () => {
+        it('gives the user no clacks', async () => {
           const [user] = await User.query().where('displayName', 'user');
-          expect(user.bonus).to.eql(3);
+          expect(user.bonus).to.be.null;
         });
       });
 
@@ -184,12 +179,12 @@ describe('ForcaCmd', async () => {
         });
 
         it('replies to the user saying he guessed the word', async () => {
-          expect(iface.lastMessage).to.eql('você acertou a palavra e ganhou :coin: **5**. :heart:');
+          expect(iface.lastMessage).to.eql('você acertou a palavra e ganhou :coin: **1**. :heart:');
         });
 
         it(`doesn't give the user any bonuses`, async () => {
           const [user] = await User.query().where('displayName', 'user');
-          expect(user.bonus).to.eql(10);
+          expect(user.bonus).to.eql(1);
         });
       });
     });
@@ -226,12 +221,12 @@ describe('ForcaCmd', async () => {
         });
 
         it('replies to the user saying he was hung', async () => {
-          expect(iface.lastMessage).to.eql('você acertou a palavra e ganhou :coin: **5**. :heart:');
+          expect(iface.lastMessage).to.eql('você acertou a palavra e ganhou :coin: **1**. :heart:');
         });
 
         it(`doesn't give the user the win bonus`, async () => {
           const [user] = await User.query().where('displayName', 'user');
-          expect(user.bonus).to.eql(5);
+          expect(user.bonus).to.eql(1);
         });
 
         it('allows a new game to start', async () => {
