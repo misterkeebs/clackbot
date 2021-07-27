@@ -52,7 +52,7 @@ class Forca {
   }
 
   count(char) {
-    return this.word.split('').filter(c => this.getEquiv(c) === char).length
+    return this.word.split('').filter(c => this.getEquiv(c) === char).length;
   }
 
   guessWord(word) {
@@ -117,7 +117,6 @@ class Forca {
 
   start(word) {
     this.word = (word || this.pickWord()).toLowerCase();
-    console.log('The word is', this.word);
     this.errors = [];
     this.guesses = [];
     this.running = true;

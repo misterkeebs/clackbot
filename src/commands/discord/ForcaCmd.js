@@ -15,6 +15,8 @@ class ForcaCommand extends Command {
 
   constructor(options, forca = _forca) {
     super(options);
+    this.guessBonus = options.guessBonus === undefined ? GUESS_BONUS : options.guessBonus;
+    this.winBonus = options.winBonus == undefined ? WIN_BONUS : options.winBonus;
     this.forca = forca;
   }
 
@@ -46,9 +48,13 @@ class ForcaCommand extends Command {
         }
       } else {
         if (guesses > 0) {
-          const bonus = GUESS_BONUS * guesses;
-          await this.user.addBonus(bonus);
-          await this.reply(`${plural('existe', guesses, 'm')} ${guesses} ${plural('letra', guesses)} ${guess.toUpperCase()} na palavra, vc ganhou :coin: **${bonus}**.`);
+          if (this.guessBonus > 0) {
+            const bonus = this.guessBonus * guesses;
+            await this.user.addBonus(bonus);
+            await this.reply(`${plural('existe', guesses, 'm')} ${guesses} ${plural('letra', guesses)} ${guess.toUpperCase()} na palavra, vc ganhou :coin: **${bonus}**.`);
+          } else {
+            await this.reply(`${plural('existe', guesses, 'm')} ${guesses} ${plural('letra', guesses)} ${guess.toUpperCase()} na palavra.`);
+          }
         } else {
           await this.reply(`não existe nenhuma letra ${guess.toUpperCase()} na palavra. :cry:`);
         }

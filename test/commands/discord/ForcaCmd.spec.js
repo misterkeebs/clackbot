@@ -10,15 +10,16 @@ const User = require('../../../src/models/User');
 describe('ForcaCmd', async () => {
   let forca;
 
-  async function sendMessage(message) {
+  async function sendMessage(message, options = {}) {
     return await new ForcaCmd({
       iface,
       channel: 'channel',
       user: 'user',
       message,
       rawMessage: iface.rawMessage,
-    }, forca).run();
-  };
+      ...options,
+    }, options.forca || forca).run();
+  }
 
   beforeEach(async () => {
     iface.reset();
@@ -42,10 +43,26 @@ describe('ForcaCmd', async () => {
   });
 
   describe('when there is a game in course', async () => {
+    describe('with no guess bonus', async () => {
+      beforeEach(async () => {
+        forca.start('paçoca');
+        await sendMessage('forca a', { guessBonus: 0, forca });
+      });
+
+      it('sends the message without the bonus', async () => {
+        expect(iface.lastMessage).to.eql('existem 2 letras A na palavra.');
+      });
+
+      it('gives the user no clacks', async () => {
+        const [user] = await User.query().where('displayName', 'user');
+        expect(user.bonus).to.be.null;
+      });
+    });
+
     describe('when user sends a letter', async () => {
       describe('that matches more than one letter', async () => {
         beforeEach(async () => {
-          forca.start('paçoca')
+          forca.start('paçoca');
           await sendMessage('forca a');
         });
 
@@ -65,7 +82,7 @@ describe('ForcaCmd', async () => {
 
       describe(`when user doesn't provide a letter to guess`, async () => {
         beforeEach(async () => {
-          forca.start('paçoca')
+          forca.start('paçoca');
           await sendMessage('forca a');
           await sendMessage('forca');
         });
@@ -77,7 +94,7 @@ describe('ForcaCmd', async () => {
 
       describe('that matches one letter', async () => {
         beforeEach(async () => {
-          forca.start('paçoca')
+          forca.start('paçoca');
           await sendMessage('forca a');
           await sendMessage('forca p');
         });
@@ -98,7 +115,7 @@ describe('ForcaCmd', async () => {
 
       describe(`that doesn't match`, async () => {
         beforeEach(async () => {
-          forca.start('paçoca')
+          forca.start('paçoca');
           await sendMessage('forca x');
         });
 
@@ -118,7 +135,7 @@ describe('ForcaCmd', async () => {
 
       describe(`that was already guessed`, async () => {
         beforeEach(async () => {
-          forca.start('paçoca')
+          forca.start('paçoca');
           await sendMessage('forca x');
           await sendMessage('forca x');
         });
@@ -139,7 +156,7 @@ describe('ForcaCmd', async () => {
 
       describe('and gets hanged', async () => {
         beforeEach(async () => {
-          forca.start('paçoca')
+          forca.start('paçoca');
           await sendMessage('forca x');
           await sendMessage('forca s');
           await sendMessage('forca t');
@@ -155,7 +172,7 @@ describe('ForcaCmd', async () => {
 
       describe(`and guesses the word`, async () => {
         beforeEach(async () => {
-          forca.start('paçoca')
+          forca.start('paçoca');
           await sendMessage('forca p');
           await sendMessage('forca a');
           await sendMessage('forca c');
@@ -180,7 +197,7 @@ describe('ForcaCmd', async () => {
     describe('when user sends a guess', async () => {
       describe('and misses', async () => {
         beforeEach(async () => {
-          forca.start('paçoca')
+          forca.start('paçoca');
           await sendMessage('forca pelota');
         });
 
@@ -200,7 +217,7 @@ describe('ForcaCmd', async () => {
 
       describe('and guesses right', async () => {
         beforeEach(async () => {
-          forca.start('paçoca')
+          forca.start('paçoca');
           await sendMessage('forca paçoca');
         });
 
