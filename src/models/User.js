@@ -160,7 +160,6 @@ class User extends Model {
 
   async saveState(action, state, data) {
     const stateData = { action, state, data };
-    console.log('save', stateData);
     return await this.$query().patchAndFetch({ state: stateData });
   }
 

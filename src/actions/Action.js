@@ -6,7 +6,7 @@ class Action {
   }
 
   async save() {
-    this.user.saveState(this.name, this.currentState, this.data);
+    await this.user.saveState(this.name, this.currentState, this.data);
   }
 
   async reply(text) {

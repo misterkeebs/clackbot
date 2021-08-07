@@ -16,6 +16,9 @@ class Author {
   }
 }
 
+class Guild {
+}
+
 class Channel {
   constructor(message, name) {
     this.message = message;
@@ -30,6 +33,22 @@ class Channel {
 }
 
 class FakeDiscordMessage {
+  static create(content, {
+    authorID,
+    channelName = 'channel',
+    createdTimestamp = new Date().getTime(),
+  } = {}) {
+    return new FakeDiscordMessage(content, { channelName, authorID, createdTimestamp });
+  }
+
+  static createForChannel(channelName, content, { authorID, createdTimestamp } = {}) {
+    return new FakeDiscordMessage(content, { channelName, authorID, createdTimestamp });
+  }
+
+  static createDirect(content, { authorID, createdTimestamp } = {}) {
+    return new FakeDiscordMessage(content, { channelName: null, authorID, createdTimestamp });
+  }
+
   constructor(content, {
     authorID,
     channelName = 'channel',
@@ -39,7 +58,10 @@ class FakeDiscordMessage {
     this.content = content;
     this.createdTimestamp = createdTimestamp;
     this.author = new Author(this, { authorID });
-    this.channel = new Channel(this, channelName);
+    if (channelName) {
+      this.channel = new Channel(this, channelName);
+      this.guild = new Guild(this);
+    }
     this.deleted = false;
   }
 
@@ -60,6 +82,14 @@ class FakeDiscordMessage {
 
   addDirectMessage(content) {
     this.directMessages.push(content);
+  }
+
+  reply(content) {
+    if (this.guild) {
+      this.channelMessages.push(content);
+    } else {
+      this.directMessages.push(content);
+    }
   }
 
   get lastDirectMessage() {

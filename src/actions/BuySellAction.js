@@ -2,9 +2,21 @@ const Action = require('./Action');
 
 const INITIAL_STATE = 0;
 const WAITING_NUM_ITEMS = 1;
+const WAITING_ITEM_INFO = 2;
 
 class BuySellAction extends Action {
   get name() { return 'buySell'; }
+
+  handleItem() {
+    if (this.data.currentItem > 0) {
+      this.data.items.push({ title: this.content });
+    } else {
+      this.data.items = [];
+    }
+    this.reply(`Qual o título do item ${this.data.currentItem + 1}?`);
+    this.data.currentItem++;
+    return true;
+  }
 
   async handle() {
     if (this.currentState === INITIAL_STATE) {
@@ -19,7 +31,14 @@ class BuySellAction extends Action {
         return false;
       }
 
-      return true;
+      this.data.numItems = numItems;
+      this.data.currentItem = 0;
+
+      return this.handleItem();
+    }
+
+    if (this.currentState === WAITING_ITEM_INFO) {
+      return this.handleItem();
     }
 
     return true;
