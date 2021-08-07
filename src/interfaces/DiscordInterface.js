@@ -5,6 +5,8 @@ const User = require('../models/User');
 const BuySell = require('../processors/BuySell');
 const SlowModeProcessor = require('../processors/SlowMode');
 const ImgOnly = require('../processors/ImageOnly');
+const { UserManager } = require('discord.js');
+const StateManager = require('../StateManager');
 
 const PROCESSORS = [
   new ImgOnly(),
@@ -22,6 +24,7 @@ class DiscordInterface {
       const processed = await this.preProcess(client, msg);
       if (processed) return;
       if (msg.author.bot) return;
+      if (!msg.guild) return await this.handleDirectMessage(client, msg);
       if (!msg.content.startsWith('!')) return;
 
       console.log('msg', msg.content);
@@ -53,6 +56,12 @@ class DiscordInterface {
         this.reply(msg.channel.id, user.displayName, `houve um erro de processamento no seu comando: ${err}`);
       }
     });
+  }
+
+  async handleDirectMessage(client, msg) {
+    const user = await User.fromDiscordMessage(msg);
+    const action = await user.restoreState();
+    if (action) return await action.run(msg);
   }
 
   async reply(channelId, dbUser, message, attachment) {

@@ -57,6 +57,10 @@ class User extends Model {
     return this.query().where('display_name', identifier).first();
   }
 
+  static async fromDiscordMessage(msg) {
+    return User.query().where('discordId', msg.author.id).first();
+  }
+
   async useBonus(amount) {
     return this.$query().patchAndFetch({ bonus: this.bonus - amount });
   }
@@ -152,6 +156,17 @@ class User extends Model {
     });
 
     return { sols, bonus };
+  }
+
+  async saveState(action, state, data) {
+    const stateData = { action, state, data };
+    console.log('save', stateData);
+    return await this.$query().patchAndFetch({ state: stateData });
+  }
+
+  async restoreState() {
+    const StateManager = require('../StateManager');
+    return StateManager.createAction(this);
   }
 }
 User.weighedRandom = weighedRandom;

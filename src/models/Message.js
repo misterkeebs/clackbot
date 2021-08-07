@@ -12,7 +12,7 @@ class Message extends Model {
       properties: {
         id: { type: 'integer' },
         key: { type: 'string' },
-        value: { type: 'string'},
+        value: { type: 'string' },
       },
     };
   }

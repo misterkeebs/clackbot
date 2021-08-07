@@ -114,3 +114,15 @@ describe('leaders', async () => {
     });
   });
 });
+
+describe('fromDiscordMessage', () => {
+  it('returns the user', async () => {
+    await User.query().insert({ displayName: 'user', discordId: '123456' });
+
+    const msg = {
+      author: { id: '123456' },
+    };
+    const user = await User.fromDiscordMessage(msg);
+    expect(user.displayName).to.eql('user');
+  });
+});

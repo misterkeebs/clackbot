@@ -4,7 +4,26 @@ const FakeMessage = require('../FakeDiscordMessage');
 
 const BuySell = require('../../src/processors/BuySell');
 
-describe('Clacks', () => {
+describe('messaging a buy and sell channel', () => {
+  describe(`when message isn't valid`, async () => {
+    let msg;
+
+    beforeEach(async () => {
+      msg = new FakeMessage('alguma coisa', { channelName: 'canal' });
+      await new BuySell('canal').handle(msg);
+    });
+
+    it('deletes the message', async () => {
+      expect(msg).to.have.property('deleted', true);
+    });
+
+    it('messages the user of valid actions', async () => {
+      expect(msg.lastDirectMessage).to.match(/Para comprar ou vender algo no canal #canal/);
+    });
+  });
+});
+
+xdescribe('messaging a buy and sell channel', () => {
   describe(`when message doesn't start with the right prefix`, () => {
     it('sends the generic error message', async () => {
       const msg = new FakeMessage('vendo Tada68', { channelName: 'canal' });

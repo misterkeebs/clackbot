@@ -7,7 +7,7 @@ const Forca = require('../../../src/commands/discord/Forca');
 const ForcaCmd = require('../../../src/commands/discord/ForcaCmd');
 const User = require('../../../src/models/User');
 
-describe.only('ForcaCmd', async () => {
+describe('ForcaCmd', async () => {
   let forca;
 
   async function sendMessage(message, options = {}) {

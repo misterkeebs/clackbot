@@ -1,4 +1,9 @@
 const dedent = require('dedent');
+const { UserManager } = require('discord.js');
+const StateManager = require('../StateManager');
+
+const SELL_ACTION = 'vender';
+const BUY_ACTION = 'comprar';
 
 class BuySellProcessor {
   constructor(channel) {
@@ -7,26 +12,41 @@ class BuySellProcessor {
 
   async handle(msg) {
     if (!msg.channel || msg.channel.name !== this.channel) return false;
+    const discordId = msg.author.id;
 
-    const content = msg.content.trim();
-    const contents = content.split('\n');
-
-    const error = this.process(contents[0]);
-    if (error) {
-      return this.send(msg, error);
+    if (discordId === process.env.DISCORD_CLIENT_ID) {
+      return;
     }
 
-    if (contents.length > 1) {
-      const error = contents.map(c => this.process(c, null)).find(err => !!err);
-      if (error) {
-        return this.send(msg, error);
-      }
+    const content = msg.content.trim();
+    const [actionRaw] = content.split('\n');
+    const action = actionRaw.trim().toLowerCase();
+
+    if (action !== SELL_ACTION && action !== BUY_ACTION) {
+      msg.delete({ reason: `Invalid buy/sell action: ${action}` });
+
+      const message = dedent`
+      Para comprar ou vender algo no canal #${this.channel} você deve apenas digitar os comandos **comprar** ou **vender** no canal.
+
+      Quando você manda um desse comandos, eu te ajudo fazendo algumas perguntas sobre o item que você está vendendo ou comprando de forma interativa.
+
+      Experimente agora mandar o comando direto no canal.`;
+
+      await msg.author.send(message);
+
+      return true;
+    }
+
+    if (action === SELL_ACTION) {
+      msg.delete({ reason: 'Starting a sell action' });
+      await StateManager.startAction('buySell', msg);
+      return true;
     }
 
     return true;
   }
 
-  process(content, fallback=this.fullError()) {
+  process(content, fallback = this.fullError()) {
     if (content.startsWith('WTS')) {
       return this.checkWTS(content);
     }
