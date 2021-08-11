@@ -1,0 +1,19 @@
+{
+	"name": "Node.js 16 & Postgres",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "web",
+	"workspaceFolder": "/workspace",
+
+	// Uncomment the next line if you want start specific services in your Docker Compose config.
+	// "runServices": [],
+
+	// Uncomment the line below if you want to keep your containers running after VS Code shuts down.
+	// "shutdownAction": "none",
+
+	// Uncomment the next line to run commands after the container is created.
+	// "postCreateCommand": "npm install",
+
+	// Uncomment the next line to have VS Code connect as an existing non-root user in the container. See
+	// https://aka.ms/vscode-remote/containers/non-root for details on adding a non-root user if none exist.
+	// "remoteUser": "node",
+}
