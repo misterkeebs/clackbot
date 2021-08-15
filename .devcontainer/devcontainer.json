@@ -11,7 +11,7 @@
 	// "shutdownAction": "none",
 
 	// Uncomment the next line to run commands after the container is created.
-	// "postCreateCommand": "npm install",
+	"postCreateCommand": "bash scripts/post_create.sh",
 
 	// Uncomment the next line to have VS Code connect as an existing non-root user in the container. See
 	// https://aka.ms/vscode-remote/containers/non-root for details on adding a non-root user if none exist.
