@@ -45,12 +45,12 @@ describe('GroupBuy', async () => {
       ending = (await GroupBuy.ending()).map(g => g.id);
     });
 
-    it('includes groupbuys that finish today', async () => {
-      expect(ending).to.include(gb1.id);
+    it('includes groupbuys that finish tomorrow', async () => {
+      expect(ending).to.include(gb2.id);
     });
 
-    it('excludes groupbuys that finish tomorrow', async () => {
-      expect(ending).to.not.include(gb2.id);
+    it('excludes groupbuys that finish today', async () => {
+      expect(ending).to.not.include(gb1.id);
     });
 
     it('excludes groupbuys that already finished', async () => {

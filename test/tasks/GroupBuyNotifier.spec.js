@@ -22,7 +22,7 @@ describe('GroupBuyNotifier', async () => {
             endsAt: moment('2020-03-01'),
             pricing: 'Base: 150',
             additionalLinks: 'Geekhack: http://something',
-          }
+          },
         ];
         const discord = {
           channels: {
@@ -33,9 +33,9 @@ describe('GroupBuyNotifier', async () => {
                   msg = _msg;
                   embed = _embed;
                 },
-              }
-            ]
-          }
+              },
+            ],
+          },
         };
         new GroupBuyNotifier({}, discord).formatNotice('starting', '#000000', gbs);
       });
@@ -76,7 +76,7 @@ describe('GroupBuyNotifier', async () => {
             endsAt: moment('2020-03-01'),
             pricing: 'Base: 150',
             additionalLinks: '',
-          }
+          },
         ];
         const discord = {
           channels: {
@@ -87,9 +87,9 @@ describe('GroupBuyNotifier', async () => {
                   msg = _msg;
                   embed = _embed;
                 },
-              }
-            ]
-          }
+              },
+            ],
+          },
         };
         new GroupBuyNotifier({}, discord).formatNotice('starting', '#000000', gbs);
       });
@@ -126,7 +126,7 @@ describe('GroupBuyNotifier', async () => {
             endsAt: '',
             pricing: 'Base: 150',
             additionalLinks: '',
-          }
+          },
         ];
         const discord = {
           channels: {
@@ -137,9 +137,9 @@ describe('GroupBuyNotifier', async () => {
                   msg = _msg;
                   embed = _embed;
                 },
-              }
-            ]
-          }
+              },
+            ],
+          },
         };
         new GroupBuyNotifier({}, discord).formatNotice('starting', '#000000', gbs);
       });

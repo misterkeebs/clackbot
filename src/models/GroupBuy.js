@@ -42,7 +42,7 @@ class GroupBuy extends Model {
         siteMessage: json.siteMessage,
       });
     } catch (err) {
-      console.error("Error with data", json, err);
+      console.error('Error with data', json, err);
       throw err;
     }
   }
@@ -82,7 +82,7 @@ class GroupBuy extends Model {
 
   static ending() {
     return this.query()
-      .where(raw('DATE(ends_at)'), raw(`DATE('${moment().format('YYYY-MM-DD')}')`));
+      .where(raw('DATE(ends_at)'), raw(`DATE('${moment().add(1, 'day').format('YYYY-MM-DD')}')`));
   }
 
   static starting() {
