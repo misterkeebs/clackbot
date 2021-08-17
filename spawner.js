@@ -16,11 +16,12 @@ function connect() {
     });
     discord.on('error', err => {
       console.error('Error connecting to Discord', err);
+      reject(err);
     });
   });
 }
 
-let client, discordClient, spawner;
+let client, discordClient, spawner, notifier;
 
 async function init() {
   console.log('Initializing...');
