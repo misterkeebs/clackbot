@@ -28,7 +28,7 @@ describe('GroupBuyNotifier', async () => {
           channels: {
             cache: [
               {
-                name: 'ann',
+                name: 'link-deals',
                 send: (_msg, _embed) => {
                   msg = _msg;
                   embed = _embed;
@@ -82,7 +82,7 @@ describe('GroupBuyNotifier', async () => {
           channels: {
             cache: [
               {
-                name: 'ann',
+                name: 'link-deals',
                 send: (_msg, _embed) => {
                   msg = _msg;
                   embed = _embed;
@@ -132,7 +132,7 @@ describe('GroupBuyNotifier', async () => {
           channels: {
             cache: [
               {
-                name: 'ann',
+                name: 'link-deals',
                 send: (_msg, _embed) => {
                   msg = _msg;
                   embed = _embed;

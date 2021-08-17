@@ -5,7 +5,7 @@ const moment = require('moment');
 const GroupBuy = require('../models/GroupBuy');
 const Setting = require('../models/Setting');
 
-const annChannel = process.env.DISCORD_ANNOUNCE_CHANNEL || 'announcements';
+const annChannel = process.env.DISCORD_GB_ANN_CHANNEL || 'link-deals';
 const alertRole = process.env.DISCORD_GB_ALERT_ROLE;
 const alertThumb = process.env.DISCORD_GB_THUMB;
 const alertHour = process.env.DISCORD_GB_ALERT_HOUR;
