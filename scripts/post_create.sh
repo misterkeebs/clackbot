@@ -12,3 +12,4 @@ echo "GRANT CONNECT ON DATABASE clackbot_test TO clackbot_test;" | psql
 echo "GRANT USAGE ON SCHEMA public TO clackbot_test;" | psql
 echo "GRANT ALL PRIVILEGES ON DATABASE clackbot_test TO clackbot_test;" | psql
 yarn knex migrate:latest
+yarn knex seed:run
