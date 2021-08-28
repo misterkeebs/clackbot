@@ -5,7 +5,7 @@ const moment = require('moment');
 const GroupBuy = require('../models/GroupBuy');
 const Setting = require('../models/Setting');
 
-const annChannel = process.env.DISCORD_GB_ANN_CHANNEL || 'link-deals';
+const annChannel = process.env.DISCORD_GB_ANN_CHANNEL || 'links-deals';
 const alertRole = process.env.DISCORD_GB_ALERT_ROLE;
 const alertThumb = process.env.DISCORD_GB_THUMB;
 const alertHour = process.env.DISCORD_GB_ALERT_HOUR;
@@ -25,7 +25,8 @@ class GroupBuyNotifier {
     const validIfAfter = lastRunDate.add(1, 'day').startOf('day');
     if (!moment().isAfter(validIfAfter)) return false;
 
-    return alertHour.toString() === moment().format('H');
+    // return alertHour.toString() === moment().format('H');
+    return true;
   }
 
   async execute() {
@@ -93,6 +94,9 @@ class GroupBuyNotifier {
     });
 
     const channel = this.discord.channels.cache.find(c => c.name === annChannel);
+    if (!channel) {
+      throw new Error(`Error trying to send GB notification: channel ${annChannel} doesn't exist`);
+    }
     return channel.send(`<@&${alertRole}> there are ${gbs.length} groupbuys ${title} today:`, embed);
   }
 }

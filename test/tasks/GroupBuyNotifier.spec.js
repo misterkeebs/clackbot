@@ -221,14 +221,33 @@ describe('GroupBuyNotifier', async () => {
   });
 
   describe('execute', async () => {
+    const gb = new GroupBuyNotifier();
+
     beforeEach(() => tk.freeze(1605576014801));
     afterEach(() => tk.reset());
 
     beforeEach(async () => {
+      gb.update = () => { };
+
       const gb1 = await GroupBuy.query().insert({ name: 'starting', startsAt: moment() });
       const gb2 = await GroupBuy.query().insert({ name: 'ending', startsAt: moment().add(-30, 'day'), endsAt: moment() });
       console.log('gb1', gb1);
       console.log('gb2', gb2);
+    });
+
+    describe(`when channel does't exist`, () => {
+      beforeEach(() => {
+        gb.discord = { channels: { cache: [] } };
+      });
+
+      it('shows all GBs that start today', async () => {
+        try {
+          gb.execute();
+          throw new Error('Expected execute to throw error, none thrown');
+        } catch (e) {
+          expect(e.message).to.include('Error trying to send');
+        }
+      });
     });
 
     it('shows all GBs that start today', async () => {
