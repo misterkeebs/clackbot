@@ -1,9 +1,11 @@
 const moment = require('moment');
+const tk = require('timekeeper');
 const { expect } = require('chai');
 
 const FakeMessage = require('../FakeDiscordMessage');
 const SlowModeProcessor = require('../../src/processors/SlowMode');
 const DiscordUser = require('../../src/models/DiscordUser');
+const UserLastMessage = require('../../src/models/UserLastMessage');
 
 describe('SlowModeProcessor', async () => {
   describe('handle', async () => {
@@ -13,6 +15,46 @@ describe('SlowModeProcessor', async () => {
 
       it('returns false', async () => {
         expect(await proc.handle(msg)).to.eql(false);
+      });
+    });
+
+    describe('when multiple channels are rate limited', async () => {
+      const proc = new SlowModeProcessor('canal1,canal2');
+
+      beforeEach(() => tk.freeze(1605576014801));
+      afterEach(() => tk.reset());
+
+      describe('when user sends a message on each channel within the allowed interval', async () => {
+        const msg1 = new FakeMessage('WTS Tada68', {
+          authorID: '12345',
+          channelName: 'canal1',
+        });
+
+        const msg2 = new FakeMessage('WTS Tada68', {
+          authorID: '12345',
+          channelName: 'canal2',
+        });
+
+        let res;
+
+        beforeEach(async () => {
+          await proc.handle(msg1);
+          res = await proc.handle(msg2);
+        });
+
+        it('returns false', async () => {
+          expect(res).to.eql(false);
+        });
+
+        it('tracks last message for first channel', async () => {
+          const last1 = await UserLastMessage.for('12345', 'canal1');
+          expect(last1.getTime()).to.eql(moment().valueOf());
+        });
+
+        it('tracks last message for the second channel', async () => {
+          const last1 = await UserLastMessage.for('12345', 'canal2');
+          expect(last1.getTime()).to.eql(moment().valueOf());
+        });
       });
     });
 
@@ -27,32 +69,34 @@ describe('SlowModeProcessor', async () => {
         let res;
 
         beforeEach(async () => {
+          tk.freeze(1605576014801);
           res = await proc.handle(msg);
         });
+        afterEach(() => tk.reset());
 
         it('returns false', async () => {
           expect(res).to.eql(false);
         });
 
-        it('creates a Discord user with the last announcement date set', async () => {
-          const user = await DiscordUser.query().where('discordId', '12345').first();
-          expect(user).to.not.be.undefined;
-          expect(user.lastAnnounceAt).to.not.be.undefined;
+        it('tracks the last message', async () => {
+          const last1 = await UserLastMessage.for('12345', 'canal');
+          expect(last1.getTime()).to.eql(moment().valueOf());
         });
       });
 
-      describe('when user sent a message inside the forbidden interval', async () => {
+      describe('when user sent a message before the cooldown period', async () => {
         let msg, res;
 
         beforeEach(async () => {
+          tk.freeze(1605576014801);
           msg = new FakeMessage('WTS Tada68', {
             authorID: '12345',
             channelName: 'canal',
           });
-          const lastAnnounceAt = moment().add(-5, 'hours');
-          await DiscordUser.query().insert({ discordId: '12345', lastAnnounceAt });
+          await proc.handle(msg);
           res = await proc.handle(msg);
         });
+        afterEach(() => tk.reset());
 
         it('returns true to stop processing', async () => {
           expect(res).to.eql(true);
@@ -63,7 +107,12 @@ describe('SlowModeProcessor', async () => {
         });
 
         it('sends a direct message to the user', async () => {
-          expect(msg.directMessages).to.include('Sua mensagem no canal **#canal** foi excluída porque este canal permite apenas um envio a cada 6 horas. Você pode enviar a mensagem novamente aproximadamente em uma hora.');
+          expect(msg.directMessages).to.include('Sua mensagem no canal **#canal** foi excluída porque este canal permite apenas um envio a cada 6 horas. Você pode enviar a mensagem novamente em aproximadamente em 6 horas.');
+        });
+
+        it('tracks the last message', async () => {
+          const last1 = await UserLastMessage.for('12345', 'canal');
+          expect(last1.getTime()).to.eql(moment().valueOf());
         });
       });
 
@@ -71,27 +120,29 @@ describe('SlowModeProcessor', async () => {
         let msg, res, initialAnnDate;
 
         beforeEach(async () => {
+          tk.freeze(1605576014801);
           msg = new FakeMessage('WTS Tada68', {
             authorID: '12345',
             channelName: 'canal',
           });
-          const lastAnnounceAt = moment().add(-7, 'hours');
-          await DiscordUser.query().insert({ discordId: '12345', lastAnnounceAt });
-          initialAnnDate = lastAnnounceAt;
+          const lastMessageAt = moment().add(-7, 'hours');
+          await UserLastMessage.query().insert({ discordId: '12345', channelName: 'canal', lastMessageAt });
+          initialAnnDate = lastMessageAt;
           res = await proc.handle(msg);
         });
+        afterEach(() => tk.reset());
 
         it('keeps the message', async () => {
           expect(msg.deleted).to.be.false;
         });
 
-        it('returns true to stop processing', async () => {
+        it('returns false to allow message to be sent', async () => {
           expect(res).to.eql(false);
         });
 
-        it('sets the last announce', async () => {
-          const user = await DiscordUser.query().where('discordId', '12345').first();
-          expect(user.lastAnnounceAt).to.not.eql(initialAnnDate);
+        it('tracks the last message', async () => {
+          const last1 = await UserLastMessage.for('12345', 'canal');
+          expect(last1.getTime()).to.eql(moment().valueOf());
         });
       });
     });

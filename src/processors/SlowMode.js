@@ -3,6 +3,7 @@ const moment = require('moment');
 moment.locale('pt-br');
 
 const DiscordUser = require('../models/DiscordUser');
+const UserLastMessage = require('../models/UserLastMessage');
 
 class SlowModeProcessor {
   constructor(channels = process.env.SLOWMODE_CHANNELS) {
@@ -35,21 +36,21 @@ class SlowModeProcessor {
     }
 
     const discordId = msg.author.id;
-    const user = await DiscordUser.query().where('discordId', discordId).first();
-    if (!user) {
-      await DiscordUser.query().insert({ discordId, lastAnnounceAt: 'now' });
+    const lastMessage = await UserLastMessage.for(discordId, channelName);
+    if (!lastMessage) {
+      await UserLastMessage.track(discordId, channelName);
       return false;
     }
 
     const interval = this.intervals[channelName];
-    const nextAllowedDate = moment(user.lastAnnounceAt).add(interval, 'hours');
+    const nextAllowedDate = moment(lastMessage).add(interval, 'hours');
     if (nextAllowedDate.isAfter(moment())) {
-      await msg.author.send(`Sua mensagem no canal **#${msg.channel.name}** foi excluída porque este canal permite apenas um envio a cada ${interval} horas. Você pode enviar a mensagem novamente aproximadamente ${moment(nextAllowedDate).fromNow()}.`);
+      await msg.author.send(`Sua mensagem no canal **#${msg.channel.name}** foi excluída porque este canal permite apenas um envio a cada ${interval} horas. Você pode enviar a mensagem novamente em aproximadamente ${moment(nextAllowedDate).fromNow()}.`);
       await msg.delete();
       return true;
     }
 
-    await user.$query().update({ lastAnnounceAt: 'now' });
+    await UserLastMessage.track(discordId, channelName);
     return false;
   }
 }
