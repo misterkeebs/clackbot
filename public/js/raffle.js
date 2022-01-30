@@ -38,12 +38,12 @@ function pickWinner() {
   const baseEl = document.getElementById('needle');
   const x = baseEl.clientWidth - (baseEl.clientWidth / 2);
   const y = baseEl.offsetTop;
-  console.log(x, y+5);
+  console.log(x, y + 5);
 
   const players = document.querySelectorAll('.player');
   console.log(players.length);
   console.log(players[0]);
-  [].forEach.call(players, function(player) {
+  [].forEach.call(players, function (player) {
     const startY = player.offsetTop - containerEl.scrollTop;
     const endY = startY + player.clientHeight;
     if (startY < y && endY > y) {
@@ -85,6 +85,7 @@ function stop() {
 
 function startRaffle(players) {
   const el = document.getElementById('raffle');
+  el.replaceChildren();
   players.forEach(p => {
     const playerEl = document.createElement('div');
     playerEl.className = 'player';
