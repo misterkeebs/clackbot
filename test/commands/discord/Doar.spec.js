@@ -80,7 +80,7 @@ describe('Doar', () => {
         });
 
         it('sends error message', async () => {
-          expect(iface.lastMessage).to.eql('obrigado por doar 3 sols. O usuário felipe recebeu 2 clacks.');
+          expect(iface.lastMessage).to.eql('obrigado por doar 3 sols. O usuário felipe recebeu 2 clacks e você recebeu 2 clacks de volta!');
         });
 
         it('adds the bonus to the receiver', async () => {
