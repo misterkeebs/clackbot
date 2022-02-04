@@ -155,7 +155,7 @@ describe('Sorteio', () => {
         });
 
         it(`doesn't create a new raffle`, async () => {
-          const [ { count }] = await Raffle.query().count();
+          const [{ count }] = await Raffle.query().count();
           expect(count).to.eql('1');
         });
       });
@@ -165,7 +165,7 @@ describe('Sorteio', () => {
 
         beforeEach(async () => {
           await sorteio(iface, { channel: 'channel', user: 'user', message: '!sorteio criar 2 Novo Sorteio', userData: { mod: true } });
-          [ raffle ] = await Raffle.query();
+          [raffle] = await Raffle.query();
         });
 
         it('returns an error', () => {
@@ -201,6 +201,7 @@ describe('Sorteio', () => {
       let raffle, occurrences;
 
       beforeEach(async () => {
+        // FIXME this needs to be hardcoded on the env file - "API_SERVER=http://localhost:5000"
         nock('http://localhost:5000').post('/startRaffle').reply(200, (uri, body) => {
           occurrences = Array.from(new Set(body.players)).reduce((hash, val) => {
             hash[val] = body.players.filter(v => v === val).length;
