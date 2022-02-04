@@ -25,8 +25,7 @@ class GroupBuyNotifier {
     const validIfAfter = lastRunDate.add(1, 'day').startOf('day');
     if (!moment().isAfter(validIfAfter)) return false;
 
-    // return alertHour.toString() === moment().format('H');
-    return true;
+    return alertHour.toString() === moment().format('H');
   }
 
   async execute() {
