@@ -4,7 +4,7 @@ const steps = 10;
 function update(mistakes, sessionMistakes) {
   const mistakesEl = document.getElementById('mistakes');
   const sessionMistakesEl = document.getElementById('sessionMistakes');
-  mistakesEl.innerHTML = mistakes;
+  mistakesEl.innerHTML = mistakes > 0 ? sessionMistakes : '-';
   sessionMistakesEl.innerHTML = sessionMistakes > 0 ? sessionMistakes : '-';
 }
 

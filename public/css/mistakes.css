@@ -1,5 +1,6 @@
 body {
   font-family: Roboto;
+  background-color: #222;
 }
 
 .hidden {
@@ -37,6 +38,7 @@ body {
 
 .mistakes,
 .sessionMistakes {
+  padding: 0 5px;
   vertical-align: middle;
   order: 2;
   flex: 1 1 50%;
