@@ -1,4 +1,5 @@
 const express = require('express');
+const moment = require('moment');
 
 require('express-async-errors');
 const server = express();
@@ -7,6 +8,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const Guesses = require('./commands/Guesses');
+const Setting = require('./models/Setting');
 const guesses = Guesses.getInstance();
 
 server.use(cors());
@@ -26,6 +28,20 @@ server.post('/timer', (req, res) => {
 
 server.post('/startRaffle', (req, res) => {
   server.io.emit('startRaffle', req.body);
+  res.json({ ok: true });
+});
+
+server.get('/mistakes', async (req, res) => {
+  // FIXME: extract a Mistake class that abstracts how to retrieve
+  //        total and today's mistakes
+  const today = `mistakes-${moment().format('YYYYMMDD')}`;
+  const mistakes = parseInt(await Setting.get('mistakes', '0'), 10);
+  const sessionMistakes = parseInt(await Setting.get(today, '0'), 10);
+  res.json({ mistakes, sessionMistakes });
+});
+
+server.post('/newMistake', (req, res) => {
+  server.io.emit('newMistake', req.body);
   res.json({ ok: true });
 });
 

@@ -17,6 +17,13 @@ module.exports = async (twitch, discord) => {
     eusou: require('./commands/EuSou'),
     wpm: require('./commands/Wpm'),
 
+    mistake: require('./commands/Mistakes'),
+    mistakes: require('./commands/Mistakes'),
+    'mistakes++': require('./commands/Mistakes'),
+    'mistakes--': require('./commands/Mistakes'),
+    'mistake++': require('./commands/Mistakes'),
+    'mistake--': require('./commands/Mistakes'),
+
     doar: require('./commands/discord/Doar'),
     vid: require('./commands/discord/Vid'),
     resgatar: require('./commands/discord/Resgatar'),
