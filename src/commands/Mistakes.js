@@ -32,11 +32,12 @@ module.exports = async (iface, { channel, user: userName, message }) => {
     await Setting.set(today, --sessionMistakes);
 
     let msg = `${name} foi redimido.`;
-    if (mistakes > 1) {
+    if (mistakes > 0) {
       msg += ` Ele já fez merda ${mistakes} vezes, `
         + (sessionMistakes > 0 ? `sendo ${sessionMistakes} só hoje.` : `mas nenhuma hoje.`);
     }
 
+    await send('newMistake', { mistakes, sessionMistakes });
     return await iface.send(channel, msg);
   }
 
