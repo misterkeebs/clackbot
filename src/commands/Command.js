@@ -1,13 +1,15 @@
 const _ = require('lodash');
 
 const User = require('../models/User');
+const { isTwitchMod } = require('../Utils');
 
 class Command {
-  constructor({ iface, channel, user, message, rawMessage = {} }) {
+  constructor({ iface, channel, user, userData = {}, message, rawMessage = {} }) {
     this.iface = iface;
     this.channel = channel;
     this.userName = user;
     this.message = message;
+    this.userData = userData;
     this.rawMessage = rawMessage;
   }
 
@@ -79,6 +81,10 @@ class Command {
     const [user] = await User.query().where('displayName', this.userName);
     this.user = user;
     return user;
+  }
+
+  async isTwitchMod() {
+    isTwitchMod(this.userData);
   }
 
   async sendToChannel(message, embed) {

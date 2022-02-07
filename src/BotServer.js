@@ -16,6 +16,7 @@ module.exports = async (twitch, discord) => {
     sorteio: require('./commands/Sorteio'),
     eusou: require('./commands/EuSou'),
     wpm: require('./commands/Wpm'),
+    build: require('./commands/Build'),
 
     doar: require('./commands/discord/Doar'),
     vid: require('./commands/discord/Vid'),
