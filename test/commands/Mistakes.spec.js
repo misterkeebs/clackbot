@@ -10,7 +10,7 @@ const Setting = require('../../src/models/Setting');
 const mistakes = require('../../src/commands/Mistakes');
 const iface = new FakeInterface();
 
-describe.only('Mistakes', () => {
+describe('Mistakes', () => {
   beforeEach(() => iface.reset());
 
   describe('getting mistakes', async () => {
@@ -85,7 +85,6 @@ describe.only('Mistakes', () => {
     beforeEach(async () => {
       tk.freeze(time.toDate());
       nock('http://localhost:5000').post('/newMistake').reply(200, (uri, body) => {
-        console.log('setting body', body);
         _body = body;
       });
 
@@ -171,6 +170,9 @@ describe.only('Mistakes', () => {
             tk.freeze(1605576014801);
             await Setting.set('mistakes', '12');
             await Setting.set('mistakes-20201116', '1');
+            nock('http://localhost:5000').post('/newMistake').reply(200, (uri, body) => {
+              _body = body;
+            });
             await mistakes(iface, { channel: 'channel', user: 'user', message: '!mistakes--', userData: {} });
           });
           afterEach(() => tk.reset());
@@ -197,6 +199,9 @@ describe.only('Mistakes', () => {
         await Setting.set('mistakes-20210101', '2');
 
         tk.freeze(time.toDate());
+        nock('http://localhost:5000').post('/newMistake').reply(200, (uri, body) => {
+          _body = body;
+        });
         await mistakes(iface, { channel: 'channel', user: 'user', message: '!mistakes--', userData: {} });
         expect(iface.lastMessage).to.eql('SrTeclados foi redimido. Ele já fez merda 1 vezes, sendo 1 só hoje.');
 
