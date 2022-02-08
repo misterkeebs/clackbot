@@ -1,4 +1,5 @@
 const moment = require('moment');
+const Cooldown = require('../models/Cooldown');
 const Setting = require('../models/Setting');
 const { send } = require('../Utils');
 
@@ -11,6 +12,12 @@ module.exports = async (iface, { channel, user: userName, message }) => {
   let sessionMistakes = parseInt(initSessionMistakes, 10);
 
   const parts = message.split(' ');
+
+  if (parts[0].endsWith('++') || parts[0].endsWith('--')) {
+    if (!await Cooldown.for('mistakes', 1)) {
+      return await iface.reply(channel, userName, 'esse comando só pode ser utilizado uma vez por minuto.');
+    }
+  }
 
   if (parts[0].endsWith('++')) {
     await Setting.set('mistakes', ++mistakes);
@@ -32,7 +39,7 @@ module.exports = async (iface, { channel, user: userName, message }) => {
     await Setting.set(today, --sessionMistakes);
 
     let msg = `${name} foi redimido.`;
-    if (mistakes > 1) {
+    if (mistakes > 0) {
       msg += ` Ele já fez merda ${mistakes} vezes, `
         + (sessionMistakes > 0 ? `sendo ${sessionMistakes} só hoje.` : `mas nenhuma hoje.`);
     }
