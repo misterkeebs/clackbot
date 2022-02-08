@@ -17,7 +17,7 @@ function animate(mistakes, sessionMistakes) {
   update(mistakes, sessionMistakes);
 
   const el = document.getElementById('container');
-  el.className = 'animate__animated animate__shakeX animate__infinite';
+  el.className = 'animate__animated animate__rubberBand animate__infinite';
 
   setTimeout(() => {
     el.className = '';
