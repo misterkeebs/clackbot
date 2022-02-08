@@ -44,6 +44,7 @@ module.exports = async (iface, { channel, user: userName, message }) => {
         + (sessionMistakes > 0 ? `sendo ${sessionMistakes} só hoje.` : `mas nenhuma hoje.`);
     }
 
+    await send('newMistake', { mistakes, sessionMistakes });
     return await iface.send(channel, msg);
   }
 

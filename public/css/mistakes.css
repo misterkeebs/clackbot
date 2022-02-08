@@ -31,8 +31,8 @@ body {
 .icon {
   order: 1;
   flex: 1 1 100%;
-  font-size: 40px;
-  padding: 0 10px;
+  font-size: 28px;
+  padding: 0;
   vertical-align: middle;
 }
 
