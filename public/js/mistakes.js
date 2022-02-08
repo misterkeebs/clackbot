@@ -4,11 +4,13 @@ const steps = 10;
 function update(mistakes, sessionMistakes) {
   const mistakesEl = document.getElementById('mistakes');
   const sessionMistakesEl = document.getElementById('sessionMistakes');
-  mistakesEl.innerHTML = mistakes > 0 ? sessionMistakes : '-';
+  mistakesEl.innerHTML = mistakes > 0 ? mistakes : '-';
   sessionMistakesEl.innerHTML = sessionMistakes > 0 ? sessionMistakes : '-';
 }
 
 function animate(mistakes, sessionMistakes) {
+  audio.pause();
+  audio.currentTime = 0;
   audio.loop = false;
   audio.play();
 

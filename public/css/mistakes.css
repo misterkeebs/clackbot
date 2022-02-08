@@ -16,6 +16,7 @@ body {
   height: 80px;
   text-align: center;
   gap: 5px;
+  margin-left: 50px;
 }
 
 .stat {
