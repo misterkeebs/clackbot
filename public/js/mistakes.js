@@ -1,4 +1,4 @@
-const audio = new Audio('/sounds/boo.mp3');
+const audio = new Audio('/sounds/fart.mp3');
 const steps = 10;
 
 function update(mistakes, sessionMistakes) {
