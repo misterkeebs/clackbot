@@ -15,6 +15,7 @@ node_modules
 src/node/database.json
 src/node/output.txt
 src/features/feature_volume_28_day_series.csv
+test/commands/discord/tictactoe.png
 .env.*
 !.env.example
 !.env.codespace
