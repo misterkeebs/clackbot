@@ -41,6 +41,10 @@ class FakeInterface {
   get lastReceiver() {
     return _.get(_.last(this.calls), 'user');
   }
+
+  dump() {
+    return this.calls.map((c, i) => `${i}: ${JSON.stringify(c)}`).join('\n');
+  }
 }
 
 module.exports = FakeInterface;
