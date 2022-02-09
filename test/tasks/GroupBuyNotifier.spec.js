@@ -7,7 +7,7 @@ const GroupBuy = require('../../src/models/GroupBuy');
 const GroupBuyNotifier = require('../../src/tasks/GroupBuyNotifier');
 const Setting = require('../../src/models/Setting');
 
-describe.only('GroupBuyNotifier', async () => {
+describe('GroupBuyNotifier', async () => {
   const gb = new GroupBuyNotifier();
 
   describe('formatNotice', async () => {
