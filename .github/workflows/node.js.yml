@@ -21,16 +21,20 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 2.x
+      - name: Install python
+        run: apk --no-cache add --virtual .builds-deps build-base python2 py3-pip make g++
+
+      - name: Install OS dependencies
+        run: apk add --no-cache postgresql-client pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
+
+      - name: Install canvas
+        run: yarn add node-canvas-with-twemoji-and-discord-emoji
 
       - name: Install dependencies
         run: yarn
 
       - name: Create database
-        run: psql -h postgres -d postgres_db -U postgres_user -c 'CREATE DATABASE clackbot';
+        run: psql -h postgres -d postgres -U postgres -c 'CREATE DATABASE clackbot';
         env:
           PGPASSWORD: postgres
 
