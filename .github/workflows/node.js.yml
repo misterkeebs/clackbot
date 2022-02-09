@@ -43,6 +43,13 @@ jobs:
         env:
           API_SERVER: http://localhost:5000
           TEST_DATABASE_URL: postgres://postgres:postgres@postgres:5432/clackbot
+          NODE_ENV: test
+          DB_ENV: test
 
       - name: Run tests
         run: yarn run test
+        env:
+          API_SERVER: http://localhost:5000
+          TEST_DATABASE_URL: postgres://postgres:postgres@postgres:5432/clackbot
+          NODE_ENV: test
+          DB_ENV: test
