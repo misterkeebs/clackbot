@@ -9,6 +9,7 @@ const Setting = require('../../src/models/Setting');
 
 const mistakes = require('../../src/commands/Mistakes');
 const iface = new FakeInterface();
+const today = `mistakes-${moment().format('YYYYMMDD')}`;
 
 describe('Mistakes', () => {
   beforeEach(() => iface.reset());
@@ -40,7 +41,7 @@ describe('Mistakes', () => {
       beforeEach(async () => {
         tk.freeze(1605576014801);
         await Setting.set('mistakes', '12');
-        await Setting.set('mistakes-20201116', '3');
+        await Setting.set(today, '3');
         await mistakes(iface, { channel: 'channel', user: 'user', message: '!mistakes', userData: {} });
       });
       afterEach(() => tk.reset());
@@ -51,7 +52,7 @@ describe('Mistakes', () => {
 
       it('keeps the same number of mistakes', async () => {
         expect(await Setting.get('mistakes')).to.eql('12');
-        expect(await Setting.get('mistakes-20201116')).to.eql('3');
+        expect(await Setting.get(today)).to.eql('3');
       });
     });
 
@@ -166,7 +167,7 @@ describe('Mistakes', () => {
           beforeEach(async () => {
             tk.freeze(1605576014801);
             await Setting.set('mistakes', '12');
-            await Setting.set('mistakes-20201116', '1');
+            await Setting.set(today, '1');
             nock('http://localhost:5000').post('/newMistake').reply(200, (uri, body) => {
               _body = body;
             });
@@ -183,7 +184,7 @@ describe('Mistakes', () => {
           });
 
           it('decreses session mistakes', async () => {
-            await Setting.set('mistakes-20201116', '0');
+            await Setting.set(today, '0');
           });
         });
       });
