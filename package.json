@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
-    "test": "NODE_ENV=test DB_ENV=test mocha --file ./test/Init.js './test/**/*.spec.js'",
+    "test": "NODE_ENV=test DB_ENV=test mocha --exit --file ./test/Init.js './test/**/*.spec.js'",
     "test:watch": "NODE_ENV=test DB_ENV=test mocha -w --file ./test/Init.js './test/**/*.spec.js'",
     "gencodes": "node gencodes.js 100",
     "gencodes:reset": "node gencodes.js --reset"
@@ -27,6 +27,7 @@
     "knex": "^0.21.12",
     "lodash": "^4.17.20",
     "moment": "^2.29.0",
+    "moment-timezone": "^0.5.34",
     "morgan": "^1.10.0",
     "node-canvas-with-twemoji-and-discord-emoji": "^1.2.1",
     "node-fetch": "^2.6.1",

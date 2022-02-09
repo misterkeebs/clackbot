@@ -1,6 +1,6 @@
 const _fetch = require('node-fetch');
 const Discord = require('discord.js');
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 const GroupBuy = require('../models/GroupBuy');
 const Setting = require('../models/Setting');
@@ -9,6 +9,7 @@ const annChannel = process.env.DISCORD_GB_ANN_CHANNEL || 'links-deals';
 const alertRole = process.env.DISCORD_GB_ALERT_ROLE;
 const alertThumb = process.env.DISCORD_GB_THUMB;
 const alertHour = process.env.DISCORD_GB_ALERT_HOUR;
+const timeZone = process.env.DISCORD_GB_ALERT_TIMEZONE || 'America/Sao_Paulo';
 
 class GroupBuyNotifier {
   constructor(client, discord) {
@@ -25,7 +26,10 @@ class GroupBuyNotifier {
     const validIfAfter = lastRunDate.add(1, 'day').startOf('day');
     if (!moment().isAfter(validIfAfter)) return false;
 
-    return alertHour.toString() === moment().format('H');
+    console.log('alertHour.toString()', alertHour.toString());
+    console.log('moment().format()', moment().format('H'));
+
+    return alertHour.toString() === moment().tz(timeZone).format('H');
   }
 
   async execute() {

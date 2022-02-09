@@ -22,6 +22,7 @@ module.exports = async (iface, { channel, user: userName, message }) => {
   if (parts[0].endsWith('++')) {
     await Setting.set('mistakes', ++mistakes);
     await Setting.set(today, ++sessionMistakes);
+
     await send('newMistake', { mistakes, sessionMistakes });
     return await iface.send(channel, `${name} fez merda de novo. Ele já fez merda ${mistakes} vezes, sendo ${sessionMistakes} só hoje.`);
   }

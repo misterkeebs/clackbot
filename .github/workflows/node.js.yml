@@ -4,7 +4,7 @@ on: ["push", "pull_request"]
 jobs:
   container-job:
     runs-on: ubuntu-latest
-    container: node:17-alpine
+    container: node:14-alpine
 
     services:
       postgres:
@@ -21,11 +21,17 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - name: Install python
+        run: apk add --virtual .builds-deps build-base python2 py3-pip make g++
+
+      - name: Install OS dependencies
+        run: apk add postgresql-client pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
+
       - name: Install dependencies
         run: yarn
 
       - name: Create database
-        run: psql -h postgres -d postgres_db -U postgres_user -c 'CREATE DATABASE clackbot';
+        run: psql -h postgres -d postgres -U postgres -c 'CREATE DATABASE clackbot';
         env:
           PGPASSWORD: postgres
 
@@ -33,7 +39,29 @@ jobs:
         run: yarn run knex migrate:latest
         env:
           API_SERVER: http://localhost:5000
-          DATABASE_URL: postgres://postgres:postgres@postgres:5432/clackbot
+          TEST_DATABASE_URL: postgres://postgres:postgres@postgres:5432/clackbot
+          NODE_ENV: test
+          DB_ENV: test
+          TWITCH_CHANNEL: SrTeclados
 
       - name: Run tests
         run: yarn run test
+        env:
+          API_SERVER: http://localhost:5000
+          TEST_DATABASE_URL: postgres://postgres:postgres@postgres:5432/clackbot
+          NODE_ENV: test
+          DB_ENV: test
+          TWITCH_CHANNEL: SrTeclados
+          CLACK_BONUS_MAX: "12"
+          CLACK_BONUS_MIN: "1"
+          CLACK_INTERVAL_MAX: "3"
+          CLACK_INTERVAL_MIN: "1"
+          CLACK_SPAWN_MAX: "60"
+          CLACK_SPAWN_MIN: "15"
+          CLACK_SPAWN_TIME: "10"
+          DISCORD_GB_ALERT_HOUR: "10"
+          DISCORD_GB_ALERT_ROLE: "780599217051664400"
+          DISCORD_GB_ANN_CHANNEL: links-deals
+          DISCORD_GB_IMAGE: https://cdn.discordapp.com/icons/412393574898860032/a_80f791d1d834aadf542a3d5990319fd9
+          DISCORD_GB_THUMB: https://images-ext-2.discordapp.net/external/7mJlSRNI6rDgvoVR1LSqXJvsgiGI4rHO2Msgg5b8M88/https/static-cdn.jtvnw.net/jtv_user_pictures/7ecbe0e8-904d-49c5-b87d-dcadda378864-profile_image-300x300.png
+          DISCORD_GUILD_NAME: "Bot Test"
