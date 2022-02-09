@@ -2,7 +2,7 @@ name: Node.js CI
 
 on: ["push", "pull_request"]
 jobs:
-  container-job:
+  run-tests:
     runs-on: ubuntu-latest
     container: node:14-alpine
 
