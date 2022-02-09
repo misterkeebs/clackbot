@@ -26,9 +26,6 @@ class GroupBuyNotifier {
     const validIfAfter = lastRunDate.add(1, 'day').startOf('day');
     if (!moment().isAfter(validIfAfter)) return false;
 
-    console.log('alertHour.toString()', alertHour.toString());
-    console.log('moment().format()', moment().format('H'));
-
     return alertHour.toString() === moment().tz(timeZone).format('H');
   }
 

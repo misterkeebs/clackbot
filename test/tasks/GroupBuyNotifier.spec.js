@@ -231,8 +231,6 @@ describe('GroupBuyNotifier', async () => {
 
       const gb1 = await GroupBuy.query().insert({ name: 'starting', startsAt: moment() });
       const gb2 = await GroupBuy.query().insert({ name: 'ending', startsAt: moment().add(-30, 'day'), endsAt: moment() });
-      console.log('gb1', gb1);
-      console.log('gb2', gb2);
     });
 
     xdescribe(`when channel does't exist`, () => {
