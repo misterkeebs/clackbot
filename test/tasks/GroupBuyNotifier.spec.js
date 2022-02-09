@@ -167,7 +167,7 @@ describe('GroupBuyNotifier', async () => {
       const json = () => Promise.resolve(readFixture('gb-data'));
       await gb.update(() => { return { json }; });
       expect(await GroupBuy.query().count()).to.eql([{ count: '822' }]);
-    });
+    }).timeout(10000);
   });
 
   describe('canRun', async () => {
