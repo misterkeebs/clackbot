@@ -33,7 +33,7 @@ describe('Rodada', () => {
     });
 
     it('notifies the user', () => {
-      expect(iface.lastMessage).to.eql('rodada em andamento por menos de um minuto.');
+      expect(iface.lastMessage).to.include('rodada em andamento por');
     });
   });
 
