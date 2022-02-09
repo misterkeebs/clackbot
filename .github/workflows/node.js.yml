@@ -1,0 +1,39 @@
+name: Node.js CI
+
+on: ["push", "pull_request"]
+jobs:
+  container-job:
+    runs-on: ubuntu-latest
+    container: node:17-alpine
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Create database
+        run: psql -h postgres -d postgres_db -U postgres_user -c 'CREATE DATABASE clackbot';
+        env:
+          PGPASSWORD: postgres
+
+      - name: Migrate database
+        run: yarn run knex migrate:latest
+        env:
+          API_SERVER: http://localhost:5000
+          DATABASE_URL: postgres://postgres:postgres@postgres:5432/clackbot
+
+      - name: Run tests
+        run: yarn run test
