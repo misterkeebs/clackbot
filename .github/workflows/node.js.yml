@@ -22,13 +22,10 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install python
-        run: apk --no-cache add --virtual .builds-deps build-base python2 py3-pip make g++
+        run: apk add --virtual .builds-deps build-base python2 py3-pip make g++
 
       - name: Install OS dependencies
-        run: apk add --no-cache postgresql-client pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
-
-      - name: Install canvas
-        run: yarn add node-canvas-with-twemoji-and-discord-emoji
+        run: apk add postgresql-client pkgconfig pixman-dev cairo-dev pango-dev libjpeg-turbo-dev giflib-dev
 
       - name: Install dependencies
         run: yarn

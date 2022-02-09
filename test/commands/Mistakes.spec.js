@@ -11,7 +11,7 @@ const mistakes = require('../../src/commands/Mistakes');
 const iface = new FakeInterface();
 const today = `mistakes-${moment().format('YYYYMMDD')}`;
 
-describe('Mistakes', () => {
+describe.only('Mistakes', () => {
   beforeEach(() => iface.reset());
 
   describe('getting mistakes', async () => {
@@ -47,6 +47,7 @@ describe('Mistakes', () => {
       afterEach(() => tk.reset());
 
       it('returns the build', async () => {
+        console.log(' *** today is', today, '-> today=', await Setting.get(today));
         expect(iface.lastMessage).to.eql('SrTeclados já fez merda 12 vezes, sendo 3 só hoje.');
       });
 

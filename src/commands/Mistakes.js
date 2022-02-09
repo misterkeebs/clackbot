@@ -38,6 +38,8 @@ module.exports = async (iface, { channel, user: userName, message }) => {
     await Setting.set('mistakes', --mistakes);
     await Setting.set(today, --sessionMistakes);
 
+    console.log(' *** For the executable today is', today, '->', mistakes, '-', sessionMistakes);
+
     let msg = `${name} foi redimido.`;
     if (mistakes > 0) {
       msg += ` Ele já fez merda ${mistakes} vezes, `
