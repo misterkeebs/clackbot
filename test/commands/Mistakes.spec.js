@@ -103,11 +103,8 @@ describe('Mistakes', () => {
     });
 
     it('sends the mistakes and session mistakes to the endpoint', async () => {
-      // FIXME: understand why every 4 times the test is run _body is undefined
-      if (_body) {
-        expect(_body.mistakes).to.eql(13);
-        expect(_body.sessionMistakes).to.eql(1);
-      }
+      expect(_body.mistakes).to.eql(13);
+      expect(_body.sessionMistakes).to.eql(1);
     });
 
     describe('cooldown', async () => {
