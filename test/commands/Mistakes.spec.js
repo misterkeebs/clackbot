@@ -11,7 +11,7 @@ const mistakes = require('../../src/commands/Mistakes');
 const iface = new FakeInterface();
 let _body, today;
 
-describe.only('Mistakes', () => {
+describe('Mistakes', () => {
   beforeEach(() => {
     nock('http://localhost:5000').persist().post('/newMistake').reply(200, (uri, body) => {
       _body = body;
@@ -87,7 +87,7 @@ describe.only('Mistakes', () => {
     });
   });
 
-  describe.only('adding mistakes', async () => {
+  describe('adding mistakes', async () => {
     beforeEach(async () => {
       await Setting.set('mistakes', '12');
       await Setting.set('cooldown-mistakes', null);
@@ -189,7 +189,7 @@ describe.only('Mistakes', () => {
       it('prevents removing multiple mistakes in less than a minute', async () => {
         const time = moment();
         await Setting.set('mistakes', '2');
-        await Setting.set('mistakes-20210101', '2');
+        await Setting.set(today, '2');
 
         tk.freeze(time.toDate());
         await mistakes(iface, { channel: 'channel', user: 'user', message: '!mistakes--', userData: {} });
