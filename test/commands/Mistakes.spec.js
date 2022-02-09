@@ -155,7 +155,7 @@ describe('Mistakes', () => {
           });
 
           it('returns the new mistake count', async () => {
-            expect(iface.lastMessage).to.eql('SrTeclados agradece muito a tentativa, mas ele não fez nenhum erro ainda hoje.');
+            expect(iface.lastMessage).to.eql('SrTeclados agradece muito o interesse, mas ele não fez nenhuma merda ainda hoje.');
           });
 
           it('keeps the mistakes', async () => {

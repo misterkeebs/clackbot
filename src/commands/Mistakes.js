@@ -32,7 +32,7 @@ module.exports = async (iface, { channel, user: userName, message }) => {
     }
 
     if (sessionMistakes < 1) {
-      return await iface.send(channel, `${name} agradece muito a tentativa, mas ele não fez nenhum erro ainda hoje.`);
+      return await iface.send(channel, `${name} agradece muito o interesse, mas ele não fez nenhuma merda ainda hoje.`);
     }
 
     await Setting.set('mistakes', --mistakes);
