@@ -76,6 +76,13 @@ jobs:
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: "clackbot"
           heroku_email: "felipe.coury@gmail.com"
+
+      - name: Notifies Discord
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "Projeto {{ EVENT_PAYLOAD.repository.full_name }} foi deployado no Heroku."
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
