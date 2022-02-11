@@ -14,6 +14,9 @@ module.exports = async (iface, { channel, user: userName, message }) => {
   const parts = message.split(' ');
 
   if (parts[0].endsWith('++') || parts[0].endsWith('--')) {
+    if (iface.name !== 'twitch') {
+      return await iface.reply(channel, userName, `esse comando só pode ser usado durante lives, para saber quantas merdas o ${name} fez, use ${'`!mistakes`'}`)
+    }
     if (!await Cooldown.for('mistakes', 1)) {
       return await iface.reply(channel, userName, 'esse comando só pode ser utilizado uma vez por minuto.');
     }

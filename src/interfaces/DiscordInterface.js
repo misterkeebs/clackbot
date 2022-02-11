@@ -72,6 +72,11 @@ class DiscordInterface {
     return channel.send(`${dbUser} ${message}`, attachment);
   }
 
+  async send(channelId, message, attachment) {
+    const channel = this.client.channels.cache.find(c => c.id === channelId);
+    return channel.send(`${message}`, attachment);
+  }
+
   async preProcess(client, msg) {
     let resolved = false;
     const result = await Promise.map(PROCESSORS, async proc => {

@@ -8,7 +8,7 @@ const FakeInterface = require('./FakeInterface');
 const Setting = require('../../src/models/Setting');
 
 const mistakes = require('../../src/commands/Mistakes');
-const iface = new FakeInterface();
+const iface = new FakeInterface({ name: 'twitch' });
 let _body, today;
 
 describe('Mistakes', () => {
@@ -84,6 +84,18 @@ describe('Mistakes', () => {
 
         tk.reset();
       });
+    });
+  });
+
+  describe('adding mistakes outside of twitch', async () => {
+    const iface = new FakeInterface({ name: 'discord' });
+
+    beforeEach(async () => {
+      await mistakes(iface, { channel: 'channel', user: 'user', message: '!mistake++', userData: {} });
+    });
+
+    it('returns error', async () => {
+      expect(iface.lastMessage).to.eql('esse comando só pode ser usado durante lives, para saber quantas merdas o SrTeclados fez, use `!mistakes`');
     });
   });
 

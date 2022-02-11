@@ -2,6 +2,7 @@ const _ = require('lodash');
 
 class FakeInterface {
   constructor(opts) {
+    this.name = opts && opts.name;
     this.calls = [];
     this.channelMessages = [];
     this.rawMessage = {
