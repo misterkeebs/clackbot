@@ -45,6 +45,7 @@ function hasDiscordRole(msg, role) {
 }
 
 function hasAnyDiscordRole(msg, roles) {
+  if (!roles) return false;
   return msg.member.roles.cache.find(r => roles.includes(r.name));
 }
 
