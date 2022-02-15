@@ -18,6 +18,17 @@ class DiscordInterface {
     this.client = client;
     this.name = 'discord';
 
+    this.client.on('messageReactionAdd', async (reaction, user) => {
+      let resolved = false;
+      await Promise.map(PROCESSORS, async proc => {
+        if (!_.isFunction(proc.handleReaction)) return;
+        if (resolved) return;
+        const res = await proc.handleReaction(reaction, user);
+        if (res) resolved = true;
+        return res;
+      });
+    });
+
     this.client.on('message', async msg => {
       const processed = await this.preProcess(client, msg);
       if (processed) return;

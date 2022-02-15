@@ -1,9 +1,14 @@
+const { addReaction } = require('./FakeDiscordReaction');
+
 class Author {
   constructor(message, { authorID = '399970540586270722', username = 'user', discriminator = '0001' } = {}) {
     this.message = message;
     this.id = authorID;
     this.username = username;
     this.discriminator = discriminator;
+    this.roles = {
+      cache: [],
+    };
   }
 
   async send(content) {
@@ -41,6 +46,7 @@ class FakeDiscordMessage {
     this.author = new Author(this, { authorID });
     this.channel = new Channel(this, channelName);
     this.deleted = false;
+    this.reactions = [];
   }
 
   reset() {
@@ -60,6 +66,14 @@ class FakeDiscordMessage {
 
   addDirectMessage(content) {
     this.directMessages.push(content);
+  }
+
+  react(emoji) {
+    return addReaction(this, emoji, this.author);
+  }
+
+  get member() {
+    return this.author;
   }
 
   get lastDirectMessage() {
