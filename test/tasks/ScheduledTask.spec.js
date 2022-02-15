@@ -10,10 +10,7 @@ describe('ScheduledTask', async () => {
 
   beforeEach(async () => {
     ran = false;
-    task = new ScheduledTask();
-    task.name = 'DailyTask';
-    task.timeZone = 'America/Sao_Paulo';
-    task.startsAt = '10';
+    task = new ScheduledTask('DailyTask', '10', 'America/Sao_Paulo');
     task.run = () => {
       ran = true;
     };

@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-class FakeDiscordReaction {
+class Reaction {
   constructor(message, emoji) {
     this.message = message;
     this.emoji = emoji;
@@ -14,7 +14,7 @@ class FakeDiscordReaction {
         return user;
       }
     };
-    this.message.reactions.push(this);
+    this.message._reactions.push(this);
   }
 
   addUser(user) {
@@ -35,11 +35,11 @@ class FakeDiscordReaction {
 }
 
 function findReaction(message, emoji) {
-  return message.reactions.find(r => r.emoji === emoji);
+  return message._reactions.find(r => r.emoji === emoji);
 }
 
 function findOrCreateReaction(message, emoji) {
-  return findReaction(message, emoji) || new FakeDiscordReaction(message, emoji);
+  return findReaction(message, emoji) || new Reaction(message, emoji);
 }
 
 function addReaction(message, emoji, user) {
@@ -56,7 +56,7 @@ function removeReaction(message, emoji, user) {
 }
 
 module.exports = {
-  FakeDiscordReaction,
+  Reaction,
   findReaction,
   findOrCreateReaction,
   addReaction,

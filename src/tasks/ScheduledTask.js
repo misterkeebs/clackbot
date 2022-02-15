@@ -3,6 +3,12 @@ const moment = require('moment-timezone');
 const Setting = require('../models/Setting');
 
 class ScheduledTask {
+  constructor(name, startsAt, timeZone = process.env.TASKS_TIMEZONE) {
+    this.name = name;
+    this.startsAt = startsAt;
+    this.timeZone = timeZone;
+  }
+
   async canRun() {
     const now = moment.tz(this.timeZone);
     const wantedTime = moment(now)
@@ -25,6 +31,13 @@ class ScheduledTask {
   async start() {
     await this.run();
     await Setting.set(this.settingKey, moment.tz(this.timeZone).toISOString());
+  }
+
+  async getLastRun() {
+    const lastRunStr = await Setting.get(this.settingKey);
+    if (!lastRunStr) return undefined;
+
+    return moment.tz(lastRunStr, this.timeZone);
   }
 
   get settingKey() {

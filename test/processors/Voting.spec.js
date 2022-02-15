@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 
-const FakeMessage = require('../FakeDiscordMessage');
-const { findOrCreateReaction, addReaction } = require('../FakeDiscordReaction');
+const FakeMessage = require('../discord/Message');
+const { findOrCreateReaction, addReaction } = require('../discord/Reaction');
 const VotingProcessor = require('../../src/processors/Voting');
 const Voting = require('../../src/processors/Voting');
 
@@ -32,7 +32,7 @@ describe('Voting', async () => {
     });
 
     it('adds a reaction to each post', async () => {
-      expect(msg.reactions.map(r => r.emoji)).to.eql(['🔼', '🔽']);
+      expect(msg._reactions.map(r => r.emoji)).to.eql(['🔼', '🔽']);
     });
 
     describe('when user had already voted in another option', async () => {

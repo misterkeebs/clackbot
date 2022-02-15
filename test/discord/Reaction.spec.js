@@ -1,13 +1,13 @@
 const { expect } = require('chai');
-const FakeDiscordMessage = require('./FakeDiscordMessage');
-const { FakeDiscordReaction } = require('./FakeDiscordReaction');
+const Message = require('./Message');
+const { Reaction } = require('./Reaction');
 
-describe('FakeDiscordReaction', async () => {
+describe('Reaction', async () => {
   let msg, reaction;
 
   beforeEach(async () => {
-    msg = new FakeDiscordMessage('msg');
-    reaction = new FakeDiscordReaction(msg, 'emoji');
+    msg = new Message('msg');
+    reaction = new Reaction(msg, 'emoji');
   });
 
   it('sets initial user', async () => {
