@@ -5,8 +5,10 @@ const User = require('../models/User');
 const BuySell = require('../processors/BuySell');
 const SlowModeProcessor = require('../processors/SlowMode');
 const ImgOnly = require('../processors/ImageOnly');
+const Voting = require('../processors/Voting');
 
 const PROCESSORS = [
+  new Voting(),
   new ImgOnly(),
   new SlowModeProcessor(),
   new BuySell(),
