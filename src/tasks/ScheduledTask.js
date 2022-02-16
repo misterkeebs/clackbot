@@ -29,6 +29,7 @@ class ScheduledTask {
   }
 
   async start() {
+    if (!await this.canRun()) return;
     await this.run();
     await Setting.set(this.settingKey, moment.tz(this.timeZone).toISOString());
   }

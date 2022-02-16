@@ -53,21 +53,44 @@ describe('ScheduledTask', async () => {
   });
 
   describe('start', async () => {
-    beforeEach(async () => {
-      tk.freeze(moment.tz('2021-02-15 10:00', 'America/Sao_Paulo').toDate());
-      await task.start();
+    describe('when never executed', async () => {
+      beforeEach(async () => {
+        tk.freeze(moment.tz('2021-02-15 10:00', 'America/Sao_Paulo').toDate());
+        await task.start();
+      });
+
+      it('calls the run method', async () => {
+        expect(ran).to.be.true;
+      });
+
+      it('marks last execution', async () => {
+        expect(await Setting.get(task.settingKey)).to.eql('2021-02-15T13:00:00.000Z');
+      });
+
+      it('makes canRun evaluate to false', async () => {
+        expect(await task.canRun()).to.be.false;
+      });
     });
 
-    it('calls the run method', async () => {
-      expect(ran).to.be.true;
-    });
+    describe('when already executed', async () => {
+      beforeEach(async () => {
+        await Setting.set(task.settingKey, moment.tz('2021-02-14 10:00', 'America/Sao_Paulo').toISOString());
 
-    it('marks last execution', async () => {
-      expect(await Setting.get(task.settingKey)).to.eql('2021-02-15T13:00:00.000Z');
-    });
+        tk.freeze(moment.tz('2021-02-14 10:00', 'America/Sao_Paulo').toDate());
+        await task.start();
+      });
 
-    it('makes canRun evaluate to false', async () => {
-      expect(await task.canRun()).to.be.false;
+      it('does not call the run method', async () => {
+        expect(ran).to.be.false;
+      });
+
+      it('marks last execution', async () => {
+        expect(await Setting.get(task.settingKey)).to.eql('2021-02-14T13:00:00.000Z');
+      });
+
+      it('makes canRun evaluate to false', async () => {
+        expect(await task.canRun()).to.be.false;
+      });
     });
   });
 });
