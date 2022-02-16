@@ -4,7 +4,7 @@ on: ["push", "pull_request"]
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    container: node:14-alpine
+    container: node:17-alpine
 
     services:
       postgres:
