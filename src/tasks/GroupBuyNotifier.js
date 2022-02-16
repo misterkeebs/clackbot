@@ -52,10 +52,29 @@ class GroupBuyNotifier {
     await Setting.set('LAST_GB_NOTIFICATION', moment().toString());
   }
 
+  async failSafeFetch(fetch) {
+    const url = `https://www.mechgroupbuys.com/gb-data`;
+    try {
+      return await fetch(url);
+    } catch (err) {
+      console.error('Error getting GB data', err.message, 'retrying...');
+      const https = require('https');
+
+      const httpsAgent = new https.Agent({
+        rejectUnauthorized: false,
+      });
+
+      return await fetch(url, {
+        method: 'GET',
+        agent: httpsAgent,
+      });
+    }
+  }
+
   async update(fetch = _fetch) {
     await GroupBuy.query().truncate();
 
-    const res = await fetch(`https://www.mechgroupbuys.com/gb-data`);
+    const res = await this.failSafeFetch(fetch);
     const json = await res.json();
     const data = json
       .filter(entry => !!entry.name)
