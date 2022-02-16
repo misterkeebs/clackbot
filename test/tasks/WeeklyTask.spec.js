@@ -22,14 +22,19 @@ describe('WeeklyTask', async () => {
 
   describe('canRun', async () => {
     describe('when not yet executed', async () => {
-      it('can run at 10AM', async () => {
+      it('can run at 10AM on Monday', async () => {
         tk.freeze(MONDAY);
         expect(await task.canRun()).to.be.true;
       });
 
-      it('can run at 11AM', async () => {
+      it('can run at 11AM on Monday', async () => {
         tk.freeze(moment.tz('2022-02-14 11:00', 'America/Sao_Paulo').toDate());
         expect(await task.canRun()).to.be.true;
+      });
+
+      it('cannot run at 10AM on Tuesday', async () => {
+        tk.freeze(TUESDAY);
+        expect(await task.canRun()).to.be.false;
       });
     });
 
