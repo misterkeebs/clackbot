@@ -4,7 +4,7 @@ on: ["push", "pull_request"]
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    container: node:14-alpine
+    container: node:17-alpine
 
     services:
       postgres:
@@ -69,6 +69,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: run-tests
+    if: contains(github.base_ref, 'master')
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2

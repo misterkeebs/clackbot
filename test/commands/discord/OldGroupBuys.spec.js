@@ -4,7 +4,7 @@ const tk = require('timekeeper');
 
 // const gb = require('../../../src/commands/discord/GroupBuys');
 // const GroupBuy = require('../../../src/models/GroupBuy');
-// const FakeDiscordMessage = require('../../FakeDiscordMessage');
+// const Message = require('../../Message');
 
 xdescribe('GroupBuys', () => {
   const iface = {};
@@ -19,7 +19,7 @@ xdescribe('GroupBuys', () => {
       await GroupBuy.query().insert({ name: 'GB 3', startsAt: moment().add(-1, 'day') });
       await GroupBuy.query().insert({ name: 'GB 4', startsAt: moment().add(1, 'day'), endsAt: moment().add(30, 'days') });
 
-      rawMessage = new FakeDiscordMessage('!gb');
+      rawMessage = new Message('!gb');
       await gb(iface, { rawMessage });
     });
 
@@ -57,7 +57,7 @@ xdescribe('GroupBuys', () => {
       let rawMessage;
 
       beforeEach(async () => {
-        rawMessage = new FakeDiscordMessage('!gb mod nome LZ Iron R2 para LZ Lagarto');
+        rawMessage = new Message('!gb mod nome LZ Iron R2 para LZ Lagarto');
         await gb(iface, { rawMessage });
       });
 
@@ -75,7 +75,7 @@ xdescribe('GroupBuys', () => {
       let rawMessage;
 
       beforeEach(async () => {
-        rawMessage = new FakeDiscordMessage('!gb mod início LZ Iron R2 para 15/07 às 14:32');
+        rawMessage = new Message('!gb mod início LZ Iron R2 para 15/07 às 14:32');
         await gb(iface, { rawMessage });
       });
 
@@ -93,7 +93,7 @@ xdescribe('GroupBuys', () => {
       let rawMessage;
 
       beforeEach(async () => {
-        rawMessage = new FakeDiscordMessage('!gb mod fim LZ Iron R2 para 15/07 às 14:32');
+        rawMessage = new Message('!gb mod fim LZ Iron R2 para 15/07 às 14:32');
         await gb(iface, { rawMessage });
       });
 
@@ -111,7 +111,7 @@ xdescribe('GroupBuys', () => {
       let rawMessage;
 
       beforeEach(async () => {
-        rawMessage = new FakeDiscordMessage('!gb mod nome LZ Iron R2');
+        rawMessage = new Message('!gb mod nome LZ Iron R2');
         await gb(iface, { rawMessage });
       });
 
@@ -124,7 +124,7 @@ xdescribe('GroupBuys', () => {
       let rawMessage;
 
       beforeEach(async () => {
-        rawMessage = new FakeDiscordMessage('!gb mod azuca LZ Iron R2 para 15/07 às 14:32');
+        rawMessage = new Message('!gb mod azuca LZ Iron R2 para 15/07 às 14:32');
         await gb(iface, { rawMessage });
       });
 
@@ -141,7 +141,7 @@ xdescribe('GroupBuys', () => {
       let groupBuy;
 
       beforeEach(async () => {
-        rawMessage = new FakeDiscordMessage('!gb add GMK Metaverse de 12/01 as 23:00 até 12/02 às 14:00 http://metaverse.com');
+        rawMessage = new Message('!gb add GMK Metaverse de 12/01 as 23:00 até 12/02 às 14:00 http://metaverse.com');
         await gb(iface, { rawMessage });
         groupBuys = await GroupBuy.query();
         [groupBuy] = groupBuys;
@@ -178,7 +178,7 @@ xdescribe('GroupBuys', () => {
       let groupBuy;
 
       beforeEach(async () => {
-        rawMessage = new FakeDiscordMessage('!gb add GMK Metaverse de 12/01 as 23:00');
+        rawMessage = new Message('!gb add GMK Metaverse de 12/01 as 23:00');
         await gb(iface, { rawMessage });
         groupBuys = await GroupBuy.query();
         [groupBuy] = groupBuys;
@@ -214,7 +214,7 @@ xdescribe('GroupBuys', () => {
       let groupBuys;
 
       beforeEach(async () => {
-        rawMessage = new FakeDiscordMessage('!gb add GMK Metaverse');
+        rawMessage = new Message('!gb add GMK Metaverse');
         await gb(iface, { rawMessage });
         groupBuys = await GroupBuy.query();
       });

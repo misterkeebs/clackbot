@@ -1,50 +1,32 @@
-class Author {
-  constructor(message, { authorID = '399970540586270722', username = 'user', discriminator = '0001' } = {}) {
-    this.message = message;
-    this.id = authorID;
-    this.username = username;
-    this.discriminator = discriminator;
-  }
+const { Collection } = require('@discordjs/collection');
 
-  async send(content) {
-    this.message.addDirectMessage(content);
-    return Promise.resolve();
-  }
+const Channel = require('./Channel');
+const Author = require('./Author');
+const { addReaction } = require('./Reaction');
 
-  toString() {
-    return `@${this.username}#${this.discriminator}`;
-  }
-}
-
-class Channel {
-  constructor(message, name) {
-    this.message = message;
-    this.name = name;
-    this.channelMessages = this.message.channelMessages;
-  }
-
-  async send(content) {
-    this.channelMessages.push(content);
-    return Promise.resolve();
-  }
-}
-
-class FakeDiscordMessage {
+class Message {
   constructor(content, {
     authorID,
     channelName = 'channel',
     createdTimestamp = new Date().getTime(),
+    channel,
+    attachments,
   } = {}) {
+    this.author = new Author(this, { authorID });
+    this.channel = channel || new Channel(channelName);
     this.reset();
+
     this.content = content;
     this.createdTimestamp = createdTimestamp;
-    this.author = new Author(this, { authorID });
-    this.channel = new Channel(this, channelName);
     this.deleted = false;
+    this._reactions = [];
+    this.attachments = new Collection();
+    if (attachments) {
+      attachments.forEach((a, n) => this.attachments.set(n, a));
+    }
   }
 
   reset() {
-    this.channelMessages = [];
     this.directMessages = [];
   }
 
@@ -55,11 +37,32 @@ class FakeDiscordMessage {
 
   addMessage({ authorID, createdTimestamp }) {
     const msg = new Message({ authorID, createdTimestamp });
-    this.channel.messages.add(msg);
+    this.channel.messages.push(msg);
   }
 
   addDirectMessage(content) {
     this.directMessages.push(content);
+  }
+
+  react(emoji) {
+    return addReaction(this, emoji, this.author);
+  }
+
+  get reactions() {
+    return {
+      cache: {
+        get: (emoji) => ({ count: this._reactions.filter(r => r.emoji === emoji).length }),
+        size: this._reactions.length,
+      },
+    };
+  }
+
+  get channelMessages() {
+    return this.channel.messages;
+  }
+
+  get member() {
+    return this.author;
   }
 
   get lastDirectMessage() {
@@ -71,7 +74,7 @@ class FakeDiscordMessage {
   }
 }
 
-module.exports = FakeDiscordMessage;
+module.exports = Message;
 
 {/* <ref *2> Message {
   channel: <ref *1> TextChannel {

@@ -40,6 +40,7 @@
     "yt-search": "^2.5.0"
   },
   "devDependencies": {
+    "@discordjs/collection": "^0.5.0",
     "chai": "^4.2.0",
     "chai-image": "^3.0.0",
     "eslint-plugin-mocha-no-only": "^1.1.1",

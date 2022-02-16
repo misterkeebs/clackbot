@@ -2,7 +2,7 @@ const moment = require('moment');
 const tk = require('timekeeper');
 const { expect } = require('chai');
 
-const FakeMessage = require('../FakeDiscordMessage');
+const FakeMessage = require('../discord/Message');
 const SlowModeProcessor = require('../../src/processors/SlowMode');
 const DiscordUser = require('../../src/models/DiscordUser');
 const UserLastMessage = require('../../src/models/UserLastMessage');

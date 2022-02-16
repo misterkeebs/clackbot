@@ -5,8 +5,10 @@ const User = require('../models/User');
 const BuySell = require('../processors/BuySell');
 const SlowModeProcessor = require('../processors/SlowMode');
 const ImgOnly = require('../processors/ImageOnly');
+const Voting = require('../processors/Voting');
 
 const PROCESSORS = [
+  new Voting(),
   new ImgOnly(),
   new SlowModeProcessor(),
   new BuySell(),
@@ -17,6 +19,17 @@ class DiscordInterface {
     this.bot = bot;
     this.client = client;
     this.name = 'discord';
+
+    this.client.on('messageReactionAdd', async (reaction, user) => {
+      let resolved = false;
+      await Promise.map(PROCESSORS, async proc => {
+        if (!_.isFunction(proc.handleReaction)) return;
+        if (resolved) return;
+        const res = await proc.handleReaction(reaction, user);
+        if (res) resolved = true;
+        return res;
+      });
+    });
 
     this.client.on('message', async msg => {
       const processed = await this.preProcess(client, msg);
