@@ -3,16 +3,20 @@ const dedent = require('dedent');
 const moment = require('moment');
 const Promise = require('bluebird');
 
-const ScheduledTask = require('./ScheduledTask');
+const WeeklyTask = require('./WeeklyTask');
 const Setting = require('../models/Setting');
 
-class VotingCloser extends ScheduledTask {
+class VotingCloser extends WeeklyTask {
   constructor(discord) {
-    super('VotingCloser', process.env.VOTING_CLOSER_STARTS_AT || '12');
+    super(
+      'VotingCloser',
+      process.env.VOTING_CLOSER_WEEKDAY || 'Monday',
+      process.env.VOTING_CLOSER_STARTS_AT || '12');
     this.discord = discord;
   }
 
   async run() {
+    console.log('VotingCloser picking winner...');
     await this.pickWinner();
   }
 
@@ -43,6 +47,7 @@ class VotingCloser extends ScheduledTask {
   async announce(channel, winnerData, runnerUpData) {
     const winner = _.get(winnerData, 'msg.author');
     const runnerUp = _.get(runnerUpData, 'msg.author');
+
     const winnerText = winner
       ? `Banner do servidor atualizado para a foto enviada por <@${winner.id}> com ${winnerData.upVotes} upvotes.\n`
       : 'Infelizmente nessa semana não tivemos ganhador do banner por falta de submissões.\n';

@@ -5,6 +5,7 @@ const twitch = require('./src/TwitchClient');
 const ClackSpawner = require('./src/ClackSpawner');
 const discord = require('./src/DiscordClient');
 const GroupBuyNotifier = require('./src/tasks/GroupBuyNotifier');
+const VotingCloser = require('./src/tasks/VotingCloser');
 
 const sleep = process.env.SLEEP_BETWEEN_SPAWNS || 30;
 
@@ -34,6 +35,7 @@ async function init() {
 async function main() {
   await spawner.check();
   await notifier.execute();
+  await new VotingCloser().start();
 }
 
 function run() {
