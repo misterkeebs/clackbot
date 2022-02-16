@@ -35,7 +35,7 @@ async function init() {
 async function main() {
   await spawner.check();
   await notifier.execute();
-  await new VotingCloser().start();
+  await new VotingCloser(discordClient).start();
 }
 
 function run() {
