@@ -5,6 +5,8 @@ const moment = require('moment-timezone');
 const Setting = require('../../src/models/Setting');
 const VotingCloser = require('../../src/tasks/VotingCloser');
 const { Discord, Message } = require('../discord');
+const Voting = require('../../src/processors/Voting');
+const { addReaction } = require('../discord/Reaction');
 
 describe('VotingCloser', async () => {
   const discord = new Discord(['canal']);
@@ -48,8 +50,7 @@ describe('VotingCloser', async () => {
     describe('with one entry', async () => {
       beforeEach(async () => {
         const msg = await discord.sendMessage('canal', 'My board', ['one']);
-        msg.react('🔼');
-        msg.react('🔽');
+        addReaction(msg, Voting.UPVOTE, { id: 'user1' });
         await task.pickWinner('canal');
       });
 
@@ -67,12 +68,12 @@ describe('VotingCloser', async () => {
     describe('with two entries', async () => {
       beforeEach(async () => {
         const msg1 = await discord.sendMessage('canal', 'My board', ['one']);
-        msg1.react('🔼');
-        msg1.react('🔽');
+        msg1.react(Voting.UPVOTE);
+        msg1.react(Voting.DOWNVOTE);
 
         const msg2 = await discord.sendMessage('canal', 'Other board', ['one']);
-        msg2.react('🔼');
-        msg2.react('🔽');
+        msg2.react(Voting.UPVOTE);
+        msg2.react(Voting.DOWNVOTE);
 
         await task.pickWinner('canal');
       });

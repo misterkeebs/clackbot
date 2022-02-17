@@ -5,6 +5,7 @@ const Promise = require('bluebird');
 
 const WeeklyTask = require('./WeeklyTask');
 const Setting = require('../models/Setting');
+const Voting = require('../processors/Voting');
 
 class VotingCloser extends WeeklyTask {
   constructor(discord) {
@@ -31,8 +32,8 @@ class VotingCloser extends WeeklyTask {
   }
 
   score(msg) {
-    const upVotes = msg.reactions.cache.get('🔼').count;
-    const downVotes = msg.reactions.cache.get('🔽').count;
+    const upVotes = msg.reactions.cache.get(Voting.UPVOTE).count;
+    const downVotes = msg.reactions.cache.get(Voting.DOWNVOTE).count;
     return { msg, upVotes, downVotes };
   }
 
