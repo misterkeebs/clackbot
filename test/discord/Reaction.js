@@ -2,8 +2,11 @@ const _ = require('lodash');
 
 class Reaction {
   constructor(message, emoji) {
+    this.id = 'rid' + performance.now();
     this.message = message;
-    this.emoji = emoji;
+    this.emoji = {
+      name: emoji
+    };
     this.users = {
       cache: {},
       resolve: id => {
@@ -11,9 +14,11 @@ class Reaction {
       },
       remove: user => {
         delete this.users.cache[user.id];
-        return user;
+        return Promise.resolve(user);
       }
     };
+    this.users.fetch = _ => this.users;
+    this.users.resolve = id => this.users.cache[id];
     this.message._reactions.push(this);
   }
 
@@ -35,7 +40,7 @@ class Reaction {
 }
 
 function findReaction(message, emoji) {
-  return message._reactions.find(r => r.emoji === emoji);
+  return message._reactions.find(r => r.emoji.name === emoji);
 }
 
 function findOrCreateReaction(message, emoji) {

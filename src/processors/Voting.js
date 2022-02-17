@@ -1,5 +1,8 @@
 const _ = require('lodash');
+const Promise = require('bluebird');
+
 const RestrictedProcessor = require('./RestrictedProcessor');
+const Setting = require('../models/Setting');
 
 class Voting extends RestrictedProcessor {
   constructor(channels) {
@@ -29,18 +32,21 @@ class Voting extends RestrictedProcessor {
     const found = targetReaction.users.resolve(user.id);
     if (found) await targetReaction.users.remove(user);
 
-    // await message.channel.messages.fetch();
-    // const otherLikedMessages = await message.channel.messages.cache.filter(async m => {
-    //   const reactions = await m.reactions.cache.filter(async r => {
-    //     await r.users.fetch();
-    //     const found = await r.users.resolve(user.id);
-    //     console.log('found', found);
-    //     return found;
-    //   });
-    //   console.log('reactions', reactions);
-    // });
+    if (isUp) {
+      // checks if user have already voted for this cycle
+      const cycle = await Setting.get(`votingcycle-${message.channel.name}`, '1');
+      const key = `vote-${message.channel.name}-${cycle}-${user.id}`;
+      const id = await Setting.get(key);
+      if (id && message.id !== id) {
+        // removes previous vote
+        const prevMessage = await message.channel.messages.cache.get(id);
+        const prevReaction = await prevMessage.reactions.cache.get(Voting.UPVOTE);
+        await prevReaction.users.remove(user);
+      }
 
-    // console.log('otherLikedMessages', otherLikedMessages);
+      // saves the new vote
+      await Setting.set(key, message.id);
+    }
   }
 }
 
