@@ -25,6 +25,9 @@ class DiscordInterface {
       await Promise.map(PROCESSORS, async proc => {
         if (!_.isFunction(proc.handleReaction)) return;
         if (resolved) return;
+        if (reaction.partial) {
+          await reaction.fetch();
+        }
         const res = await proc.handleReaction(reaction, user);
         if (res) resolved = true;
         return res;
