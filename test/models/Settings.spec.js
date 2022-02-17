@@ -36,4 +36,26 @@ describe('Setting', async () => {
       expect(await Setting.get('other')).to.eql('1');
     });
   });
+
+  describe('hasKey', async () => {
+    it('returns false when the key does not exist', async () => {
+      expect(await Setting.hasKey('here')).to.be.false;
+    });
+
+    it('returns true when the key exists', async () => {
+      await Setting.set('here', 'there');
+      expect(await Setting.hasKey('here')).to.be.true;
+    });
+  });
+
+  describe('remove', async () => {
+    it('removes the key', async () => {
+      await Setting.set('some', 1);
+      expect(await Setting.get('some')).to.eql('1');
+      expect(await Setting.hasKey('some')).to.be.true;
+      await Setting.remove('some');
+      expect(await Setting.get('some')).to.be.undefined;
+      expect(await Setting.hasKey('some')).to.be.false;
+    });
+  });
 });

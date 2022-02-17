@@ -20,6 +20,16 @@ class Setting extends Model {
     const res = await Setting.query().findOne({ key });
     return (res && res.value) || defaultValue;
   }
+
+  static async remove(key) {
+    await Setting.query().delete().where({ key });
+  }
+
+  static async hasKey(key) {
+    const res = await Setting.query().count().where({ key });
+    if (!res) return;
+    return parseInt(res[0].count, 10) > 0;
+  }
 }
 
 module.exports = Setting;
