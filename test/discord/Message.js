@@ -7,12 +7,14 @@ const { addReaction } = require('./Reaction');
 class Message {
   constructor(content, {
     authorID,
+    user,
     channelName = 'channel',
     createdTimestamp = new Date().getTime(),
     channel,
     attachments,
   } = {}) {
-    this.author = new Author(this, { authorID });
+    this.id = 'mid' + performance.now();
+    this.author = user || new Author(this, { authorID });
     this.channel = channel || new Channel(channelName);
     this.reset();
 
@@ -45,13 +47,15 @@ class Message {
   }
 
   react(emoji) {
-    return addReaction(this, emoji, this.author);
+    return addReaction(this, emoji, { id: 'SYSTEMID' });
   }
 
   get reactions() {
     return {
       cache: {
-        get: (emoji) => ({ count: this._reactions.filter(r => r.emoji === emoji).length }),
+        get: (emoji) => {
+          return this._reactions.find(r => r.emoji.name === emoji) || { count: 0 };
+        },
         size: this._reactions.length,
       },
     };

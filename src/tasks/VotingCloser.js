@@ -1,10 +1,11 @@
 const _ = require('lodash');
 const dedent = require('dedent');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const Promise = require('bluebird');
 
 const WeeklyTask = require('./WeeklyTask');
 const Setting = require('../models/Setting');
+const Voting = require('../processors/Voting');
 
 class VotingCloser extends WeeklyTask {
   constructor(discord) {
@@ -20,10 +21,6 @@ class VotingCloser extends WeeklyTask {
     await this.pickWinner();
   }
 
-  async getLastDraw() {
-    await Setting.get('VOTING_')
-  }
-
   filter(lastDrawStr) {
     const lastDraw = lastDrawStr && moment.tz(lastDrawStr, this.timeZone);
     return msg => {
@@ -35,8 +32,8 @@ class VotingCloser extends WeeklyTask {
   }
 
   score(msg) {
-    const upVotes = msg.reactions.cache.get('🔼').count;
-    const downVotes = msg.reactions.cache.get('🔽').count;
+    const upVotes = msg.reactions.cache.get(Voting.UPVOTE).count;
+    const downVotes = msg.reactions.cache.get(Voting.DOWNVOTE).count;
     return { msg, upVotes, downVotes };
   }
 
@@ -67,7 +64,13 @@ class VotingCloser extends WeeklyTask {
     `;
 
     await channel.send(text);
-    await Setting.set(`last-draw-${channel.name}`, moment.tz(this.timeZone).toISOString());
+  }
+
+  async update(channel) {
+    await Setting.set(`voting-last-draw-${channel.name}`, moment.tz(this.timeZone).toISOString());
+    const cycleKey = `votingcycle-${channel.name}`;
+    const cycle = parseInt(await Setting.get(cycleKey, 1), 10);
+    await Setting.set(cycleKey, cycle + 1);
   }
 
   async pickWinner(votingChannels) {
@@ -82,7 +85,7 @@ class VotingCloser extends WeeklyTask {
       if (!channel) {
         throw `No channel with name ${channelName} while picking a voting winner`;
       }
-      const lastDraw = await Setting.get(`last-draw-${channelName}`);
+      const lastDraw = await Setting.get(`voting-last-draw-${channelName}`);
       const channelMessages = await channel.messages.fetch({ limit: 100 });
       const messages = channelMessages
         .filter(this.filter(lastDraw).bind(this))
@@ -91,6 +94,7 @@ class VotingCloser extends WeeklyTask {
       const winner = _.get(messages, '0');
       const runnerUp = _.get(messages, '1');
       await this.announce(channel, winner, runnerUp);
+      await this.update(channel);
     });
   }
 }

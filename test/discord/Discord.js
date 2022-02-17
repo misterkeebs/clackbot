@@ -13,7 +13,7 @@ class Discord {
   async sendMessage(channelName, content, attachments) {
     const Message = require('./Message');
     const channel = this.channels.cache.find(c => c.name === channelName);
-    return await channel.send(content, attachments);
+    return await channel.send(content, { attachments });
   }
 
   getChannel(channelName) {
