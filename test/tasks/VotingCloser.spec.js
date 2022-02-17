@@ -1,5 +1,8 @@
+const tk = require('timekeeper');
 const { expect } = require('chai');
+const moment = require('moment-timezone');
 
+const Setting = require('../../src/models/Setting');
 const VotingCloser = require('../../src/tasks/VotingCloser');
 const { Discord, Message } = require('../discord');
 
@@ -10,9 +13,11 @@ describe('VotingCloser', async () => {
     let task = [];
 
     beforeEach(async () => {
+      tk.freeze(moment.tz('2022-02-14 10:00', 'America/Sao_Paulo').toDate());
       task = new VotingCloser(discord);
       discord.reset();
     });
+    afterEach(() => tk.reset());
 
     describe('with no entries', async () => {
       beforeEach(async () => await task.pickWinner('canal'));
@@ -31,6 +36,13 @@ describe('VotingCloser', async () => {
         expect(messages[0].content).to.not.include('Em segundo lugar');
       });
 
+      it('sets the last draw timestamp', async () => {
+        expect(await Setting.get(`voting-last-draw-canal`)).to.eql('2022-02-14T13:00:00.000Z');
+      });
+
+      it('sets the initial cycle', async () => {
+        expect(await Setting.get(`votingcycle-canal`)).to.eql('2');
+      });
     });
 
     describe('with one entry', async () => {
