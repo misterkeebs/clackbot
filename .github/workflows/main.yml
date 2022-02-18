@@ -69,7 +69,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: run-tests
-    if: contains(github.base_ref, 'master')
+    if: contains(github.ref, 'master')
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
