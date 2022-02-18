@@ -87,9 +87,11 @@ class VotingCloser extends WeeklyTask {
     const { msg } = winnerData;
     const url = msg.attachments.array()[0].url;
     const parts = msg.content.split('\n');
-    const name = _.get(parts, '0', 'N/A');
-    const details = msg.content.split('\n').splice(1).join('\n');
     const author = `${msg.author.username}#${msg.author.discriminator}`;
+    const name = _.get(parts, '0', 'N/A') || `${author}'s KB`;
+    const details = msg.content.split('\n').splice(1).join('\n');
+
+    console.log('name', name);
 
     const page = await this.notion.pages.create({
       parent: {
