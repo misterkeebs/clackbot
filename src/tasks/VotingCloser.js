@@ -21,19 +21,16 @@ class VotingCloser extends WeeklyTask {
     await this.pickWinner();
   }
 
-  filter(lastDrawStr) {
-    const lastDraw = lastDrawStr && moment.tz(lastDrawStr, this.timeZone);
-    return msg => {
-      if (lastDraw && lastDraw.isAfter(msg.createdTimestamp)) return false;
-      if (msg.attachments.size < 1) return false;
-      if (msg.reactions.cache.size < 1) return false;
-      return true;
-    }
+  filter({ msg, upVotes, downVotes }) {
+    if (upVotes < 1) return false;
+    if (msg.attachments.size < 1) return false;
+    if (msg.reactions.cache.size < 1) return false;
+    return true;
   }
 
   score(msg) {
-    const upVotes = msg.reactions.cache.get(Voting.UPVOTE).count;
-    const downVotes = msg.reactions.cache.get(Voting.DOWNVOTE).count;
+    const upVotes = _.get(msg.reactions.cache.get(Voting.UPVOTE), 'count', 0);
+    const downVotes = _.get(msg.reactions.cache.get(Voting.DOWNVOTE), 'count', 0);
     return { msg, upVotes, downVotes };
   }
 
@@ -63,11 +60,11 @@ class VotingCloser extends WeeklyTask {
       P.S.: Não esqueçam de mandar os seus banners com specs para facilitar caso você ganhe, e convido vocês para que venham conferir o nosso hall-of-fame aqui: https://kbrd.to/hall-of-fame
     `;
 
-    await channel.send(text);
+    return await channel.send(text);
   }
 
-  async update(channel) {
-    await Setting.set(`voting-last-draw-${channel.name}`, moment.tz(this.timeZone).toISOString());
+  async update(channel, msg) {
+    await Setting.set(`voting-last-draw-${channel.name}`, msg.id);
     const cycleKey = `votingcycle-${channel.name}`;
     const cycle = parseInt(await Setting.get(cycleKey, 1), 10);
     await Setting.set(cycleKey, cycle + 1);
@@ -86,15 +83,15 @@ class VotingCloser extends WeeklyTask {
         throw `No channel with name ${channelName} while picking a voting winner`;
       }
       const lastDraw = await Setting.get(`voting-last-draw-${channelName}`);
-      const channelMessages = await channel.messages.fetch({ limit: 100 });
-      const messages = channelMessages
-        .filter(this.filter(lastDraw).bind(this))
+      const cycleMessages = await channel.messages.fetch({ limit: 100, after: lastDraw });
+      const messages = cycleMessages
         .map(this.score.bind(this))
+        .filter(this.filter.bind(this))
         .sort(this.rank.bind(this));
       const winner = _.get(messages, '0');
       const runnerUp = _.get(messages, '1');
-      await this.announce(channel, winner, runnerUp);
-      await this.update(channel);
+      const announcementMessage = await this.announce(channel, winner, runnerUp);
+      await this.update(channel, announcementMessage);
     });
   }
 }

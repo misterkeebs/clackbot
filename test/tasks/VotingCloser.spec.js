@@ -8,7 +8,7 @@ const { Discord, Message } = require('../discord');
 const Voting = require('../../src/processors/Voting');
 const { addReaction } = require('../discord/Reaction');
 
-describe('VotingCloser', async () => {
+describe.only('VotingCloser', async () => {
   const discord = new Discord(['canal']);
 
   describe('pickWinner', async () => {
@@ -38,8 +38,9 @@ describe('VotingCloser', async () => {
         expect(messages[0].content).to.not.include('Em segundo lugar');
       });
 
-      it('sets the last draw timestamp', async () => {
-        expect(await Setting.get(`voting-last-draw-canal`)).to.eql('2022-02-14T13:00:00.000Z');
+      it('sets the last draw message id', async () => {
+        const announceMsg = discord.getChannelMessages().find(m => m.content.includes('Incentivamos'));
+        expect(await Setting.get(`voting-last-draw-canal`)).to.eql(announceMsg.id);
       });
 
       it('sets the initial cycle', async () => {
