@@ -8,7 +8,7 @@ const { Discord, Message } = require('../discord');
 const Voting = require('../../src/processors/Voting');
 const { addReaction } = require('../discord/Reaction');
 
-describe.only('VotingCloser', async () => {
+describe('VotingCloser', async () => {
   const discord = new Discord(['canal']);
 
   describe('pickWinner', async () => {
