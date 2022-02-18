@@ -50,7 +50,7 @@ class Voting extends RestrictedProcessor {
   }
 }
 
-Voting.UPVOTE = '🔼';
-Voting.DOWNVOTE = '🔽';
+Voting.UPVOTE = '⬆️';
+Voting.DOWNVOTE = '⬇️';
 
 module.exports = Voting;
