@@ -25,6 +25,7 @@ class Message {
     this.attachments = new Collection();
     if (attachments) {
       attachments.forEach((a, n) => this.attachments.set(n, a));
+      this.attachments.array = () => attachments;
     }
   }
 

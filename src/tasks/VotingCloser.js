@@ -2,18 +2,22 @@ const _ = require('lodash');
 const dedent = require('dedent');
 const moment = require('moment-timezone');
 const Promise = require('bluebird');
+const { Client } = require("@notionhq/client");
 
 const WeeklyTask = require('./WeeklyTask');
 const Setting = require('../models/Setting');
 const Voting = require('../processors/Voting');
 
+const notion = new Client({ auth: process.env.NOTION_KEY });
+
 class VotingCloser extends WeeklyTask {
-  constructor(discord) {
+  constructor(discord, _notion = notion) {
     super(
       'VotingCloser',
       process.env.VOTING_CLOSER_WEEKDAY || 'Monday',
       process.env.VOTING_CLOSER_STARTS_AT || '12');
     this.discord = discord;
+    this.notion = _notion;
   }
 
   async run() {
@@ -70,6 +74,72 @@ class VotingCloser extends WeeklyTask {
     await Setting.set(cycleKey, cycle + 1);
   }
 
+  async setBanner(channel, winnerData) {
+    try {
+      await channel.guild.setBanner(winnerData.msg.attachments.array()[0].url, `Banner Winner - ${winnerData.msg.author.username}`);
+    } catch (error) {
+      channel.send(`Sorry, could not set banner: ${error}`);
+    }
+  }
+
+  async publishToNotion(winnerData) {
+    if (!winnerData) return;
+    const { msg } = winnerData;
+    const url = msg.attachments.array()[0].url;
+    const parts = msg.content.split('\n');
+    const name = _.get(parts, '0', 'N/A');
+    const details = msg.content.split('\n').splice(1).join('\n');
+    const author = `${msg.author.username}#${msg.author.discriminator}`;
+
+    const page = await this.notion.pages.create({
+      parent: {
+        database_id: process.env.VOTING_NOTION_HOF_ID,
+      },
+      cover: {
+        external: { url },
+      },
+      properties: {
+        Date: {
+          date: {
+            start: moment().tz(this.timeZone),
+          },
+        },
+        Image: {
+          files: [
+            {
+              name,
+              external: { url },
+            }
+          ]
+        },
+        Keyboard: {
+          multi_select: [{ name }],
+        },
+        Winner: {
+          title: [
+            { text: { content: author } },
+          ]
+        },
+      },
+      children: [
+        {
+          object: 'block',
+          paragraph: {
+            text: [
+              { text: { content: details } }
+            ]
+          }
+        },
+        {
+          object: 'block',
+          image: {
+            external: { url },
+          }
+        }
+      ],
+    });
+  }
+
   async pickWinner(votingChannels) {
     const channelStr = votingChannels || process.env.VOTING_CHANNELS;
     if (!channelStr) {
@@ -92,6 +162,8 @@ class VotingCloser extends WeeklyTask {
       const runnerUp = _.get(messages, '1');
       const announcementMessage = await this.announce(channel, winner, runnerUp);
       await this.update(channel, announcementMessage);
+      await this.setBanner(channel, winner);
+      await this.publishToNotion(winner);
     });
   }
 }

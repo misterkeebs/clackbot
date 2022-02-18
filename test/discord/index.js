@@ -3,6 +3,7 @@ const Author = require('./Author');
 const Channel = require('./Channel');
 const Message = require('./Message');
 const Reaction = require('./Reaction');
+const Guild = require('./Guild');
 
 module.exports = {
   Discord,
@@ -10,4 +11,5 @@ module.exports = {
   Channel,
   Message,
   Reaction,
+  Guild,
 };

@@ -13,6 +13,7 @@
     "gencodes:reset": "node gencodes.js --reset"
   },
   "dependencies": {
+    "@notionhq/client": "^0.4.13",
     "bluebird": "^3.7.2",
     "canvas": "^2.8.0",
     "chrono-node": "^2.1.9",

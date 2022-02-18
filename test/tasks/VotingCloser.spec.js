@@ -1,6 +1,7 @@
 const tk = require('timekeeper');
-const { expect } = require('chai');
+const nock = require('nock');
 const moment = require('moment-timezone');
+const { expect } = require('chai');
 
 const Setting = require('../../src/models/Setting');
 const VotingCloser = require('../../src/tasks/VotingCloser');
@@ -9,6 +10,12 @@ const Voting = require('../../src/processors/Voting');
 const { addReaction } = require('../discord/Reaction');
 
 describe('VotingCloser', async () => {
+  let notionData;
+  const notion = {
+    pages: {
+      create: data => notionData = data,
+    }
+  };
   const discord = new Discord(['canal']);
 
   describe('pickWinner', async () => {
@@ -16,7 +23,7 @@ describe('VotingCloser', async () => {
 
     beforeEach(async () => {
       tk.freeze(moment.tz('2022-02-14 10:00', 'America/Sao_Paulo').toDate());
-      task = new VotingCloser(discord);
+      task = new VotingCloser(discord, notion);
       discord.reset();
     });
     afterEach(() => tk.reset());
@@ -50,7 +57,7 @@ describe('VotingCloser', async () => {
 
     describe('with one entry', async () => {
       beforeEach(async () => {
-        const msg = await discord.sendMessage('canal', 'My board', ['one']);
+        const msg = await discord.sendMessage('canal', 'My board', [{ url: 'urlToPicture' }]);
         addReaction(msg, Voting.UPVOTE, { id: 'user1' });
         await task.pickWinner('canal');
       });
@@ -64,15 +71,24 @@ describe('VotingCloser', async () => {
         const message = discord.getLastMessage();
         expect(message.content).to.not.include('Em segundo lugar');
       });
+
+      it('sends the winner to Notion Hall of Fame', async () => {
+        expect(notionData.cover.external.url).to.eql('urlToPicture');
+      });
+
+      it('sets the banner', async () => {
+        const message = discord.getLastMessage();
+        expect(message.channel.guild.banner).to.eql('urlToPicture');
+      });
     });
 
     describe('with two entries', async () => {
       beforeEach(async () => {
-        const msg1 = await discord.sendMessage('canal', 'My board', ['one']);
+        const msg1 = await discord.sendMessage('canal', 'My board', [{ url: 'winnerPic' }]);
         msg1.react(Voting.UPVOTE);
         msg1.react(Voting.DOWNVOTE);
 
-        const msg2 = await discord.sendMessage('canal', 'Other board', ['one']);
+        const msg2 = await discord.sendMessage('canal', 'Other board', [{ url: 'runnerUpPic' }]);
         msg2.react(Voting.UPVOTE);
         msg2.react(Voting.DOWNVOTE);
 
@@ -87,6 +103,15 @@ describe('VotingCloser', async () => {
       it('includes a runner-up', async () => {
         const message = discord.getLastMessage();
         expect(message.content).to.include('Em segundo lugar');
+      });
+
+      it('sends the winner to Notion Hall of Fame', async () => {
+        expect(notionData.cover.external.url).to.eql('winnerPic');
+      });
+
+      it('sets the banner', async () => {
+        const message = discord.getLastMessage();
+        expect(message.channel.guild.banner).to.eql('winnerPic');
       });
     });
   });

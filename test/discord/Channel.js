@@ -1,3 +1,5 @@
+const Guild = require('./Guild');
+
 class ChannelMessagesCache {
   constructor(channel) {
     this.channel = channel;
@@ -12,6 +14,7 @@ class Channel {
   constructor(name) {
     this.id = 'id' + performance.now();
     this.name = name;
+    this.guild = new Guild()
     this.channelMessages = [];
     this.messages = {
       fetch: () => Promise.resolve(this.channelMessages),
