@@ -91,8 +91,6 @@ class VotingCloser extends WeeklyTask {
     const name = _.get(parts, '0', 'N/A') || `${author}'s KB`;
     const details = msg.content.split('\n').splice(1).join('\n');
 
-    console.log('name', name);
-
     const page = await this.notion.pages.create({
       parent: {
         database_id: process.env.VOTING_NOTION_HOF_ID,
