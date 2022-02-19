@@ -28,7 +28,7 @@ async function main() {
 
   const channel = client.channels.cache.find(c => c.name === 'banner-pics');
   const msg1 = await channel.send('*** INITIAL ***');
-  const msg2 = await channel.send('test 1', new Discord.MessageAttachment('https://i.pinimg.com/originals/9c/2b/4f/9c2b4f515aa311691296757e398e894b.jpg', 'kb2.jpg'));
+  const msg2 = await channel.send('Teclado60\nSwitches: MX Blacks', new Discord.MessageAttachment('https://i.pinimg.com/originals/9c/2b/4f/9c2b4f515aa311691296757e398e894b.jpg', 'kb2.jpg'));
   await msg2.react(Voting.UPVOTE);
   const msg3 = await channel.send('test 2', new Discord.MessageAttachment('https://i.pinimg.com/originals/be/55/95/be5595fdf9b8ce2f657471659d53de13.jpg', 'elongate.gif'));
   await msg3.react(Voting.DOWNVOTE);
