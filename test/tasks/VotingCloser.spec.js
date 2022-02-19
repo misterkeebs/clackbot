@@ -82,6 +82,22 @@ describe('VotingCloser', async () => {
       });
     });
 
+    describe('with multiple lines on submission', async () => {
+      beforeEach(async () => {
+        const msg = await discord.sendMessage('canal', 'Board Name\nSpecs', [{ url: 'urlToPicture' }]);
+        addReaction(msg, Voting.UPVOTE, { id: 'user1' });
+        await task.pickWinner('canal');
+      });
+
+      it('sets the board name on the Notion Hall of Fame entry', async () => {
+        expect(notionData.properties.Keyboard.multi_select[0].name).to.eql('Board Name');
+      });
+
+      it(`sets the board specs on the Notion Hall of Fame entry's body`, async () => {
+        expect(notionData.children[0].paragraph.text[0].text.content).to.eql('Specs');
+      });
+    });
+
     describe('with two entries', async () => {
       beforeEach(async () => {
         const msg1 = await discord.sendMessage('canal', 'My board', [{ url: 'winnerPic' }]);
