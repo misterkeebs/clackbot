@@ -6,7 +6,7 @@ const VotingProcessor = require('../../src/processors/Voting');
 const Voting = require('../../src/processors/Voting');
 const { Discord, Channel } = require('../discord');
 
-describe.only('Voting', async () => {
+describe('Voting', async () => {
   describe('configuration', async () => {
     it('sets channels', async () => {
       expect(new Voting('a,b').channels).to.eql(['a', 'b']);

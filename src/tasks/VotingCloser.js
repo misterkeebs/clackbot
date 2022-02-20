@@ -33,8 +33,9 @@ class VotingCloser extends WeeklyTask {
   }
 
   score(msg) {
-    const upVotes = _.get(msg.reactions.cache.get(Voting.UPVOTE), 'count', 0);
-    const downVotes = _.get(msg.reactions.cache.get(Voting.DOWNVOTE), 'count', 0);
+    const upVotes = Voting.countUp(msg);
+    const downVotes = Voting.countDown(msg);
+    console.log('upVotes, downVotes', upVotes, downVotes);
     return { msg, upVotes, downVotes };
   }
 
