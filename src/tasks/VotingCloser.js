@@ -78,6 +78,10 @@ class VotingCloser extends WeeklyTask {
   }
 
   async setBanner(channel, winnerData) {
+    if (!winnerData) {
+      console.log('Skipping banner - no winner');
+      return;
+    }
     const banner = winnerData.msg.attachments.array()[0].url;
     console.log('Setting Discord banner to', banner);
     try {
