@@ -35,7 +35,8 @@ class VotingCloser extends WeeklyTask {
   score(msg) {
     const upVotes = Voting.countUp(msg);
     const downVotes = Voting.countDown(msg);
-    console.log('upVotes, downVotes', upVotes, downVotes);
+    console.log('   =>', `${_.get(msg, 'author.username')}: ${_.get(msg, 'content', 'No content')}`);
+    console.log('      upVotes: ', upVotes);
     return { msg, upVotes, downVotes };
   }
 
@@ -69,6 +70,7 @@ class VotingCloser extends WeeklyTask {
   }
 
   async update(channel, msg) {
+    console.log('Setting last draw to', msg.id);
     await Setting.set(`voting-last-draw-${channel.name}`, msg.id);
     const cycleKey = `votingcycle-${channel.name}`;
     const cycle = parseInt(await Setting.get(cycleKey, 1), 10);
@@ -76,8 +78,10 @@ class VotingCloser extends WeeklyTask {
   }
 
   async setBanner(channel, winnerData) {
+    const banner = winnerData.msg.attachments.array()[0].url;
+    console.log('Setting Discord banner to', banner);
     try {
-      await channel.guild.setBanner(winnerData.msg.attachments.array()[0].url, `Banner Winner - ${winnerData.msg.author.username}`);
+      await channel.guild.setBanner(banner, `Banner Winner - ${winnerData.msg.author.username}`);
     } catch (error) {
       channel.send(`Sorry, could not set banner: ${error}`);
     }
@@ -90,7 +94,11 @@ class VotingCloser extends WeeklyTask {
     const parts = msg.content.split('\n');
     const author = `${msg.author.username}#${msg.author.discriminator}`;
     const name = _.get(parts, '0', 'N/A') || `${author}'s KB`;
-    const details = msg.content.split('\n').splice(1).join('\n');
+    const details = msg.content.split('\n').splice(1).join('\n') || 'Nenhum detalhe enviado pelo usuário.';
+
+    console.log('Sending winner to Notion Hall of Fame...');
+    console.log('   Board Name:', name);
+    console.log('   Details:', details);
 
     const page = await this.notion.pages.create({
       parent: {
