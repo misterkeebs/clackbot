@@ -25,7 +25,7 @@ class ScheduledTask {
       if (diff < 1) return false;
     }
 
-    return !lastRunStr || diff > 1 || parseInt(now.format('H'), 10) >= parseInt(this.startsAt, 10);
+    return (!lastRunStr || diff >= 1) && parseInt(now.format('H'), 10) >= parseInt(this.startsAt, 10);
   }
 
   async start() {

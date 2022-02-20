@@ -81,6 +81,11 @@ describe('WeeklyTask', async () => {
         expect(await task.canRun()).to.be.false;
       });
 
+      it('cannot run on next Thursday at 9AM', async () => {
+        tk.freeze(moment.tz('2022-02-24 09:00', 'America/Sao_Paulo').toDate());
+        expect(await task.canRun()).to.be.false;
+      });
+
       it('can run on next Wednesday at 10AM', async () => {
         tk.freeze(moment.tz('2022-02-23 10:00', 'America/Sao_Paulo').toDate());
         expect(await task.canRun()).to.be.true;
