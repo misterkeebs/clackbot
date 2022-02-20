@@ -52,5 +52,12 @@ class Voting extends RestrictedProcessor {
 
 Voting.UPVOTE = '⬆️';
 Voting.DOWNVOTE = '⬇️';
+Voting.UPVOTES = ['⬆️', '⬆', '🔼'];
+Voting.DOWNVOTES = ['⬇️', '⬇', '🔽'];
+Voting.isUpVote = reaction => Voting.UPVOTES.includes(_.get(reaction, 'emoji.name'));
+Voting.isDownVote = reaction => Voting.DOWNVOTES.includes(_.get(reaction, 'emoji.name'));
+Voting.count = emojis => msg => emojis.reduce((acc, emoji) => acc + _.get(msg.reactions.cache.get(emoji), 'count', 0), 0);
+Voting.countUp = Voting.count(Voting.UPVOTES);
+Voting.countDown = Voting.count(Voting.DOWNVOTES);
 
 module.exports = Voting;

@@ -6,7 +6,7 @@ const VotingProcessor = require('../../src/processors/Voting');
 const Voting = require('../../src/processors/Voting');
 const { Discord, Channel } = require('../discord');
 
-describe('Voting', async () => {
+describe.only('Voting', async () => {
   describe('configuration', async () => {
     it('sets channels', async () => {
       expect(new Voting('a,b').channels).to.eql(['a', 'b']);
@@ -83,6 +83,77 @@ describe('Voting', async () => {
         expect(msg2.reactions.cache.get(Voting.UPVOTE).count).to.eql(2);
         expect(msg1.reactions.cache.get(Voting.UPVOTE).count).to.eql(1);
       });
+    });
+  });
+
+  describe('isUpVote', async () => {
+    it('is true for all 3 upvotes', async () => {
+      const msg = new FakeMessage('one');
+      const reaction1 = await msg.react('⬆️');
+      const reaction2 = await msg.react('⬆');
+      const reaction3 = await msg.react('🔼');
+      expect(Voting.isUpVote(reaction1)).to.be.true;
+      expect(Voting.isUpVote(reaction2)).to.be.true;
+      expect(Voting.isUpVote(reaction3)).to.be.true;
+    });
+
+    it('is false for another reaction emoji', async () => {
+      const msg = new FakeMessage('one');
+      const reaction1 = await msg.react('pepeHeart');
+      expect(Voting.isUpVote(reaction1)).to.be.false;
+    });
+  });
+
+  describe('isDownVote', async () => {
+    it('is true for all 3 upvotes', async () => {
+      const msg = new FakeMessage('one');
+      const reaction1 = await msg.react('⬇️');
+      const reaction2 = await msg.react('⬇');
+      const reaction3 = await msg.react('🔽');
+      expect(Voting.isDownVote(reaction1)).to.be.true;
+      expect(Voting.isDownVote(reaction2)).to.be.true;
+      expect(Voting.isDownVote(reaction3)).to.be.true;
+    });
+  });
+
+  describe('count', async () => {
+    it('counts different emojis', async () => {
+      const msg1 = new FakeMessage('one');
+      await msg1.react('⬆️');
+      await msg1.react('⬆');
+      await msg1.react('🔼');
+      await msg1.react('pepoHeart');
+      const msg2 = new FakeMessage('two');
+      await msg2.react('⬆');
+      expect(Voting.count(Voting.UPVOTES)(msg1)).to.eql(3);
+      expect(Voting.count(Voting.UPVOTES)(msg2)).to.eql(1);
+    });
+  });
+
+  describe('countUp', async () => {
+    it('counts different emojis', async () => {
+      const msg1 = new FakeMessage('one');
+      await msg1.react('⬆️');
+      await msg1.react('⬆');
+      await msg1.react('🔼');
+      await msg1.react('pepoHeart');
+      const msg2 = new FakeMessage('two');
+      await msg2.react('⬆');
+      expect(Voting.countUp(msg1)).to.eql(3);
+      expect(Voting.countUp(msg2)).to.eql(1);
+    });
+  });
+
+  describe('countDown', async () => {
+    it('counts different emojis', async () => {
+      const msg1 = new FakeMessage('one');
+      await msg1.react('⬇️');
+      await msg1.react('🔽');
+      await msg1.react('pepoHeart');
+      const msg2 = new FakeMessage('two');
+      await msg2.react('⬇');
+      expect(Voting.countDown(msg1)).to.eql(2);
+      expect(Voting.countDown(msg2)).to.eql(1);
     });
   });
 });
