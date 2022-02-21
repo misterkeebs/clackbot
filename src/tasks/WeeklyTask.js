@@ -17,10 +17,10 @@ class WeeklyTask extends ScheduledTask {
     if (lastRunStr) {
       const lastRun = moment.tz(lastRunStr, this.timeZone);
       const diff = now.diff(lastRun, 'days');
-      if (diff > 7) return super.canRun();
+      if (diff > 7) return await super.canRun() === true;
     }
 
-    return weekday === this.weekday && super.canRun();
+    return weekday === this.weekday && await super.canRun() === true;
   }
 }
 
