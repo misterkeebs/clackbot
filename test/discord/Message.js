@@ -55,7 +55,7 @@ class Message {
     return {
       cache: {
         get: (emoji) => {
-          return this._reactions.find(r => r.emoji.name === emoji) || { count: 0 };
+          return this._reactions.find(r => r.emoji.name === emoji);
         },
         size: this._reactions.length,
       },

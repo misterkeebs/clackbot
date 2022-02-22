@@ -26,9 +26,9 @@ class Voting extends RestrictedProcessor {
     if (message.partial) await message.fetch();
 
     const targetReaction = message.reactions.cache.get(isUp ? Voting.DOWNVOTE : Voting.UPVOTE);
+    if (!targetReaction) return;
     await targetReaction.users.fetch();
 
-    if (!targetReaction) return;
     const found = targetReaction.users.resolve(user.id);
     if (found) await targetReaction.users.remove(user);
 

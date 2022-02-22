@@ -86,6 +86,25 @@ describe('Voting', async () => {
     });
   });
 
+  describe('when there are no votes', async () => {
+    let msg, voting;
+
+    beforeEach(async () => {
+      msg = new FakeMessage('I am the best', { channelName: 'channel', authorID: 'userid' });
+      voting = new VotingProcessor('channel');
+    });
+
+    it('removes the other vote', async () => {
+      const user = {
+        id: 'userid',
+        username: 'username',
+      };
+
+      const upReaction = addReaction(msg, Voting.UPVOTE, user);
+      await voting.handleReaction(upReaction, user);
+    });
+  });
+
   describe('isUpVote', async () => {
     it('is true for all 3 upvotes', async () => {
       const msg = new FakeMessage('one');
