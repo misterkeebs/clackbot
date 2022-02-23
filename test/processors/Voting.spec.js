@@ -84,6 +84,33 @@ describe('Voting', async () => {
         expect(msg1.reactions.cache.get(Voting.UPVOTE).count).to.eql(1);
       });
     });
+
+    describe('with no opposite reaction', async () => {
+      let msg1, msg2, voting;
+
+      beforeEach(async () => {
+        const channel = new Channel('channel');
+        msg1 = await channel.send('Picture 1', { authorID: 'poster1' });
+        msg2 = await channel.send('Picture 2', { authorID: 'poster2' });
+        voting = new VotingProcessor('channel');
+      });
+
+      it('removes vote 1 when vote 2 is casted', async () => {
+        const user = {
+          id: 'voterid',
+          username: 'voter',
+        };
+
+        const vote1 = addReaction(msg1, Voting.UPVOTE, user);
+        await voting.handleReaction(vote1, user);
+        expect(msg1.reactions.cache.get(Voting.UPVOTE).count).to.eql(1);
+
+        const vote2 = addReaction(msg2, Voting.UPVOTE, user);
+        await voting.handleReaction(vote2, user);
+        expect(msg2.reactions.cache.get(Voting.UPVOTE).count).to.eql(1);
+        expect(msg1.reactions.cache.get(Voting.UPVOTE).count).to.eql(0);
+      });
+    });
   });
 
   describe('when there are no votes', async () => {

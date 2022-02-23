@@ -29,12 +29,13 @@ class Voting extends RestrictedProcessor {
 
     const targetReaction = message.reactions.cache.get(isUp ? Voting.DOWNVOTE : Voting.UPVOTE);
     console.log('  targetReaction', _.get(targetReaction, 'emoji.name', 'null'));
-    if (!targetReaction) return;
-    await targetReaction.users.fetch();
 
-    const found = targetReaction.users.resolve(user.id);
-    console.log('  found reaction for user', _.get(found, 'username', 'null'));
-    if (found) await targetReaction.users.remove(user);
+    if (targetReaction) {
+      await targetReaction.users.fetch();
+      const found = targetReaction.users.resolve(user.id);
+      console.log('  found reaction for user', _.get(found, 'username', 'null'));
+      if (found) await targetReaction.users.remove(user);
+    }
 
     if (isUp) {
       // checks if user have already voted for this cycle
