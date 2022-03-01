@@ -55,6 +55,40 @@ describe('Voting', async () => {
     });
   });
 
+  describe('when user had already voted in another option on a non-enabled channel', async () => {
+    let msg, voting;
+
+    beforeEach(async () => {
+      msg = new FakeMessage('I am the best', { channelName: 'chan2', authorID: 'userid' });
+      voting = new VotingProcessor('channel');
+      await voting.handle(msg);
+
+    });
+
+    it(`doesn't a reaction to posts`, async () => {
+      expect(msg._reactions.map(r => r.emoji.name)).to.eql([]);
+    });
+
+    describe('when user had already voted in another option', async () => {
+      it('removes the other vote', async () => {
+        const user = {
+          id: 'userid',
+          username: 'username',
+        };
+
+        const upReaction = addReaction(msg, Voting.UPVOTE, user);
+        const downReaction = addReaction(msg, Voting.DOWNVOTE, user);
+
+        await voting.handleReaction(upReaction, user);
+        expect(upReaction.count).to.eql(1);
+
+        await voting.handleReaction(downReaction, user);
+        expect(msg.reactions.cache.get(Voting.UPVOTE).count).to.eql(1);
+        expect(msg.reactions.cache.get(Voting.DOWNVOTE).count).to.eql(1);
+      });
+    });
+  });
+
   describe('removing previous votes', async () => {
     describe('when voted on the same cycle', async () => {
       let msg1, msg2, voting;

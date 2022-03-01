@@ -15,7 +15,10 @@ class Voting extends RestrictedProcessor {
   }
 
   async handleReaction(reaction, user) {
+    const { message } = reaction || {};
+
     if (user.id === process.env.DISCORD_CLIENT_ID) return;
+    if (!this.channels.includes(message.channel.name)) return;
 
     console.log('Handling reaction from', user.username, '=>', reaction.emoji.name);
 
@@ -24,7 +27,6 @@ class Voting extends RestrictedProcessor {
 
     if (!isUp && !isDown) return;
 
-    const { message } = reaction;
     if (message.partial) await message.fetch();
 
     const targetReaction = message.reactions.cache.get(isUp ? Voting.DOWNVOTE : Voting.UPVOTE);
