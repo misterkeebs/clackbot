@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
+    "spawner:dev": "nodemon spawner.js",
     "test": "mocha --exit --file ./test/Init.js './test/**/*.spec.js'",
     "test:watch": "mocha -w --file ./test/Init.js './test/**/*.spec.js'",
     "gencodes": "node gencodes.js 100",
