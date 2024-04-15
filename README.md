@@ -35,4 +35,7 @@ Será um widget que será exibido durante as lives.
 
 ## Misc
 
-URL para obter tokens: https://id.twitch.tv/oauth2/authorize?client_id=&redirect_uri=http://localhost&response_type=token&scope=channel:moderate+chat:edit+chat:read
+URL para obter tokens:
+
+- Twitch - https://id.twitch.tv/oauth2/authorize?client_id=&redirect_uri=http://localhost&response_type=token&scope=channel:moderate+chat:edit+chat:read
+- Discord - https://discord.com/api/oauth2/authorize?client_id=&permissions=8&scope=bot
