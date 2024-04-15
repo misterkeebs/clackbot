@@ -11,7 +11,7 @@ class Voting extends RestrictedProcessor {
 
   async process(msg) {
     await msg.react(Voting.UPVOTE);
-    await msg.react(Voting.DOWNVOTE);
+    // await msg.react(Voting.DOWNVOTE);
   }
 
   async handleReaction(reaction, user) {
@@ -29,6 +29,11 @@ class Voting extends RestrictedProcessor {
 
     const isUp = reaction.emoji.name === Voting.UPVOTE;
     const isDown = reaction.emoji.name === Voting.DOWNVOTE;
+
+    if (isDown) {
+      console.log("Removing downvote from user", user.username);
+      await reaction.users.remove(user);
+    }
 
     if (!isUp && !isDown) return;
 
@@ -65,10 +70,21 @@ class Voting extends RestrictedProcessor {
       if (id && message.id !== id) {
         // removes previous vote
         const prevMessage = await message.channel.messages.cache.get(id);
-        console.log('   previous message is', _.get(prevMessage, 'content', 'null'));
-        const prevReaction = await prevMessage.reactions.cache.get(Voting.UPVOTE);
-        console.log('   previous reaction is', _.get(prevReaction, 'emoji.name', 'null'), 'removing...');
-        await prevReaction.users.remove(user);
+        console.log(
+          "   previous message is",
+          _.get(prevMessage, "content", "null"),
+        );
+        if (prevMessage) {
+          const prevReaction = await prevMessage.reactions.cache.get(
+            Voting.UPVOTE,
+          );
+          console.log(
+            "   previous reaction is",
+            _.get(prevReaction, "emoji.name", "null"),
+            "removing...",
+          );
+          await prevReaction.users.remove(user);
+        }
       }
 
       // saves the new vote
